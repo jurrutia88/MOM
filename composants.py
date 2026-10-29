@@ -3,6 +3,7 @@
 glossaire et téléchargements. La profondeur est constante d'un écran à l'autre."""
 import os
 import re
+import textwrap
 from html import escape
 
 import pandas as pd
@@ -79,6 +80,11 @@ def fr(x, dec=1):
     """Un nombre à la française : 21,94 · 2 827."""
     s = f"{x:,.{dec}f}".replace(",", NBSP).replace(".", ",")
     return s
+
+
+def deux_lignes(t, n=20):
+    """Un libellé d'axe sur deux lignes au plus : les noms longs débordent sur un écran étroit."""
+    return "<br>".join(textwrap.wrap(t, n)[:2]) if len(t) > n else t
 
 
 def sigle(terme, affiche=None):
