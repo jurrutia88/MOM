@@ -9,7 +9,7 @@ Lancement local :  streamlit run app.py
 import streamlit as st
 
 st.set_page_config(page_title="Le ministère des Outre-mer en chiffres — CLSE", page_icon="🌊",
-                   layout="wide", initial_sidebar_state="expanded")
+                   layout="wide", initial_sidebar_state="auto")     # replié sur téléphone
 
 import charte as c                      # noqa: E402  (après set_page_config)
 from composants import carte, entete    # noqa: E402
@@ -43,9 +43,10 @@ def accueil():
     cols = st.columns(2, gap="large")
     for i, (cle, _, q, quoi) in enumerate(ECRANS):
         with cols[i % 2]:
-            carte(f"Question {i + 1}" + ("" if cle == "budget" else " · en préparation"), [f"<b>{q}</b>", quoi],
-                  "orange" if cle == "budget" else "bleugris")
-    st.caption("Maquette de travail — seul l'écran 4 est construit.")
+            fait = cle in ("ministres", "budget")
+            carte(f"Question {i + 1}" + ("" if fait else " · en préparation"), [f"<b>{q}</b>", quoi],
+                  "orange" if fait else "bleugris")
+    st.caption("Maquette de travail — écrans 3 et 4 construits.")
 
 
 def a_venir(numero, question, quoi):
@@ -57,9 +58,10 @@ def a_venir(numero, question, quoi):
 
 
 pages = [st.Page(accueil, title="Accueil", url_path="accueil", default=True)]
+CONSTRUITS = {"ministres": "ecrans/e3_ministres.py", "budget": "ecrans/e4_budget.py"}
 for i, (cle, mot, q, quoi) in enumerate(ECRANS, start=1):
-    if cle == "budget":
-        pages.append(st.Page("ecrans/e4_budget.py", title=f"{i} · {mot}", url_path=cle))
+    if cle in CONSTRUITS:
+        pages.append(st.Page(CONSTRUITS[cle], title=f"{i} · {mot}", url_path=cle))
     else:
         pages.append(st.Page(a_venir(i, q, quoi), title=f"{i} · {mot}", url_path=cle))
 

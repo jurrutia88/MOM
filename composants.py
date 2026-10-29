@@ -32,6 +32,16 @@ GLOSSAIRE = {
     "dépenses fiscales": "Impôts que l'État renonce à percevoir (réductions, exonérations, taux réduits). "
                          "Elles soutiennent les outre-mer hors budget : on les montre à côté des crédits, "
                          "jamais additionnées.",
+    "mandat": "Une nomination dans un gouvernement, du décret de nomination à la fin des fonctions. Une même "
+              "personne reconduite dans un nouveau gouvernement ouvre un nouveau mandat.",
+    "rang": "La place du ministre dans le gouvernement, du plus élevé au plus modeste : ministre d'État, "
+            "ministre, ministre délégué, secrétaire d'État. Les deux premiers siègent de plein droit au Conseil "
+            "des ministres ; les deux autres passent par le ministre dont ils relèvent.",
+    "rattaché à l'Intérieur": "Le portefeuille des outre-mer n'est pas autonome : il est placé auprès du "
+                              "ministre de l'Intérieur, qui en a l'autorité.",
+    "ancrage": "Un lien avec un territoire d'outre-mer antérieur à la nomination. « Né outre-mer » : la "
+               "naissance. « Autre forme » : ascendance, résidence, activité, mandat ou engagement, d'après la "
+               "grille d'ancrage du CLSE.",
 }
 
 

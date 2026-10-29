@@ -1,0 +1,9 @@
+﻿president;debut;fin;mandats;ministres;duree_moyenne_j;mandats_par_an;rattaches_interieur;part_femmes_pct;part_nes_om_pct;part_autre_forme_pct
+de Gaulle;1959;1969;9;6;419;0,87;0;0;0;0
+Pompidou;1969;1974;5;5;359;1,05;0;0;0;0
+Giscard d'Estaing;1974;1981;4;2;634;0,57;3;0;0;0
+Mitterrand;1981;1995;11;6;448;0,79;5;0;0;0
+Chirac;1995;2007;9;6;487;0,75;1;33;0;33
+Sarkozy;2007;2012;6;4;304;1,2;4;67;50;0
+Hollande;2012;2017;6;3;303;1,2;0;67;100;0
+Macron;2017;;13;10;293;1,43;2;38;0;23

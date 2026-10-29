@@ -41,23 +41,27 @@ st.markdown("")
 st.markdown("### Sur 100 euros, combien le ministère en décide-t-il ?")
 g, d = st.columns([1.65, 1], gap="large")
 with g:
+    # cascade horizontale, lue de haut en bas : cinq libellés ne tiennent pas côte à côte sur un téléphone
     couleurs = [c.MARINE, c.SABLE, c.BLEU_GRIS, c.SABLE, c.VERT]
-    libelles = ["Effort total<br>de l'État", "hors Mission<br>Outre-mer", "Mission<br>Outre-mer",
-                "engagements<br>contraints", "Marge réellement<br>arbitrée"]
+    libelles = ["Effort total de l'État", "hors Mission Outre-mer", "Mission Outre-mer",
+                "engagements contraints", "Marge réellement arbitrée"]
     fig = go.Figure(go.Bar(
-        x=libelles, y=(cas.haut_eur - cas.bas_eur) / 1e9, base=cas.bas_eur / 1e9,
-        marker=dict(color=couleurs, line=dict(width=0)), width=0.6,
+        y=libelles, x=(cas.haut_eur - cas.bas_eur) / 1e9, base=cas.bas_eur / 1e9, orientation="h",
+        marker=dict(color=couleurs, line=dict(width=0)), width=0.62,
         customdata=cas.part_dpt_pct,
-        hovertemplate="%{y:.2f} Md€ · %{customdata:.1f} % de l'effort<extra></extra>"))
-    # les valeurs, posées au-dessus des barres pleines (le texte « outside » ne suit pas une base décalée)
+        hovertemplate="%{x:.2f} Md€ · %{customdata:.1f} % de l'effort<extra></extra>"))
+    # les valeurs, au bout des barres pleines (le texte « outside » ne suit pas une base décalée)
     for i, (h, col) in enumerate(zip(cas.haut_eur, [c.MARINE, None, c.BLEU_GRIS, None, c.VERT])):
         if col:
-            fig.add_annotation(x=libelles[i], y=h / 1e9, text=f"<b>{fr(h / 1e9, 2)}</b>", yshift=14, showarrow=False,
-                               font=dict(size=15, color=col))
-    fig.add_annotation(x=libelles[4], y=marge / 1e9, text=f"<b>{fr(p_marge)} %</b>", yshift=44, showarrow=False,
-                       font=dict(size=22, color=c.ORANGE))
-    fig.update_layout(height=410, yaxis=dict(title="Md€", range=[0, 25]),
-                      xaxis=dict(tickfont=dict(size=13, color=c.MARINE), tickangle=0), bargap=0.35)
+            fig.add_annotation(y=libelles[i], x=h / 1e9, text=f"<b>{fr(h / 1e9, 2)}</b>", xanchor="left", xshift=6,
+                               showarrow=False, font=dict(size=14, color=col))
+    fig.add_annotation(y=libelles[4], x=marge / 1e9, text=f"<b>soit {fr(p_marge)} %</b>", xanchor="left",
+                       xshift=46, showarrow=False, font=dict(size=18, color=c.ORANGE))
+    fig.update_layout(height=380, margin=dict(r=12),
+                      xaxis=dict(title="Md€ (crédits de paiement)", range=[0, 30], dtick=5, showgrid=True,
+                                             gridcolor=c.GRILLE),
+                      yaxis=dict(tickfont=dict(size=12, color=c.MARINE), showgrid=False,
+                                 categoryorder="array", categoryarray=libelles[::-1]), bargap=0.3)
     st.plotly_chart(fig, use_container_width=True, config=c.CONFIG)
 with d:
     carte("Ce graphique montre que…",
