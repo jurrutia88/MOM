@@ -36,6 +36,22 @@ GLOSSAIRE = {
             "180 agents répartis en quatre sous-directions.",
     "restes à payer": "Ce que l'État s'est engagé à payer et n'a pas encore payé. Il engage une opération entière "
                       "dès la signature, puis la paie au rythme des travaux.",
+    "DROM": "Département et région d'outre-mer (article 73 de la Constitution) : Guadeloupe, Martinique, Guyane, "
+            "La Réunion, Mayotte. La Guyane et la Martinique sont organisées en collectivités uniques depuis 2015.",
+    "COM": "Collectivité d'outre-mer (article 74) : Saint-Barthélemy, Saint-Martin, Saint-Pierre-et-Miquelon, "
+           "Wallis-et-Futuna, Polynésie française. Chacune a un statut sur mesure fixé par une loi organique.",
+    "article 73": "Identité législative : les lois et règlements nationaux s'appliquent de plein droit, sauf "
+                  "adaptation expresse.",
+    "article 74": "Spécialité législative : chaque collectivité a un statut sur mesure, fixé par une loi organique, "
+                  "et s'écarte plus largement de la législation nationale.",
+    "habilitation": "Depuis 2003 (article 73, alinéa 3), un DROM peut être autorisé par la loi ou le règlement à fixer "
+                    "lui-même les règles dans quelques matières. La Réunion en est exclue (alinéa 5).",
+    "sui generis": "« De son propre genre » : la Nouvelle-Calédonie ne relève ni de l'article 73 ni de l'article 74, "
+                   "mais du titre XIII de la Constitution, qui inscrit les accords de Matignon et de Nouméa.",
+    "RUP": "Région ultrapériphérique de l'Union européenne : le droit européen s'y applique, avec des adaptations "
+           "(article 349 du traité sur le fonctionnement de l'Union européenne).",
+    "PTOM": "Pays et territoire d'outre-mer : associé à l'Union européenne sans en faire partie ; le droit européen ne "
+            "s'y applique pas (annexe II du traité).",
     "mandat": "Une nomination dans un gouvernement, du décret de nomination à la fin des fonctions. Une même "
               "personne reconduite dans un nouveau gouvernement ouvre un nouveau mandat.",
     "rang": "La place du ministre dans le gouvernement, du plus élevé au plus modeste : ministre d'État, "

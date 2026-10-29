@@ -31,4 +31,4 @@ et sa source officielle ; dépenses fiscales jamais additionnées aux crédits.
 
 ## État
 
-Maquette : les écrans 1 (histoire), 2 (fonctionnement), 3 (ministres) et 4 (budget) sont construits, les autres sont en préparation.
+Maquette : les écrans 1 à 5 (histoire, fonctionnement, ministres, budget, statuts) sont construits ; 6 à 8 en préparation.
