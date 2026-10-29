@@ -1,0 +1,6 @@
+﻿etape;libelle;bas_eur;haut_eur;part_dpt_pct;affiche
+1;Effort total de l'État;0;21940000000;100,0;21,94
+2;hors Mission Outre-mer;2826970646;21940000000;87,1;
+3;Mission Outre-mer;0;2826970646;12,89;2,83
+4;engagements contraints;1121472809,0;2826970646;7,77;
+5;Marge réellement arbitrée;0;1121472809;5,11;1,12
