@@ -99,7 +99,7 @@ with g:
                       yaxis=dict(categoryorder="array", categoryarray=RANGS[::-1], showgrid=False,
                                  tickfont=dict(size=12, color=c.MARINE)),
                       legend=dict(orientation="h", y=1.04, yanchor="bottom"))
-    st.plotly_chart(fig, use_container_width=True, config=c.CONFIG)
+    st.plotly_chart(fig, width="stretch", config=c.CONFIG)
 with d:
     carte("Ce graphique montre que…",
           [f"le {sigle('rang', 'rang')} du portefeuille monte et descend au gré des gouvernements : ministre d'État "

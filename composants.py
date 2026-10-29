@@ -135,4 +135,4 @@ def telecharger(col, libelle, fichier, figure=False):
     chemin = os.path.join(FIGURES if figure else DONNEES, fichier)
     with open(chemin, "rb") as f:
         col.download_button(libelle, f.read(), file_name=fichier,
-                            mime="image/png" if figure else "text/csv", use_container_width=True)
+                            mime="image/png" if figure else "text/csv", width="stretch")

@@ -125,7 +125,7 @@ with g:
                                  showgrid=True, gridcolor=c.GRILLE),
                       yaxis=dict(showgrid=False, tickfont=dict(size=12, color=c.MARINE)),
                       legend=dict(orientation="h", y=1.02, yanchor="bottom"))
-    st.plotly_chart(fig, use_container_width=True, config=c.CONFIG)
+    st.plotly_chart(fig, width="stretch", config=c.CONFIG)
 with d:
     lodeom = A.set_index("code").loc["138-01"]
     dot = A.set_index("code").loc["123-06"]
@@ -167,7 +167,7 @@ with g:
                                  mode="lines", line=dict(color=c.VERT, width=3, dash="dot"),
                                  hovertemplate="%{x} : %{y:.2f} Md€<extra>Budget de la mission</extra>"))
         fig.update_layout(height=340, xaxis=dict(dtick=2), yaxis=dict(title="Md€", range=[0, 3.2]))
-    st.plotly_chart(fig, use_container_width=True, config=c.CONFIG)
+    st.plotly_chart(fig, width="stretch", config=c.CONFIG)
 with d:
     carte("Ce graphique montre que…",
           [f"<b>fin 2025, {fr(rap_2025 / 1000, 2)} Md€ d'engagements pris et non payés : plus que le budget "

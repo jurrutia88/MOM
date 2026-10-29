@@ -80,7 +80,7 @@ with g:
                       yaxis=dict(tickfont=dict(size=12, color=c.MARINE), showgrid=False,
                                  categoryorder="array", categoryarray=LIB[::-1]),
                       legend=dict(traceorder="normal", orientation="h", y=1.1))
-    st.plotly_chart(fig, use_container_width=True, config=c.CONFIG)
+    st.plotly_chart(fig, width="stretch", config=c.CONFIG)
 with d:
     mac = P[P.president == "Macron"].iloc[0]
     carte("Ce graphique montre que…",
@@ -129,7 +129,7 @@ with g:
                       yaxis=dict(showgrid=False, showline=False, tickfont=dict(size=12, color=c.MARINE),
                                  categoryorder="array", categoryarray=LIB[::-1]),
                       legend=dict(orientation="h", y=1.08))
-    st.plotly_chart(fig, use_container_width=True, config=c.CONFIG)
+    st.plotly_chart(fig, width="stretch", config=c.CONFIG)
 with d:
     carte("Ce graphique montre que…",
           ["aucune femme et aucun ministre lié à l'outre-mer avant 2002. Les quatre ministres nés outre-mer se "
@@ -160,7 +160,7 @@ T = T.sort_values("debut", ascending=False)
 st.dataframe(pd.DataFrame({
     "Ministre": T.ministre, "Fonction": T.fonction, "Gouvernement": T.gouvernement,
     "Début": pd.to_datetime(T.debut).dt.strftime("%d/%m/%Y"), "Fin": pd.to_datetime(T.fin).dt.strftime("%d/%m/%Y"),
-    "Jours": T.duree_jours, "Ancrage": T.ancrage}), hide_index=True, use_container_width=True,
+    "Jours": T.duree_jours, "Ancrage": T.ancrage}), hide_index=True, width="stretch",
     height=min(38 + 35 * len(T), 420))
 pied(SOURCE + ". Fin du dernier mandat : date d'arrêt de la base, la ministre étant toujours en fonction")
 

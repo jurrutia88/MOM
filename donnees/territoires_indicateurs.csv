@@ -1,0 +1,124 @@
+﻿num;indicateur;unite;territoire;valeur;marque;millesime;comparable;reference;source;commentaire
+1;Taux de pauvreté;seuil national, %;Guadeloupe;35,0;;2026;O;non;Sénat 2026 / INSEE;
+1;Taux de pauvreté;seuil national, %;Martinique;27,0;;2026;O;non;Sénat 2026 / INSEE;
+1;Taux de pauvreté;seuil national, %;Guyane;53,0;;2026;O;non;Sénat 2026 / INSEE;
+1;Taux de pauvreté;seuil national, %;La Réunion;36,0;;2026;O;non;Sénat 2026 / INSEE;
+1;Taux de pauvreté;seuil national, %;Mayotte;77,0;;2026;O;non;Sénat 2026 / INSEE;
+1;Taux de pauvreté;seuil national, %;France (réf.);14,4;;2026;O;oui;Sénat 2026 / INSEE;
+1;Taux de pauvreté;seuil national, %;Nouvelle-Calédonie;17,0;>;2017;N;non;Sénat 2026 / INSEE;"seuil local ISEE ; ancien"
+1;Taux de pauvreté;seuil national, %;Polynésie / Wallis / SPM / St-Martin / St-Barth;;;—;N;non;Sénat 2026 / INSEE;"pas de taux seuil national ; voir Gini"
+2;Écart de prix GLOBAL avec l'Hexagone;%;Guadeloupe;15,8;;2022;O;non;INSEE (n°1958) / IEOM;
+2;Écart de prix GLOBAL avec l'Hexagone;%;Martinique;13,8;;2022;O;non;INSEE (n°1958) / IEOM;
+2;Écart de prix GLOBAL avec l'Hexagone;%;Guyane;13,7;;2022;O;non;INSEE (n°1958) / IEOM;
+2;Écart de prix GLOBAL avec l'Hexagone;%;La Réunion;8,9;;2022;O;non;INSEE (n°1958) / IEOM;
+2;Écart de prix GLOBAL avec l'Hexagone;%;Mayotte;10,0;;2022;O;non;INSEE (n°1958) / IEOM;
+2;Écart de prix GLOBAL avec l'Hexagone;%;Saint-Martin;12,0;;2022;O;non;INSEE (n°1958) / IEOM;Flash Gpe 187
+2;Écart de prix GLOBAL avec l'Hexagone;%;Nouvelle-Calédonie;31,0;;2022;O;non;INSEE (n°1958) / IEOM;IEOM
+2;Écart de prix GLOBAL avec l'Hexagone;%;Polynésie française;31,0;;2022;O;non;INSEE (n°1958) / IEOM;IEOM
+2;Écart de prix GLOBAL avec l'Hexagone;%;Saint-Barthélemy;;;—;N;non;INSEE (n°1958) / IEOM;hors enquête spatiale INSEE
+2;Écart de prix GLOBAL avec l'Hexagone;%;Saint-Pierre-et-Miquelon;;;—;N;non;INSEE (n°1958) / IEOM;alimentaire seult (+70 %)
+2;Écart de prix GLOBAL avec l'Hexagone;%;Wallis-et-Futuna;;;—;N;non;INSEE (n°1958) / IEOM;non publié
+3;Écart de prix ALIMENTAIRE avec l'Hexagone;%;Guadeloupe;42,0;;2022;O;non;INSEE (analyses régionales);n°73
+3;Écart de prix ALIMENTAIRE avec l'Hexagone;%;Martinique;40,0;;2022;O;non;INSEE (analyses régionales);n°63
+3;Écart de prix ALIMENTAIRE avec l'Hexagone;%;Guyane;39,0;;2022;O;non;INSEE (analyses régionales);n°63
+3;Écart de prix ALIMENTAIRE avec l'Hexagone;%;La Réunion;37,0;;2022;O;non;INSEE (analyses régionales);n°83
+3;Écart de prix ALIMENTAIRE avec l'Hexagone;%;Mayotte;30,0;;2022;O;non;INSEE (analyses régionales);n°34
+3;Écart de prix ALIMENTAIRE avec l'Hexagone;%;Saint-Martin;47,0;;2022;O;non;INSEE (analyses régionales);Flash Gpe 187
+3;Écart de prix ALIMENTAIRE avec l'Hexagone;%;Saint-Pierre-et-Miquelon;70,0;;2022;O;non;INSEE (analyses régionales);INSEE/préfecture
+3;Écart de prix ALIMENTAIRE avec l'Hexagone;%;Nouvelle-Calédonie / Polynésie;;;—;N;non;INSEE (analyses régionales);"alimentaire non isolé ; global +31 %"
+3;Écart de prix ALIMENTAIRE avec l'Hexagone;%;Saint-Barthélemy / Wallis;;;—;N;non;INSEE (analyses régionales);non publié
+4;Part de l'alimentation importée;%;Martinique;87,0;;2022;N;non;ODEADOM / Sénat 2026;"source presse/ODEADOM ; méthode non homogène"
+4;Part de l'alimentation importée;%;Guadeloupe;82,0;;2022;N;non;ODEADOM / Sénat 2026;idem
+4;Part de l'alimentation importée;%;Guyane;63,0;;2022;N;non;ODEADOM / Sénat 2026;idem
+4;Part de l'alimentation importée;%;Ensemble outre-mer;70,0;≈;2013-2022;O;non;ODEADOM / Sénat 2026;Sénat 2026
+4;Part de l'alimentation importée;%;La Réunion;;;—;N;non;ODEADOM / Sénat 2026;à extraire ODEADOM par filière
+4;Part de l'alimentation importée;%;Mayotte;;;—;N;non;ODEADOM / Sénat 2026;idem
+4;Part de l'alimentation importée;%;COM;;;—;N;non;ODEADOM / Sénat 2026;non consolidé
+5;Taux de chômage;BIT, tous âges, %;Guadeloupe;16,8;;2024;O;non;"INSEE taux localisés 2024 ; IEOM (COM)";
+5;Taux de chômage;BIT, tous âges, %;Martinique;12,3;;2024;O;non;"INSEE taux localisés 2024 ; IEOM (COM)";
+5;Taux de chômage;BIT, tous âges, %;Guyane;16,9;;2024;O;non;"INSEE taux localisés 2024 ; IEOM (COM)";
+5;Taux de chômage;BIT, tous âges, %;La Réunion;17,3;;2024;O;non;"INSEE taux localisés 2024 ; IEOM (COM)";
+5;Taux de chômage;BIT, tous âges, %;Mayotte;29,0;;2024;O;non;"INSEE taux localisés 2024 ; IEOM (COM)";enquête Emploi Mayotte
+5;Taux de chômage;BIT, tous âges, %;France (réf.);7,3;;2024;O;oui;"INSEE taux localisés 2024 ; IEOM (COM)";
+5;Taux de chômage;BIT, tous âges, %;Nouvelle-Calédonie;10,5;;2023;N;non;"INSEE taux localisés 2024 ; IEOM (COM)";recensement ISEE
+5;Taux de chômage;BIT, tous âges, %;Polynésie française;7,5;;2024;N;non;"INSEE taux localisés 2024 ; IEOM (COM)";ISPF
+5;Taux de chômage;BIT, tous âges, %;Wallis-et-Futuna;8,2;;2024;N;non;"INSEE taux localisés 2024 ; IEOM (COM)";recensement
+5;Taux de chômage;BIT, tous âges, %;Saint-Pierre-et-Miquelon;3,0;;2024;N;non;"INSEE taux localisés 2024 ; IEOM (COM)";local
+5;Taux de chômage;BIT, tous âges, %;Saint-Barthélemy;1,9;;2021;N;non;"INSEE taux localisés 2024 ; IEOM (COM)";recensement
+5;Taux de chômage;BIT, tous âges, %;Saint-Martin;30,1;;2021;N;non;"INSEE taux localisés 2024 ; IEOM (COM)";recensement
+6;Chômage des 15-24 ans;%;Guadeloupe;38,4;;2024;O;non;Sénat 2026 / INSEE;
+6;Chômage des 15-24 ans;%;Martinique;35,8;;2024;O;non;Sénat 2026 / INSEE;
+6;Chômage des 15-24 ans;%;Guyane;39,8;;2024;O;non;Sénat 2026 / INSEE;
+6;Chômage des 15-24 ans;%;La Réunion;35,0;;2024;O;non;Sénat 2026 / INSEE;
+6;Chômage des 15-24 ans;%;Mayotte;59,0;;2024;O;non;Sénat 2026 / INSEE;
+6;Chômage des 15-24 ans;%;France (réf.);17,2;;2024;O;oui;Sénat 2026 / INSEE;
+6;Chômage des 15-24 ans;%;COM;;;—;N;non;Sénat 2026 / INSEE;non disponible même source
+7;Part des jeunes NEET;15-29 ans, %;Guadeloupe;21,0;≈;2024;O;non;Sénat 2026 / INSEE;lecture graphique
+7;Part des jeunes NEET;15-29 ans, %;Martinique;21,0;≈;2024;O;non;Sénat 2026 / INSEE;lecture graphique
+7;Part des jeunes NEET;15-29 ans, %;Guyane;34,0;≈;2024;O;non;Sénat 2026 / INSEE;lecture graphique
+7;Part des jeunes NEET;15-29 ans, %;La Réunion;24,0;≈;2024;O;non;Sénat 2026 / INSEE;lecture graphique
+7;Part des jeunes NEET;15-29 ans, %;Mayotte;34,0;≈;2024;O;non;Sénat 2026 / INSEE;lecture graphique
+7;Part des jeunes NEET;15-29 ans, %;France (réf.);12,0;;2024;O;oui;Sénat 2026 / INSEE;
+7;Part des jeunes NEET;15-29 ans, %;COM;;;—;N;non;Sénat 2026 / INSEE;non publié
+8;Illettrisme;Journée défense et citoyenneté, %;Guadeloupe;14,0;;2024;O;non;Sénat 2026 / DEPP;
+8;Illettrisme;Journée défense et citoyenneté, %;Martinique;13,0;;2024;O;non;Sénat 2026 / DEPP;
+8;Illettrisme;Journée défense et citoyenneté, %;Guyane;28,4;;2024;O;non;Sénat 2026 / DEPP;
+8;Illettrisme;Journée défense et citoyenneté, %;La Réunion;14,0;;2024;O;non;Sénat 2026 / DEPP;
+8;Illettrisme;Journée défense et citoyenneté, %;Mayotte;31,9;;2024;O;non;Sénat 2026 / DEPP;
+8;Illettrisme;Journée défense et citoyenneté, %;France (réf.);6,0;;2024;O;oui;Sénat 2026 / DEPP;
+8;Illettrisme;Journée défense et citoyenneté, %;COM;;;—;N;non;Sénat 2026 / DEPP;non publié
+9;Mortalité infantile;‰ nés vivants;Guadeloupe;7,1;;2023;O;non;Sénat 2026 / DGS-ENP;
+9;Mortalité infantile;‰ nés vivants;Martinique;7,9;;2023;O;non;Sénat 2026 / DGS-ENP;
+9;Mortalité infantile;‰ nés vivants;Guyane;9,8;;2023;O;non;Sénat 2026 / DGS-ENP;
+9;Mortalité infantile;‰ nés vivants;La Réunion;6,1;;2023;O;non;Sénat 2026 / DGS-ENP;
+9;Mortalité infantile;‰ nés vivants;Mayotte;10,4;;2023;O;non;Sénat 2026 / DGS-ENP;
+9;Mortalité infantile;‰ nés vivants;France (réf.);4,0;;2023;O;oui;Sénat 2026 / DGS-ENP;hexagone 3,7
+9;Mortalité infantile;‰ nés vivants;COM;;;—;N;non;Sénat 2026 / DGS-ENP;non publié
+10;Densité de médecins libéraux;/100 000 hab.;Guadeloupe;153,0;;2024;O;non;Sénat 2026 / Assurance maladie;
+10;Densité de médecins libéraux;/100 000 hab.;Martinique;138,0;;2024;O;non;Sénat 2026 / Assurance maladie;
+10;Densité de médecins libéraux;/100 000 hab.;Guyane;55,0;;2024;O;non;Sénat 2026 / Assurance maladie;désert médical extrême
+10;Densité de médecins libéraux;/100 000 hab.;La Réunion;149,0;;2024;O;non;Sénat 2026 / Assurance maladie;
+10;Densité de médecins libéraux;/100 000 hab.;Mayotte;14,0;≈;2024;O;non;Sénat 2026 / Assurance maladie;"source incohérente ; désert médical extrême"
+10;Densité de médecins libéraux;/100 000 hab.;France hexa. (réf.);169,0;;2024;O;oui;Sénat 2026 / Assurance maladie;
+10;Densité de médecins libéraux;/100 000 hab.;COM;;;—;N;non;Sénat 2026 / Assurance maladie;autre système de santé
+11;Prévalence des incapacités;65 ans +, %;Guadeloupe;46,6;;2019;O;non;Sénat 2026 / EHIS-DREES;
+11;Prévalence des incapacités;65 ans +, %;Martinique;44,6;;2019;O;non;Sénat 2026 / EHIS-DREES;
+11;Prévalence des incapacités;65 ans +, %;Guyane;47,7;;2019;O;non;Sénat 2026 / EHIS-DREES;
+11;Prévalence des incapacités;65 ans +, %;La Réunion;37,7;;2019;O;non;Sénat 2026 / EHIS-DREES;
+11;Prévalence des incapacités;65 ans +, %;Mayotte;69,5;;2019;O;non;Sénat 2026 / EHIS-DREES;
+11;Prévalence des incapacités;65 ans +, %;France (réf.);35,6;;2019;O;oui;Sénat 2026 / EHIS-DREES;
+11;Prévalence des incapacités;65 ans +, %;COM;;;—;N;non;Sénat 2026 / EHIS-DREES;EHIS non déployée
+12;Couverture d'accueil petite enfance;%;Guadeloupe;44,1;;2023;O;non;Sénat 2026 / CNAF;
+12;Couverture d'accueil petite enfance;%;Martinique;55,2;;2023;O;non;Sénat 2026 / CNAF;
+12;Couverture d'accueil petite enfance;%;Guyane;13,4;;2023;O;non;Sénat 2026 / CNAF;
+12;Couverture d'accueil petite enfance;%;La Réunion;39,5;;2023;O;non;Sénat 2026 / CNAF;
+12;Couverture d'accueil petite enfance;%;Mayotte;;;2023;N;non;Sénat 2026 / CNAF;non fourni
+12;Couverture d'accueil petite enfance;%;France (réf.);60,9;;2023;O;oui;Sénat 2026 / CNAF;
+12;Couverture d'accueil petite enfance;%;COM;;;—;N;non;Sénat 2026 / CNAF;non fourni
+13;Indice de Gini;après redistribution;Guadeloupe;0,42;;2022;O;non;Sénat 2026 / INSEE-ISEE-ISPF-STSEE;
+13;Indice de Gini;après redistribution;Martinique;0,45;;2022;O;non;Sénat 2026 / INSEE-ISEE-ISPF-STSEE;
+13;Indice de Gini;après redistribution;Guyane;0,43;;2017;N;non;Sénat 2026 / INSEE-ISEE-ISPF-STSEE;millésime 2017
+13;Indice de Gini;après redistribution;La Réunion;0,36;;2022;O;non;Sénat 2026 / INSEE-ISEE-ISPF-STSEE;
+13;Indice de Gini;après redistribution;Mayotte;0,49;;2022;O;non;Sénat 2026 / INSEE-ISEE-ISPF-STSEE;
+13;Indice de Gini;après redistribution;Nouvelle-Calédonie;0,42;;2022;O;non;Sénat 2026 / INSEE-ISEE-ISPF-STSEE;
+13;Indice de Gini;après redistribution;Polynésie française;0,4;;2018;N;non;Sénat 2026 / INSEE-ISEE-ISPF-STSEE;millésime 2018
+13;Indice de Gini;après redistribution;Wallis-et-Futuna;0,43;;2022;O;non;Sénat 2026 / INSEE-ISEE-ISPF-STSEE;
+13;Indice de Gini;après redistribution;France (réf.);0,29;;2023;O;oui;Sénat 2026 / INSEE-ISEE-ISPF-STSEE;hexagone
+13;Indice de Gini;après redistribution;SPM / St-Martin / St-Barth;;;—;N;non;Sénat 2026 / INSEE-ISEE-ISPF-STSEE;non calculé
+14;PIB/hab;% de la moyenne nationale;Guadeloupe;66,7;;2023;O;non;Sénat 2026 / DGOM;cf. valeurs en € onglet PIB_hab
+14;PIB/hab;% de la moyenne nationale;Martinique;69,6;;2023;O;non;Sénat 2026 / DGOM;
+14;PIB/hab;% de la moyenne nationale;Guyane;48,1;;2023;O;non;Sénat 2026 / DGOM;
+14;PIB/hab;% de la moyenne nationale;La Réunion;64,0;;2023;O;non;Sénat 2026 / DGOM;
+14;PIB/hab;% de la moyenne nationale;Mayotte;27,5;;2023;O;non;Sénat 2026 / DGOM;
+14;PIB/hab;% de la moyenne nationale;Nouvelle-Calédonie;72,4;;2023;O;non;Sénat 2026 / DGOM;
+14;PIB/hab;% de la moyenne nationale;Polynésie française;81,0;;2023;O;non;Sénat 2026 / DGOM;
+14;PIB/hab;% de la moyenne nationale;Saint-Barthélemy;220,0;;2023;O;non;Sénat 2026 / DGOM;au-dessus de l'Île-de-France
+14;PIB/hab;% de la moyenne nationale;Saint-Pierre-et-Miquelon;97,0;;2023;O;non;Sénat 2026 / DGOM;
+14;PIB/hab;% de la moyenne nationale;Saint-Martin;44,6;;2021;N;non;Sénat 2026 / DGOM;millésime 2021
+14;PIB/hab;% de la moyenne nationale;Wallis-et-Futuna;;;—;N;non;Sénat 2026 / DGOM;non fourni
+15;Salaire net privé;% de la moyenne nationale;Guadeloupe;65,4;;2023;O;non;Sénat 2026 / DGOM;
+15;Salaire net privé;% de la moyenne nationale;Martinique;67,3;;2023;O;non;Sénat 2026 / DGOM;
+15;Salaire net privé;% de la moyenne nationale;La Réunion;66,5;;2023;O;non;Sénat 2026 / DGOM;
+15;Salaire net privé;% de la moyenne nationale;Mayotte;41,6;;2023;O;non;Sénat 2026 / DGOM;
+15;Salaire net privé;% de la moyenne nationale;Nouvelle-Calédonie;71,4;;2023;O;non;Sénat 2026 / DGOM;
+15;Salaire net privé;% de la moyenne nationale;Guyane / Polynésie / autres COM;;;—;N;non;Sénat 2026 / DGOM;"non lisible sur le graphique ; à extraire du rapport intégral"

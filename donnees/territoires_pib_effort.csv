@@ -1,0 +1,14 @@
+﻿territoire;libelle_socle;statut;pib_hab_eur;annee_pib;source_pib;cp_2026_eur;population;effort_hab_eur;richesse_pour_1_euro
+Saint-Barthélemy;Saint-Barthélemy;COM;90103;2023;CEROM/IEDOM;40742637;10660;3822;23,6
+Saint-Pierre-et-Miquelon;Saint-Pierre-et-Miquelon;COM;39778;2015;IEDOM (données 2015);92158247;5790;15917;2,5
+Martinique;Martinique;DROM;29866;2024 (prov.);INSEE, comptes régionaux;2708928663;360630;7512;4,0
+Nouvelle-Calédonie;Nouvelle-Calédonie;sui generis;29664;2024;IEOM/ISEE;1711267243;264596;6467;4,6
+Guadeloupe;Guadeloupe (y compris Saint-Martin);DROM;29099;2024 (prov.);INSEE, comptes régionaux — l'INSEE compte Saint-Martin avec la Guadeloupe;2950857625;384160;7681;3,8
+La Réunion;La Réunion;DROM;27539;2024 (prov.);INSEE, comptes régionaux;7071772678;889679;7949;3,5
+Polynésie française;Polynésie française;COM;20933;2024;IEOM/ISPF;1516342411;278786;5439;3,8
+Guyane;Guyane;DROM;17703;2024 (prov.);INSEE, comptes régionaux;2990807536;293996;10173;1,7
+Wallis-et-Futuna;Wallis-et-Futuna;COM;17039;2019;IEOM/STSEE;167150705;11151;14990;1,1
+Saint-Martin;Saint-Martin;COM;17000;2021;"CEROM — estimation propre ; Saint-Martin figure aussi dans la ligne Guadeloupe";155106735;31160;4978;3,4
+Mayotte;Mayotte;DROM;11977;2023;INSEE, comptes régionaux;2079393129;323153;6435;1,9
+France entière (repère);France entière (repère);—;42579;2024;INSEE;;;;
+Île-de-France (repère);Île-de-France (repère);—;69514;2024;INSEE;;;;

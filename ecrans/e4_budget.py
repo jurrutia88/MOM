@@ -62,7 +62,7 @@ with g:
                                              gridcolor=c.GRILLE),
                       yaxis=dict(tickfont=dict(size=12, color=c.MARINE), showgrid=False,
                                  categoryorder="array", categoryarray=libelles[::-1]), bargap=0.3)
-    st.plotly_chart(fig, use_container_width=True, config=c.CONFIG)
+    st.plotly_chart(fig, width="stretch", config=c.CONFIG)
 with d:
     carte("Ce graphique montre que…",
           [f"sur 100 euros que l'État consacre aux outre-mer, le ministère en porte près de 13, et n'en "
@@ -107,7 +107,7 @@ with g:
                       xaxis=dict(title="% de l'effort de l'État", range=[0, 36], dtick=10,
                                              showgrid=True, gridcolor=c.GRILLE),
                       yaxis=dict(showgrid=False, tickfont=dict(size=12, color=c.MARINE)), bargap=0.3)
-    st.plotly_chart(fig, use_container_width=True, config=c.CONFIG)
+    st.plotly_chart(fig, width="stretch", config=c.CONFIG)
 with d:
     carte("Ce graphique montre que…",
           ["l'enseignement scolaire porte presque un tiers de l'effort, deux fois et demie plus que le ministère "
@@ -150,7 +150,7 @@ with g:
                                  hovertemplate="%{x} : %{y:.2f} Md€<extra>Mission Outre-mer</extra>"))
         fig.update_layout(yaxis=dict(title="Md€", range=[0, 25]))
     fig.update_layout(height=360, xaxis=dict(dtick=2))
-    st.plotly_chart(fig, use_container_width=True, config=c.CONFIG)
+    st.plotly_chart(fig, width="stretch", config=c.CONFIG)
 with d:
     carte("Ce graphique montre que…",
           ["la part du ministère dans l'effort de l'État recule : 16,4 % en 2007, 12,9 % en 2026.",
@@ -176,7 +176,7 @@ with g:
     fig.add_annotation(x=pic.annee, y=pic.fiscal_m / 1000, text=f"<b>{fr(pic.fiscal_m / 1000, 2)} Md€</b>",
                        yshift=14, showarrow=False, font=dict(color=c.BLEU, size=14))
     fig.update_layout(height=360, yaxis=dict(title="Md€", range=[0, 8]), xaxis=dict(dtick=2), bargap=0.25)
-    st.plotly_chart(fig, use_container_width=True, config=c.CONFIG)
+    st.plotly_chart(fig, width="stretch", config=c.CONFIG)
 with d:
     fin = fisc.iloc[-1]
     carte("Ce graphique montre que…",
