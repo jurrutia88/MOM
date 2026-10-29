@@ -31,4 +31,4 @@ et sa source officielle ; dépenses fiscales jamais additionnées aux crédits.
 
 ## État
 
-Maquette : les écrans 3 (ministres) et 4 (budget) sont construits, les autres sont en préparation.
+Maquette : les écrans 2 (fonctionnement), 3 (ministres) et 4 (budget) sont construits, les autres sont en préparation.

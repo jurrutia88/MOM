@@ -32,6 +32,10 @@ GLOSSAIRE = {
     "dépenses fiscales": "Impôts que l'État renonce à percevoir (réductions, exonérations, taux réduits). "
                          "Elles soutiennent les outre-mer hors budget : on les montre à côté des crédits, "
                          "jamais additionnées.",
+    "DGOM": "Direction générale des outre-mer : l'administration centrale du ministère depuis 2013, environ "
+            "180 agents répartis en quatre sous-directions.",
+    "restes à payer": "Ce que l'État s'est engagé à payer et n'a pas encore payé. Il engage une opération entière "
+                      "dès la signature, puis la paie au rythme des travaux.",
     "mandat": "Une nomination dans un gouvernement, du décret de nomination à la fin des fonctions. Une même "
               "personne reconduite dans un nouveau gouvernement ouvre un nouveau mandat.",
     "rang": "La place du ministre dans le gouvernement, du plus élevé au plus modeste : ministre d'État, "

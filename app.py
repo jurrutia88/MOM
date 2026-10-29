@@ -43,10 +43,10 @@ def accueil():
     cols = st.columns(2, gap="large")
     for i, (cle, _, q, quoi) in enumerate(ECRANS):
         with cols[i % 2]:
-            fait = cle in ("ministres", "budget")
+            fait = cle in CONSTRUITS
             carte(f"Question {i + 1}" + ("" if fait else " · en préparation"), [f"<b>{q}</b>", quoi],
                   "orange" if fait else "bleugris")
-    st.caption("Maquette de travail — écrans 3 et 4 construits.")
+    st.caption("Maquette de travail — écrans 2, 3 et 4 construits.")
 
 
 def a_venir(numero, question, quoi):
@@ -58,7 +58,8 @@ def a_venir(numero, question, quoi):
 
 
 pages = [st.Page(accueil, title="Accueil", url_path="accueil", default=True)]
-CONSTRUITS = {"ministres": "ecrans/e3_ministres.py", "budget": "ecrans/e4_budget.py"}
+CONSTRUITS = {"fonctionnement": "ecrans/e2_fonctionnement.py", "ministres": "ecrans/e3_ministres.py",
+              "budget": "ecrans/e4_budget.py"}
 for i, (cle, mot, q, quoi) in enumerate(ECRANS, start=1):
     if cle in CONSTRUITS:
         pages.append(st.Page(CONSTRUITS[cle], title=f"{i} · {mot}", url_path=cle))
