@@ -10,11 +10,12 @@ import plotly.graph_objects as go
 import streamlit as st
 
 import charte as c
-from composants import carte, deux_lignes, entete, fr, glossaire, lire, pied, telecharger, tuile
+from composants import carte, deux_lignes, entete, fond, fr, glossaire, lire, pied, telecharger, tuile
 
 RENVOI = "partie « Comment fonctionne le ministère »"       # intitulé définitif à caler sur le rapport
 
 c.css()
+fond(["La Réunion", "Guadeloupe", "Nouvelle-Calédonie"])
 S = lire("representation_sieges.csv")
 S["libelle"] = S.territoire.map(deux_lignes)
 K = lire("representation_chiffres.csv").set_index("indicateur").valeur

@@ -9,11 +9,13 @@ import plotly.graph_objects as go
 import streamlit as st
 
 import charte as c
-from composants import (carte, entete, fr, glossaire, lire, pied, sigle, telecharger, tuile)
+from composants import (carte, deux_lignes, entete, fond, fr, glossaire, lire, pied, sigle, telecharger,
+                        tuile)
 
 RENVOI = "partie « Comment fonctionne le ministère »"       # intitulé définitif à caler sur le rapport
 
 c.css()
+fond(["Mayotte", "TAAF"])
 
 cas = lire("budget_cascade.csv")
 dpt, mission, marge = cas.haut_eur[0], cas.haut_eur[2], cas.haut_eur[4]
@@ -21,6 +23,8 @@ p_mission, p_marge = 100 * mission / dpt, 100 * marge / dpt
 contrib = lire("budget_contributeurs.csv")
 serie = lire("budget_serie.csv")
 fisc = lire("fiscal_serie.csv")
+A = lire("fonctionnement_actions.csv")
+A["libelle"] = A.action.map(lambda t: deux_lignes(t, 26))
 
 entete("Écran 4 · Le budget", "Quel pouvoir budgétaire réel a le ministère ?",
        "Ce que l'État consacre aux outre-mer, ce que le ministère en porte, et ce qu'il en décide vraiment. "
@@ -75,7 +79,54 @@ with d:
            "La moitié des dotations est une convention : elles sont en partie garanties par la loi."], "bleugris")
 pied("DPT Outre-mer 2026, p. 10 ; PAP Mission Outre-mer 2026, récapitulation par action", renvoi=RENVOI)
 
-# ───────────────────────────────────────── 2 · qui porte l'effort
+# ───────────────────────────────────────── 2 · la mission, action par action
+st.markdown("### Ses crédits, action par action")
+g, d = st.columns([1.65, 1], gap="large")
+with g:
+    choix = st.radio("Programme", ["Les deux programmes", "Emploi outre-mer (P138)", "Conditions de vie (P123)"],
+                     horizontal=True, label_visibility="collapsed")
+    S = A if choix.startswith("Les deux") else A[A.programme == ("P138" if "138" in choix else "P123")]
+    S = S.sort_values("cp_eur")
+    # comme le deck : en bleu l'engagé d'avance, en vert l'arbitré ; l'étiquette « montant · part du programme »
+    # prend la couleur de la part dominante
+    fig = go.Figure()
+    cd = S[["programme", "part_programme_pct", "action"]].values
+    c.barres(fig, S.libelle, S.contraint_eur / 1e6, c.BLEU, name="engagé d'avance", customdata=cd, width=0.66,
+             hover="<b>%{customdata[2]}</b> (%{customdata[0]})<br>engagé d'avance : %{x:,.0f} M€<extra></extra>")
+    c.barres(fig, S.libelle, S.pilotable_eur / 1e6, c.VERT, base=S.contraint_eur / 1e6, name="arbitré chaque année",
+             customdata=cd, width=0.66,
+             hover="<b>%{customdata[2]}</b> (%{customdata[0]})<br>arbitré chaque année : %{x:,.0f} M€<extra></extra>")
+    for r in S.itertuples():
+        # la plus longue barre porte son étiquette à l'intérieur : sur un téléphone, elle sortirait du cadre
+        dedans = r.cp_eur == S.cp_eur.max() and len(S) > 1
+        fig.add_annotation(y=r.libelle, x=r.cp_eur / 1e6, xanchor="right" if dedans else "left",
+                           xshift=-6 if dedans else 5, showarrow=False,
+                           text=f"<b>{fr(r.cp_eur / 1e6, 0)} M€ · {fr(r.part_programme_pct, 0)} %</b>",
+                           font=dict(size=12, color="#FFFFFF" if dedans else
+                                     (c.BLEU if r.contraint_eur > r.pilotable_eur else c.VERT)))
+    fig.update_layout(height=100 + 40 * len(S), margin=dict(r=20),
+                      xaxis=dict(title="M€ (crédits de paiement 2026)", range=[0, S.cp_eur.max() / 1e6 * 1.55],
+                                 showgrid=True, gridcolor=c.GRILLE, nticks=5),
+                      yaxis=dict(showgrid=False, tickfont=dict(size=12, color=c.MARINE)),
+                      legend=dict(orientation="h", y=1.02, yanchor="bottom"))
+    st.plotly_chart(fig, width="stretch", config=c.CONFIG)
+with d:
+    lodeom = A.set_index("code").loc["138-01"]
+    dot = A.set_index("code").loc["123-06"]
+    carte("Ce graphique montre que…",
+          [f"<b>six euros sur dix sont engagés d'avance</b> : la compensation des exonérations de charges "
+           f"({sigle('LODEOM')}, {fr(lodeom.cp_eur / 1e9, 2)} Md€, {fr(lodeom.part_programme_pct, 0)} % du "
+           f"programme emploi), qui suit la masse salariale, et la moitié des dotations aux collectivités "
+           f"({fr(dot.contraint_eur / 1e6, 0)} M€ sur {fr(dot.cp_eur / 1e6, 0)}).",
+           f"En vert, le reste — {fr(A.pilotable_eur.sum() / 1e9, 2)} Md€ : logement, aménagement, continuité "
+           f"territoriale, service militaire adapté et mobilité. C'est la seule part que le ministère arbitre d'une "
+           f"année sur l'autre."], "orange")
+    carte("À savoir", ["La dotation aux collectivités est comptée pour moitié : c'est l'hypothèse, explicite et "
+                       "auditée, de la cascade budgétaire ci-dessus."], "marine")
+pied(f"PAP Mission Outre-mer 2026, récapitulation des crédits par programme et action ({sigle('CP')})",
+     renvoi=RENVOI)
+
+# ───────────────────────────────────────── 3 · qui porte l'effort
 st.markdown("### Qui porte l'effort de l'État outre-mer ?")
 g, d = st.columns([1.65, 1], gap="large")
 with g:
@@ -123,7 +174,7 @@ with d:
 pied("DPT Outre-mer 2026, annexe « Synthèse tous crédits », p. 229-232, PLF 2026 ; 30 missions, 104 programmes",
      renvoi=RENVOI)
 
-# ───────────────────────────────────────── 3 · la trajectoire
+# ───────────────────────────────────────── 4 · la trajectoire
 st.markdown("### Depuis 2007, l'effort grossit ailleurs")
 g, d = st.columns([1.65, 1], gap="large")
 with g:
@@ -159,7 +210,7 @@ with d:
 pied("Documents de politique transversale « Outre-mer » 2007-2026 ; PLF, État B (Mission Outre-mer, CP)",
      renvoi=RENVOI)
 
-# ───────────────────────────────────────── 4 · les dépenses fiscales, à part
+# ───────────────────────────────────────── 5 · les dépenses fiscales, à part
 st.markdown("### À côté du budget : les impôts auxquels l'État renonce")
 g, d = st.columns([1.65, 1], gap="large")
 with g:
@@ -191,8 +242,11 @@ pied("Voies et Moyens, tome II (annexe au PLF), 2009-2026 ; 2020 : note d'exécu
 
 # ───────────────────────────────────────── glossaire et téléchargements
 st.markdown("##### Télécharger")
-b = st.columns(4)
+b = st.columns(3)
 telecharger(b[0], "Figure · la cascade", "cascade_budgetaire_2026.png", figure=True)
-telecharger(b[1], "Figure · qui porte l'effort", "missions_contributrices_2026.png", figure=True)
-telecharger(b[2], "Données · missions 2026", "budget_contributeurs.csv")
-telecharger(b[3], "Données · série 2007-2026", "budget_serie.csv")
+telecharger(b[1], "Figure · la mission par action", "mission_outre_mer_par_action.png", figure=True)
+telecharger(b[2], "Figure · qui porte l'effort", "missions_contributrices_2026.png", figure=True)
+b = st.columns(3)
+telecharger(b[0], "Données · les 12 actions", "fonctionnement_actions.csv")
+telecharger(b[1], "Données · missions 2026", "budget_contributeurs.csv")
+telecharger(b[2], "Données · série 2007-2026", "budget_serie.csv")

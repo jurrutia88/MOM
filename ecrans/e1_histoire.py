@@ -6,18 +6,16 @@ validée). Un jalon qui ne s'appuie pas sur un texte (loi, décret) est marqué 
 """
 from html import escape
 
-import pandas as pd
-import plotly.graph_objects as go
 import streamlit as st
 
 import charte as c
-from composants import carte, entete, fr_typo, glossaire, lire, pied, sigle, tuile
+from composants import carte, entete, fond, fr_typo, glossaire, lire, pied, sigle, tuile
 
 RENVOI = "partie « Rôle et histoire du ministère »"        # intitulé définitif à caler sur le rapport
 
 c.css()
+fond(["Guadeloupe", "Martinique", "Guyane", "La Réunion"])
 J = lire("histoire_jalons.csv")
-M = lire("ministres_mandats.csv")
 
 entete("Écran 1 · L'histoire", "D'où vient le ministère des Outre-mer ?",
        "Un héritage colonial, un statut qui oscille : de 1894 à 2025, le portefeuille change de nom, de rang et de "
@@ -79,40 +77,4 @@ with d:
            "d'histoire ou des ouvrages de référence sont signalés « source secondaire »."], "marine")
 pied("Décret du 20 mars 1894 ; loi n° 46-451 du 19 mars 1946 ; décrets n° 2008-687, n° 2013-728 et n° 2025-1018 ; "
      "base des 63 mandats (Journal officiel) ; sources secondaires signalées jalon par jalon", renvoi=RENVOI)
-
-# ───────────────────────────────────────── 2 · le statut, mandat après mandat
-st.markdown("### Un statut qui oscille, mandat après mandat")
-g, d = st.columns([1.65, 1], gap="large")
-RANGS = ["Ministre d'État", "Ministre", "Ministre délégué", "Secrétaire d'État"]
-with g:
-    fig = go.Figure()
-    for ratt, coul in (("plein exercice", c.BLEU_GRIS), ("rattaché à l'Intérieur", c.ORANGE)):
-        S = M[M.rattachement == ratt]
-        debut, fin = pd.to_datetime(S.debut), pd.to_datetime(S.fin)
-        fig.add_trace(go.Bar(
-            y=S.rang, base=debut, x=(fin - debut).dt.total_seconds() * 1000, orientation="h", name=ratt,
-            marker=dict(color=coul, line=dict(color="#FFFFFF", width=0.6)), width=0.62,
-            customdata=S[["ministre", "gouvernement", "duree_jours"]].values,
-            hovertemplate="<b>%{customdata[0]}</b><br>%{customdata[1]} · %{customdata[2]} jours<extra></extra>"))
-    fig.update_layout(height=330, barmode="overlay",
-                      xaxis=dict(type="date", range=["1958-06-01", "2027-01-01"], dtick="M120", tickformat="%Y",
-                                 showgrid=True, gridcolor=c.GRILLE),
-                      yaxis=dict(categoryorder="array", categoryarray=RANGS[::-1], showgrid=False,
-                                 tickfont=dict(size=12, color=c.MARINE)),
-                      legend=dict(orientation="h", y=1.04, yanchor="bottom"))
-    st.plotly_chart(fig, width="stretch", config=c.CONFIG)
-with d:
-    carte("Ce graphique montre que…",
-          [f"le {sigle('rang', 'rang')} du portefeuille monte et descend au gré des gouvernements : ministre d'État "
-           "sous de Gaulle, secrétaire d'État sous Valéry Giscard d'Estaing et François Mitterrand, ministre depuis "
-           "2012 — plus aucun secrétaire d'État depuis —, de nouveau ministre d'État avec Manuel Valls, neuf jours "
-           "après le cyclone Chido.",
-           "En orange, les mandats rattachés à l'Intérieur : 1976-1986, 2000-2002, 2007-2012, 2022-2024."], "orange")
-    carte("En chiffres",
-          ["Sur 63 mandats : neuf de ministre d'État, trente de ministre, sept de ministre délégué, dix-sept de "
-           "secrétaire d'État.",
-           "48 sont de plein exercice, quinze rattachés à l'Intérieur. Les deux premiers rangs siègent au Conseil des "
-           "ministres ; les deux autres passent par le ministre dont ils relèvent."], "bleu")
-pied("Journal officiel — base des 63 mandats arrêtée au 23 juin 2026. Une barre = un mandat, de la nomination "
-     "à la fin des fonctions", renvoi=RENVOI)
 

@@ -8,7 +8,7 @@ import plotly.graph_objects as go
 import streamlit as st
 
 import charte as c
-from composants import carte, entete, fr, glossaire, lire, pied, sigle, telecharger, tuile
+from composants import carte, entete, fond, fr, glossaire, lire, pied, sigle, telecharger, tuile
 
 RENVOI = "partie « Comment fonctionne le ministère »"       # intitulé définitif à caler sur le rapport
 
@@ -21,6 +21,7 @@ def deux_lignes(t, n=26):
 
 
 c.css()
+fond(["Saint-Pierre-et-Miquelon", "Wallis-et-Futuna"])
 A = lire("fonctionnement_actions.csv")
 A["libelle"] = A.action.map(deux_lignes)
 R = lire("restes_serie.csv")
@@ -31,7 +32,7 @@ rap_2025 = R.restes_a_payer_m.iloc[-1]
 
 entete("Écran 2 · Le fonctionnement", "Comment fonctionne le ministère aujourd'hui ?",
        "Une petite administration, deux programmes budgétaires, et des attributions qui tiennent à un décret.")
-glossaire(["DGOM", "P138", "P123", "LODEOM", "CP", "restes à payer"])
+glossaire(["DGOM", "P138", "P123", "CP", "restes à payer"])
 
 t = st.columns(4)
 tuile(t[0], f"≈ {K['Agents de la direction générale des outre-mer']:.0f}",
@@ -102,54 +103,7 @@ with d:
 pied("Décret n° 2025-1018 du 29 octobre 2025 relatif aux attributions du ministre des Outre-mer (Légifrance)",
      renvoi=RENVOI)
 
-# ───────────────────────────────────────── 3 · les deux programmes
-st.markdown("### Ses crédits, action par action")
-g, d = st.columns([1.65, 1], gap="large")
-with g:
-    choix = st.radio("Programme", ["Les deux programmes", "Emploi outre-mer (P138)", "Conditions de vie (P123)"],
-                     horizontal=True, label_visibility="collapsed")
-    S = A if choix.startswith("Les deux") else A[A.programme == ("P138" if "138" in choix else "P123")]
-    S = S.sort_values("cp_eur")
-    # comme le deck : en bleu l'engagé d'avance, en vert l'arbitré ; l'étiquette « montant · part du programme »
-    # prend la couleur de la part dominante
-    fig = go.Figure()
-    cd = S[["programme", "part_programme_pct", "action"]].values
-    c.barres(fig, S.libelle, S.contraint_eur / 1e6, c.BLEU, name="engagé d'avance", customdata=cd, width=0.66,
-             hover="<b>%{customdata[2]}</b> (%{customdata[0]})<br>engagé d'avance : %{x:,.0f} M€<extra></extra>")
-    c.barres(fig, S.libelle, S.pilotable_eur / 1e6, c.VERT, base=S.contraint_eur / 1e6, name="arbitré chaque année",
-             customdata=cd, width=0.66,
-             hover="<b>%{customdata[2]}</b> (%{customdata[0]})<br>arbitré chaque année : %{x:,.0f} M€<extra></extra>")
-    for r in S.itertuples():
-        # la plus longue barre porte son étiquette à l'intérieur : sur un téléphone, elle sortirait du cadre
-        dedans = r.cp_eur == S.cp_eur.max() and len(S) > 1
-        fig.add_annotation(y=r.libelle, x=r.cp_eur / 1e6, xanchor="right" if dedans else "left",
-                           xshift=-6 if dedans else 5, showarrow=False,
-                           text=f"<b>{fr(r.cp_eur / 1e6, 0)} M€ · {fr(r.part_programme_pct, 0)} %</b>",
-                           font=dict(size=12, color="#FFFFFF" if dedans else
-                                     (c.BLEU if r.contraint_eur > r.pilotable_eur else c.VERT)))
-    fig.update_layout(height=100 + 40 * len(S), margin=dict(r=20),
-                      xaxis=dict(title="M€ (crédits de paiement 2026)", range=[0, S.cp_eur.max() / 1e6 * 1.55],
-                                 showgrid=True, gridcolor=c.GRILLE, nticks=5),
-                      yaxis=dict(showgrid=False, tickfont=dict(size=12, color=c.MARINE)),
-                      legend=dict(orientation="h", y=1.02, yanchor="bottom"))
-    st.plotly_chart(fig, width="stretch", config=c.CONFIG)
-with d:
-    lodeom = A.set_index("code").loc["138-01"]
-    dot = A.set_index("code").loc["123-06"]
-    carte("Ce graphique montre que…",
-          [f"<b>six euros sur dix sont engagés d'avance</b> : la compensation des exonérations de charges "
-           f"({sigle('LODEOM')}, {fr(lodeom.cp_eur / 1e9, 2)} Md€, {fr(lodeom.part_programme_pct, 0)} % du "
-           f"programme emploi), qui suit la masse salariale, et la moitié des dotations aux collectivités "
-           f"({fr(dot.contraint_eur / 1e6, 0)} M€ sur {fr(dot.cp_eur / 1e6, 0)}).",
-           f"En vert, le reste — {fr(A.pilotable_eur.sum() / 1e9, 2)} Md€ : logement, aménagement, continuité "
-           f"territoriale, service militaire adapté et mobilité. C'est la seule part que le ministère arbitre d'une "
-           f"année sur l'autre."], "orange")
-    carte("À savoir", ["La dotation aux collectivités est comptée pour moitié : c'est l'hypothèse, explicite et "
-                       "auditée, de la cascade budgétaire de l'écran 4."], "marine")
-pied(f"PAP Mission Outre-mer 2026, récapitulation des crédits par programme et action ({sigle('CP')})",
-     renvoi=RENVOI)
-
-# ───────────────────────────────────────── 4 · les restes à payer
+# ───────────────────────────────────────── 3 · les restes à payer
 st.markdown("### Voté n'est pas dépensé")
 g, d = st.columns([1.65, 1], gap="large")
 with g:
@@ -198,7 +152,6 @@ pied("Cour des comptes, notes d'exécution budgétaire de la mission Outre-mer 2
      "2016 et 2022 : montant non publié", renvoi=RENVOI)
 
 st.markdown("##### Télécharger")
-b = st.columns(3)
-telecharger(b[0], "Figure · la mission par action", "mission_outre_mer_par_action.png", figure=True)
-telecharger(b[1], "Figure · les restes à payer", "restes_a_payer.png", figure=True)
-telecharger(b[2], "Données · les 12 actions", "fonctionnement_actions.csv")
+b = st.columns(2)
+telecharger(b[0], "Figure · les restes à payer", "restes_a_payer.png", figure=True)
+telecharger(b[1], "Données · restes à payer 2013-2025", "restes_serie.csv")

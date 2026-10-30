@@ -9,11 +9,12 @@ from html import escape
 import streamlit as st
 
 import charte as c
-from composants import carte, entete, fr_typo, glossaire, lire, pied, sigle, tuile
+from composants import carte, entete, fond, fr_typo, glossaire, lire, pied, sigle, tuile
 
 RENVOI = "partie « Comment fonctionne le ministère »"       # intitulé définitif à caler sur le rapport
 
 c.css()
+fond(["Nouvelle-Calédonie", "Polynésie française", "Clipperton"])
 S = lire("statuts.csv")
 
 entete("Écran 5 · Les statuts", "Pourquoi les 13 outre-mer n'ont-ils pas tous le même statut ?",

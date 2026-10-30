@@ -13,11 +13,12 @@ from plotly.subplots import make_subplots
 import streamlit as st
 
 import charte as c
-from composants import carte, entete, fr, glossaire, lire, pied, telecharger, tuile
+from composants import carte, entete, fond, fr, glossaire, lire, pied, telecharger, tuile
 
 RENVOI = "partie IV « Des droits aux réalités »"            # intitulé de travail de la Partie IV du rapport
 
 c.css()
+fond(["Mayotte", "Guyane"])
 I = lire("territoires_indicateurs.csv")
 I = I[I.num != 14]
 E = lire("territoires_pib_effort.csv")

@@ -12,12 +12,13 @@ import plotly.graph_objects as go
 import streamlit as st
 
 import charte as c
-from composants import carte, entete, fr, glossaire, lire, pied, sigle, telecharger, tuile
+from composants import carte, entete, fond, fr, glossaire, lire, pied, sigle, telecharger, tuile
 
 RENVOI = "partie « Rôle et histoire du ministère »"        # intitulé définitif à caler sur le rapport
 SOURCE = "Journal officiel — base des 63 mandats arrêtée au 23 juin 2026"
 
 c.css()
+fond(["Saint-Martin", "Saint-Barthélemy", "Martinique"])
 M = lire("ministres_mandats.csv")
 P = lire("ministres_presidents.csv")
 PRES = list(P.president)
@@ -31,8 +32,8 @@ courts = int((M.duree_jours < 183).sum())
 nes = M[M.ancrage == "né outre-mer"]
 
 entete("Écran 3 · Les ministres", "Qui a dirigé le ministère des Outre-mer ?",
-       f"{pers} personnes et {n} mandats depuis 1959. Combien de temps elles restent, et qui elles sont.")
-glossaire(["mandat", "rang", "ancrage"])
+       f"{pers} personnes et {n} mandats depuis 1959. À quel rang, combien de temps elles restent, et qui elles sont.")
+glossaire(["mandat", "rang", "rattaché à l'Intérieur", "ancrage"])
 
 t = st.columns(4)
 tuile(t[0], f"{pers}", f"ministres depuis 1959, pour <b>{n} mandats</b> : une même personne peut être nommée "
@@ -76,13 +77,46 @@ with d:
            f"présidence — le rythme le plus rapide de la Ve République.",
            f"La durée moyenne tombe à {mac.duree_moyenne_j} jours, contre 634 sous Valéry Giscard d'Estaing."],
           "orange")
-    carte("Le rang et le rattachement",
-          [f"Le {sigle('rang')} du portefeuille et son rattachement à l'Intérieur changent eux aussi d'un "
-           f"gouvernement à l'autre : c'est l'objet de l'écran 1, « L'histoire »."], "bleu")
 pied(SOURCE + ". Un mandat = une nomination dans un gouvernement ; 2022-2024 : deux titulaires simultanés",
      renvoi=RENVOI)
 
-# ───────────────────────────────────────── 2 · qui occupe le poste
+# ───────────────────────────────────────── 2 · le rang et le rattachement, mandat après mandat
+st.markdown("### Un statut qui oscille, mandat après mandat")
+g, d = st.columns([1.65, 1], gap="large")
+RANGS = ["Ministre d'État", "Ministre", "Ministre délégué", "Secrétaire d'État"]
+with g:
+    fig = go.Figure()
+    for ratt, coul in (("plein exercice", c.BLEU_GRIS), ("rattaché à l'Intérieur", c.ORANGE)):
+        S = M[M.rattachement == ratt]
+        debut, fin = pd.to_datetime(S.debut), pd.to_datetime(S.fin)
+        fig.add_trace(go.Bar(
+            y=S.rang, base=debut, x=(fin - debut).dt.total_seconds() * 1000, orientation="h", name=ratt,
+            marker=dict(color=coul, line=dict(color="#FFFFFF", width=0.6)), width=0.62,
+            customdata=S[["ministre", "gouvernement", "duree_jours"]].values,
+            hovertemplate="<b>%{customdata[0]}</b><br>%{customdata[1]} · %{customdata[2]} jours<extra></extra>"))
+    fig.update_layout(height=330, barmode="overlay",
+                      xaxis=dict(type="date", range=["1958-06-01", "2027-01-01"], dtick="M120", tickformat="%Y",
+                                 showgrid=True, gridcolor=c.GRILLE),
+                      yaxis=dict(categoryorder="array", categoryarray=RANGS[::-1], showgrid=False,
+                                 tickfont=dict(size=12, color=c.MARINE)),
+                      legend=dict(orientation="h", y=1.04, yanchor="bottom"))
+    st.plotly_chart(fig, width="stretch", config=c.CONFIG)
+with d:
+    carte("Ce graphique montre que…",
+          [f"le {sigle('rang', 'rang')} du portefeuille monte et descend au gré des gouvernements : ministre d'État "
+           "sous de Gaulle, secrétaire d'État sous Valéry Giscard d'Estaing et François Mitterrand, ministre depuis "
+           "2012 — plus aucun secrétaire d'État depuis —, de nouveau ministre d'État avec Manuel Valls, neuf jours "
+           "après le cyclone Chido.",
+           "En orange, les mandats rattachés à l'Intérieur : 1976-1986, 2000-2002, 2007-2012, 2022-2024."], "orange")
+    carte("En chiffres",
+          ["Sur 63 mandats : neuf de ministre d'État, trente de ministre, sept de ministre délégué, dix-sept de "
+           "secrétaire d'État.",
+           "48 sont de plein exercice, quinze rattachés à l'Intérieur. Les deux premiers rangs siègent au Conseil des "
+           "ministres ; les deux autres passent par le ministre dont ils relèvent."], "bleu")
+pied("Journal officiel — base des 63 mandats arrêtée au 23 juin 2026. Une barre = un mandat, de la nomination "
+     "à la fin des fonctions", renvoi=RENVOI)
+
+# ───────────────────────────────────────── 3 · qui occupe le poste
 st.markdown("### Qui occupe le poste ?")
 g, d = st.columns([1.65, 1], gap="large")
 ANCRAGE = {"né outre-mer": c.ORANGE, "autre forme": "#A08F76", "aucun": c.FILET}
@@ -148,7 +182,7 @@ with g:
 pied(SOURCE + " ; grille d'ancrage ultramarin du CLSE, v4 (naissance, ascendance, résidence, activité, mandat, "
      "engagement)", renvoi=RENVOI)
 
-# ───────────────────────────────────────── 3 · retrouver un ministre
+# ───────────────────────────────────────── 4 · retrouver un ministre
 st.markdown("### Retrouver un ministre")
 choix = st.selectbox("Présidence", ["Toutes les présidences"] + PRES, label_visibility="collapsed")
 T = M if choix.startswith("Toutes") else M[M.president == choix]

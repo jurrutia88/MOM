@@ -153,6 +153,63 @@ def glossaire(termes):
             st.markdown(f"**{t}** — {fr_typo(GLOSSAIRE[t])}")
 
 
+# Le fond de l'application : les vrais contours des treize territoires (Natural Earth), chacun dans son propre cadre,
+# rangés par océan — Atlantique à gauche, océan Indien au centre, Pacifique à droite. (x, y, taille) dans un cadre
+# de 1200 × 800. Chaque écran en met quelques-uns en avant (José, 30 octobre).
+CONSTELLATION = {
+    "Saint-Pierre-et-Miquelon": (70, 40, 105), "Saint-Martin": (250, 95, 70), "Saint-Barthélemy": (345, 140, 55),
+    "Guadeloupe": (95, 225, 150), "Martinique": (290, 280, 110), "Guyane": (120, 470, 190),
+    "Mayotte": (555, 95, 105), "La Réunion": (500, 300, 150), "TAAF": (585, 530, 175),
+    "Clipperton": (860, 60, 55), "Polynésie française": (985, 150, 175), "Wallis-et-Futuna": (820, 360, 110),
+    "Nouvelle-Calédonie": (900, 545, 225),
+}
+
+
+@st.cache_data(show_spinner=False)
+def _svg_fond(en_avant):
+    from urllib.parse import quote
+    from charte import BLEU_GRIS, VERT, teinte
+    K = lire("territoires_contours.csv")
+    formes, noms = [], []
+    for t, (x0, y0, s) in CONSTELLATION.items():
+        T = K[K.territoire == t]
+        fort = t in en_avant
+        trait = VERT if fort else BLEU_GRIS
+        style = (f'fill="{teinte(VERT, 0.18)}" stroke="{trait}" stroke-opacity="0.75" stroke-width="1.6"' if fort else
+                 f'fill="{teinte(BLEU_GRIS, 0.06)}" stroke="{trait}" stroke-opacity="{0.5 if not en_avant else 0.32}" '
+                 f'stroke-width="1.1"')
+        for _, P in T.groupby("partie"):
+            pts = " ".join(f"{x0 + x * s:.1f},{y0 + y * s:.1f}" for x, y in zip(P.x, P.y))
+            formes.append(f'<polygon points="{pts}" {style}/>')
+        op = 0.9 if fort else (0.55 if not en_avant else 0.35)
+        noms.append(f'<text x="{x0 + T.x.max() * s / 2:.0f}" y="{y0 + T.y.max() * s + 16:.0f}" fill="{trait}" '
+                    f'fill-opacity="{op}" font-weight="{700 if fort else 400}">{t.upper()}</text>')
+    svg = ('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800"><g stroke-linejoin="round">' +
+           "".join(formes) + '</g><g font-family="Lato, sans-serif" font-size="9.5" letter-spacing="1.4" '
+           'text-anchor="middle">' + "".join(noms) + "</g></svg>")
+    # sur un écran étroit, le fond est recadré : on le centre sur les territoires mis en avant
+    if en_avant:
+        cx = sum(CONSTELLATION[t][0] + CONSTELLATION[t][2] / 2 for t in en_avant) / len(en_avant) / 1200
+        cy = sum(CONSTELLATION[t][1] + CONSTELLATION[t][2] / 2 for t in en_avant) / len(en_avant) / 800
+    else:
+        cx = cy = 0.5
+    return "data:image/svg+xml;utf8," + quote(svg), round(100 * cx), round(100 * cy)
+
+
+def fond(en_avant=(), voile=0.70):
+    """Le fond de l'écran : dégradé clair et contours des territoires, `en_avant` soulignés en vert."""
+    url, px, py = _svg_fond(tuple(en_avant))
+    st.markdown(f"""<style>
+    .stApp {{ background: url("{url}") {px}% {py}% / cover no-repeat fixed,
+                          linear-gradient(165deg, #FFFFFF 0%, #F7F3EC 55%, #EEF2F3 100%) fixed; }}
+    [data-testid="stHeader"] {{ background: transparent; }}
+    /* un voile blanc sous le contenu : les territoires restent visibles autour, le texte reste lisible */
+    .block-container {{ background: rgba(255,255,255,{voile}); backdrop-filter: blur(1.5px);
+                        padding-left: 2rem; padding-right: 2rem; }}
+    @media (max-width: 640px) {{ .block-container {{ padding-left: 1rem; padding-right: 1rem; }} }}
+    </style>""", unsafe_allow_html=True)
+
+
 @st.cache_data(show_spinner=False)
 def lire(nom):
     return pd.read_csv(os.path.join(DONNEES, nom), sep=";", decimal=",", encoding="utf-8-sig")
