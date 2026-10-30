@@ -265,16 +265,18 @@ st.markdown("### À côté du budget : les impôts auxquels l'État renonce")
 g, d = st.columns([1.65, 1], gap="large")
 with g:
     fig = go.Figure()
-    fig.add_trace(go.Bar(x=fisc.annee, y=fisc.fiscal_m / 1000, name="Dépenses fiscales outre-mer",
-                         marker=dict(color=c.BLEU, line=dict(width=0)),
-                         hovertemplate="%{x} : %{y:.2f} Md€<extra>Dépenses fiscales</extra>"))
+    pic_an = fisc.loc[fisc.fiscal_m.idxmax(), "annee"]
+    c.barres(fig, fisc.annee, fisc.fiscal_m / 1000, [c.ORANGE if a == pic_an else c.BLEU for a in fisc.annee],
+             orientation="v", width=0.7, name="Dépenses fiscales outre-mer",
+             hover="%{x} : %{y:.2f} Md€<extra>Dépenses fiscales</extra>")
     fig.add_trace(go.Scatter(x=fisc.annee, y=fisc.mission_m / 1000, name="Mission Outre-mer (pour comparaison)",
-                             mode="lines", line=dict(color=c.VERT, width=3, dash="dot"),
+                             mode="lines", line=dict(color=c.VERT, width=4),
                              hovertemplate="%{x} : %{y:.2f} Md€<extra>Mission Outre-mer</extra>"))
     pic = fisc.loc[fisc.fiscal_m.idxmax()]
     fig.add_annotation(x=pic.annee, y=pic.fiscal_m / 1000, text=f"<b>{fr(pic.fiscal_m / 1000, 2)} Md€</b>",
-                       yshift=14, showarrow=False, font=dict(color=c.BLEU, size=14))
-    fig.update_layout(height=360, yaxis=dict(title="Md€", range=[0, 8]), xaxis=dict(dtick=2), bargap=0.25)
+                       yshift=14, showarrow=False, font=dict(color=c.ORANGE, size=14))
+    fig.update_layout(height=360, yaxis=dict(title="Md€", range=[0, 8], showgrid=True, gridcolor=c.GRILLE),
+                      xaxis=dict(dtick=2, showgrid=False), legend=dict(orientation="h", y=1.02, yanchor="bottom"))
     st.plotly_chart(fig, width="stretch", config=c.CONFIG)
 with d:
     fin = fisc.iloc[-1]

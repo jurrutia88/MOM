@@ -5,7 +5,6 @@ Textes repris du deck du diagnostic (23 septembre 2026), diapositives « Les min
 « Qui occupe le poste », validés par José. Règle d'ancrage du 17 septembre 2026 : seul compte
 l'ancrage antérieur à la nomination ; « autre forme » jamais confondue avec la naissance.
 """
-from html import escape
 
 import pandas as pd
 import plotly.graph_objects as go
@@ -86,14 +85,15 @@ g, d = st.columns([1.65, 1], gap="large")
 RANGS = ["Ministre d'État", "Ministre", "Ministre délégué", "Secrétaire d'État"]
 with g:
     fig = go.Figure()
+    # un axe de dates lit les nombres en millisecondes : chaque mandat est une barre en dégradé, de sa nomination
+    # à sa fin, qui commence claire et finit pleine
     for ratt, coul in (("plein exercice", c.BLEU_GRIS), ("rattaché à l'Intérieur", c.ORANGE)):
         S = M[M.rattachement == ratt]
         debut, fin = pd.to_datetime(S.debut), pd.to_datetime(S.fin)
-        fig.add_trace(go.Bar(
-            y=S.rang, base=debut, x=(fin - debut).dt.total_seconds() * 1000, orientation="h", name=ratt,
-            marker=dict(color=coul, line=dict(color="#FFFFFF", width=0.6)), width=0.62,
-            customdata=S[["ministre", "gouvernement", "duree_jours"]].values,
-            hovertemplate="<b>%{customdata[0]}</b><br>%{customdata[1]} · %{customdata[2]} jours<extra></extra>"))
+        ms = lambda d: (d - pd.Timestamp("1970-01-01")).dt.total_seconds() * 1000
+        c.barres(fig, S.rang, ms(fin) - ms(debut), coul, base=ms(debut), width=0.62, name=ratt, n=10,
+                 customdata=S[["ministre", "gouvernement", "duree_jours"]].values,
+                 hover="<b>%{customdata[0]}</b><br>%{customdata[1]} · %{customdata[2]} jours<extra></extra>")
     fig.update_layout(height=330, barmode="overlay",
                       xaxis=dict(type="date", range=["1958-06-01", "2027-01-01"], dtick="M120", tickformat="%Y",
                                  showgrid=True, gridcolor=c.GRILLE),
@@ -118,67 +118,67 @@ pied("Journal officiel — base des 63 mandats arrêtée au 23 juin 2026. Une ba
 
 # ───────────────────────────────────────── 3 · qui occupe le poste
 st.markdown("### Qui occupe le poste ?")
-g, d = st.columns([1.65, 1], gap="large")
-ANCRAGE = {"né outre-mer": c.ORANGE, "autre forme": "#A08F76", "aucun": c.FILET}
+# toute la largeur : les noms prennent de la place ; les cartes passent dessous
+g = st.container()
+cs = st.columns(3, gap="medium")
+ANCRAGE = {"né outre-mer": c.ORANGE, "autre forme": c.BRUN, "aucun": "#93A1AC"}
 with g:
-    # une ligne par président, une étiquette par mandat dans l'ordre chronologique : le nom et les années
+    # une ligne par personne, dans l'ordre de sa première nomination ; une barre par mandat, couleur de l'ancrage.
+    # Un mandat de quelques jours resterait invisible : la barre dure au moins quatre mois, le survol dit la durée.
     M = M.sort_values("debut")
     der = M.debut.max()
-
-    def annees(r):
-        a, b = r.debut[:4], r.fin[:4]
-        if r.debut == der:                       # la ministre en fonction à la date d'arrêt de la base
-            return f"depuis {a}"
-        return a if a == b else f"{a}-{b}"
-
-    def puce(r):
-        col = ANCRAGE[r.ancrage]
-        femme = f'<span class="f" style="color:{c.MARINE}">●</span>' if r.sexe == "F" else ""
-        info = escape(f"{r.fonction} · gouvernement {r.gouvernement} · {r.duree_jours} jours")
-        return (f'<span class="puce" title="{info}" style="background:{c.teinte(col, 0.16)};'
-                f'border-left:4px solid {col}">{femme}{escape(r.ministre)} <i>({annees(r)})</i></span>')
-
-    legende = " ".join(f'<span class="puce" style="background:{c.teinte(k, 0.16)};border-left:4px solid {k}">'
-                       f'{"aucun ancrage" if a == "aucun" else a}</span>' for a, k in ANCRAGE.items())
-    lignes = "".join(
-        f'<div class="poste"><div class="pres">{p}<span>{a}–{"" if pd.isna(b) else int(b)}</span></div>'
-        f'<div>{"".join(puce(r) for r in M[M.president == p].itertuples())}</div></div>'
-        for p, a, b in zip(P.president, P.debut, P.fin))
-    st.markdown(f"""<style>
-        .postes .puce {{ display:inline-block; font-size:.84rem; line-height:1.3; padding:3px 8px; margin:0 5px 5px 0;
-                         color:{c.MARINE}; cursor:help; }}
-        .postes .puce i {{ color:{c.GRIS}; font-style:normal; white-space:nowrap; }}
-        .postes .puce .f {{ font-size:.7rem; margin-right:4px; vertical-align:1px; }}
-        .postes .poste {{ display:grid; grid-template-columns:118px 1fr; gap:10px; padding:7px 0;
-                          border-top:1px solid {c.GRILLE}; }}
-        .postes .pres {{ font-weight:700; font-size:.9rem; color:{c.MARINE}; }}
-        .postes .pres span {{ display:block; font-weight:400; font-size:.78rem; color:{c.GRIS}; }}
-        .postes .leg {{ margin-bottom:6px; font-size:.8rem; color:{c.GRIS}; }}
-        @media (max-width:640px) {{ .postes .poste {{ grid-template-columns:1fr; gap:4px; }} }}
-        </style>""", unsafe_allow_html=True)
-    # sans retour à la ligne : une ligne indentée deviendrait un bloc de code pour le Markdown
-    st.markdown(f'<div class="postes"><div class="leg">{legende} <span class="puce" style="background:#fff">'
-                f'<span class="f" style="color:{c.MARINE}">●</span>une femme</span></div>{lignes}</div>',
-                unsafe_allow_html=True)
-with d:
-    carte("Ce graphique montre que…",
-          ["aucune femme et aucun ministre lié à l'outre-mer avant 2002. Les quatre ministres nés outre-mer se "
-           "succèdent tous entre 2009 et 2017, sous des majorités de droite puis de gauche ; depuis, plus aucun.",
-           "Les femmes restent présentes, mais leur part recule : 67 % des mandats sous François Hollande, 38 % "
-           "depuis."], "orange")
-    carte("Ce que ces dates suivent",
-          ["<b>2002</b> — la première femme, Brigitte Girardin, arrive deux ans après la loi sur la parité, un an "
-           "après la loi Taubira et la loi du 16 novembre 2001 contre les discriminations.",
-           "<b>2009</b> — la première ministre née outre-mer, Marie-Luce Penchard, est nommée un mois après le "
-           "décret du 27 mai 2009 qui clôt la grève générale de Guadeloupe, cinquante ans après la création du "
-           "portefeuille.",
-           "<b>2017</b> — la parenthèse se ferme trois semaines après l'accord qui clôt le conflit guyanais.",
-           "La coïncidence est de date, non de cause."], "bleugris")
-with g:
-    carte("Qui, et de quel ancrage",
-          ["<b>Nés outre-mer</b> : Marie-Luce Penchard, Victorin Lurel, George Pau-Langevin, Ericka Bareigts.",
-           f"<b>Autre forme d'{sigle('ancrage')}</b> : Brigitte Girardin, Annick Girardin, Jean-François Carenco — "
-           "activité, enfance ou fonctions outre-mer antérieures à la nomination."], "bleu")
+    ms = lambda d: (pd.to_datetime(d) - pd.Timestamp("1970-01-01")).dt.total_seconds() * 1000
+    pers = list(dict.fromkeys(M.ministre))
+    lab = {}
+    for p in pers:
+        X = M[M.ministre == p]
+        a_, b_ = X.debut.min()[:4], X.fin.max()[:4]
+        an = f"depuis {a_}" if X.debut.max() == der else (a_ if a_ == b_ else f"{a_}-{b_[2:]}")
+        nom = f"<b>{p}</b>" if X.sexe.iloc[0] == "F" else p
+        lab[p] = f"{nom}  <span style='color:{c.GRIS}'>{an}</span>"
+    M["etiquette"] = M.ministre.map(lab)
+    fig = go.Figure()
+    for i, (p_, a_, b_) in enumerate(zip(P.president, P.debut, P.fin)):
+        fin_ = f"{int(b_)}-05-15" if pd.notna(b_) else "2026-07-01"
+        if i % 2 == 0:
+            fig.add_vrect(x0=f"{a_}-05-15" if a_ > 1959 else "1959-01-08", x1=fin_, fillcolor=c.GRILLE,
+                          opacity=0.55, line_width=0, layer="below")
+        fig.add_annotation(x=f"{a_}-05-15" if a_ > 1959 else "1959-01-08", y=1.0, yref="paper", yanchor="bottom",
+                           xanchor="left", textangle=-90, showarrow=False,
+                           text=p_.replace(" d'Estaing", ""), font=dict(size=9, color=c.GRIS))
+    for anc, coul in ANCRAGE.items():
+        S = M[M.ancrage == anc]
+        duree = (ms(S.fin) - ms(S.debut)).clip(lower=120 * 86400 * 1000)
+        c.barres(fig, S.etiquette, duree, coul, base=ms(S.debut), width=0.68, n=8,
+                 name="aucun ancrage" if anc == "aucun" else anc,
+                 customdata=S[["ministre", "fonction", "duree_jours"]].values,
+                 hover="<b>%{customdata[0]}</b><br>%{customdata[1]}<br>%{customdata[2]} jours<extra></extra>")
+    fig.update_layout(height=150 + 19 * len(pers), margin=dict(t=78, r=10),
+                      legend=dict(orientation="h", y=-0.03, yanchor="top", x=0),
+                      xaxis=dict(type="date", range=["1958-09-01", "2026-12-31"], dtick="M120", tickformat="%Y",
+                                 showgrid=False, side="bottom"),
+                      yaxis=dict(categoryorder="array", categoryarray=[lab[p] for p in pers][::-1], showgrid=False,
+                                 tickfont=dict(size=11, color=c.MARINE)))
+    st.plotly_chart(fig, width="stretch", config=c.CONFIG)
+    st.caption("En gras : une femme. Bandes : les présidences. Une barre par mandat ; un mandat de moins de quatre "
+               "mois est allongé pour rester visible.")
+carte("Ce graphique montre que…",
+      ["aucune femme et aucun ministre lié à l'outre-mer avant 2002. Les quatre ministres nés outre-mer se "
+       "succèdent tous entre 2009 et 2017, sous des majorités de droite puis de gauche ; depuis, plus aucun.",
+       "Les femmes restent présentes, mais leur part recule : 67 % des mandats sous François Hollande, 38 % "
+       "depuis."], "orange", cs[0])
+carte("Ce que ces dates suivent",
+      ["<b>2002</b> — la première femme, Brigitte Girardin, arrive deux ans après la loi sur la parité, un an "
+       "après la loi Taubira et la loi du 16 novembre 2001 contre les discriminations.",
+       "<b>2009</b> — la première ministre née outre-mer, Marie-Luce Penchard, est nommée un mois après le "
+       "décret du 27 mai 2009 qui clôt la grève générale de Guadeloupe, cinquante ans après la création du "
+       "portefeuille.",
+       "<b>2017</b> — la parenthèse se ferme trois semaines après l'accord qui clôt le conflit guyanais.",
+       "La coïncidence est de date, non de cause."], "bleugris", cs[1])
+carte("Qui, et de quel ancrage",
+      ["<b>Nés outre-mer</b> : Marie-Luce Penchard, Victorin Lurel, George Pau-Langevin, Ericka Bareigts.",
+       f"<b>Autre forme d'{sigle('ancrage')}</b> : Brigitte Girardin, Annick Girardin, Jean-François Carenco — "
+       "activité, enfance ou fonctions outre-mer antérieures à la nomination."], "bleu", cs[2])
 pied(SOURCE + " ; grille d'ancrage ultramarin du CLSE, v4 (naissance, ascendance, résidence, activité, mandat, "
      "engagement)", renvoi=RENVOI)
 
