@@ -92,6 +92,57 @@ def css():
     """, unsafe_allow_html=True)
 
 
+def _melange(c1, c2, t):
+    a = [int(c1[i:i + 2], 16) for i in (1, 3, 5)]
+    b = [int(c2[i:i + 2], 16) for i in (1, 3, 5)]
+    return "#%02X%02X%02X" % tuple(int(round(x + (y - x) * t)) for x, y in zip(a, b))
+
+
+def barres(fig, cat, val, couleur, base=None, orientation="h", n=14, width=None, text=None, textcolor=None,
+           textsize=12, hover=None, customdata=None, name=None, legendgroup=None):
+    """Des barres en dégradé, comme les figures du deck : l'éclairci de la couleur à la base, la couleur pleine au
+    bout. Plotly ne sait pas remplir une barre d'un dégradé ; chaque barre est donc découpée en `n` tranches de
+    teintes successives. Une barre transparente par-dessus porte l'étiquette et le survol.
+    `couleur` : une couleur, ou une par barre. `base` : où commence chaque barre (barres empilées)."""
+    cat, val = list(cat), [0 if v is None else float(v) for v in val]
+    cols = couleur if isinstance(couleur, (list, tuple)) else [couleur] * len(val)
+    base = [0.0] * len(val) if base is None else [float(b) for b in base]
+    h = orientation == "h"
+    lg = legendgroup or name
+    # les tranches se recouvrent : chacune part de la base, de la plus longue à la plus courte, pour qu'aucun
+    # liseré n'apparaisse entre deux teintes
+    for k in range(n - 1, -1, -1):
+        # horizontales : clair à gauche, plein au bout ; verticales : plein en bas, clair en haut (comme le deck)
+        t = k / (n - 1) if h else 1 - k / (n - 1)
+        teintes = [_melange(CLAIR.get(col) or teinte(col, 0.35), col, t) for col in cols]
+        tr = dict(orientation=orientation, width=width, marker=dict(color=teintes, line=dict(width=0)),
+                  hoverinfo="skip", showlegend=False, legendgroup=lg, base=base)
+        long_ = [v * (k + 1) / n for v in val]
+        if h:
+            fig.add_trace(go.Bar(y=cat, x=long_, **tr))
+        else:
+            fig.add_trace(go.Bar(x=cat, y=long_, **tr))
+    porteur = dict(orientation=orientation, width=width, base=base, name=name or "", legendgroup=lg,
+                   marker=dict(color="rgba(0,0,0,0)", line=dict(width=0)), showlegend=False,
+                   customdata=customdata)
+    if text is not None:
+        porteur.update(text=list(text), textposition="outside", cliponaxis=False, constraintext="none",
+                       textfont=dict(size=textsize, color=textcolor or cols))
+    if hover:
+        porteur["hovertemplate"] = hover
+    else:
+        porteur["hoverinfo"] = "skip"
+    if h:
+        fig.add_trace(go.Bar(y=cat, x=val, **porteur))
+    else:
+        fig.add_trace(go.Bar(x=cat, y=val, **porteur))
+    if name:                                   # la pastille de légende, pleine
+        fig.add_trace(go.Bar(x=[None], y=[None], name=name, legendgroup=lg, showlegend=True,
+                             marker=dict(color=cols[0], line=dict(width=0))))
+    fig.update_layout(barmode="overlay")
+    return fig
+
+
 # ───────────────────────────────────────────── Plotly : le gabarit des figures
 pio.templates["clse"] = go.layout.Template(layout=go.Layout(
     font=dict(family="Lato, sans-serif", color=MARINE, size=14),

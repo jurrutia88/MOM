@@ -19,6 +19,7 @@ S = lire("statuts.csv")
 entete("Écran 5 · Les statuts", "Pourquoi les 13 outre-mer n'ont-ils pas tous le même statut ?",
        "Trois régimes constitutionnels, deux statuts particuliers, deux régimes européens : un même ministère pour "
        "des territoires que le droit ne traite pas de la même façon.")
+glossaire(["DROM", "COM", "article 73", "article 74", "habilitation", "sui generis", "RUP", "PTOM"])
 
 t = st.columns(4)
 tuile(t[0], "13", f"territoires, dont {int((S.habite == 'oui').sum())} habités — les TAAF et Clipperton n'ont pas "
@@ -124,4 +125,3 @@ with d:
 pied("Fiche variable V5, v4 (2026) ; rapport du Sénat n° 713 (2020) ; projet de loi d'habilitation pour la "
      "Martinique, adopté par le Sénat le 31 mars 2024", renvoi=RENVOI)
 
-glossaire(["DROM", "COM", "article 73", "article 74", "habilitation", "sui generis", "RUP", "PTOM"])

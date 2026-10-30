@@ -15,7 +15,7 @@ RENVOI = "partie « Comment fonctionne le ministère »"       # intitulé défi
 import textwrap
 
 
-def deux_lignes(t, n=20):
+def deux_lignes(t, n=26):
     """Un libellé d'axe sur deux lignes au plus : les noms d'actions débordent sur un téléphone."""
     return "<br>".join(textwrap.wrap(t, n)[:2]) if len(t) > n else t
 
@@ -31,6 +31,7 @@ rap_2025 = R.restes_a_payer_m.iloc[-1]
 
 entete("Écran 2 · Le fonctionnement", "Comment fonctionne le ministère aujourd'hui ?",
        "Une petite administration, deux programmes budgétaires, et des attributions qui tiennent à un décret.")
+glossaire(["DGOM", "P138", "P123", "LODEOM", "CP", "restes à payer"])
 
 t = st.columns(4)
 tuile(t[0], f"≈ {K['Agents de la direction générale des outre-mer']:.0f}",
@@ -109,20 +110,26 @@ with g:
                      horizontal=True, label_visibility="collapsed")
     S = A if choix.startswith("Les deux") else A[A.programme == ("P138" if "138" in choix else "P123")]
     S = S.sort_values("cp_eur")
+    # comme le deck : en bleu l'engagé d'avance, en vert l'arbitré ; l'étiquette « montant · part du programme »
+    # prend la couleur de la part dominante
     fig = go.Figure()
-    for col, nom, coul in (("contraint_eur", "engagé d'avance", c.BLEU), ("pilotable_eur", "arbitré chaque année",
-                                                                          c.VERT)):
-        fig.add_trace(go.Bar(y=S.libelle, x=S[col] / 1e6, name=nom, orientation="h",
-                             marker=dict(color=coul, line=dict(width=0)),
-                             customdata=S[["programme", "part_programme_pct", "action"]].values,
-                             hovertemplate="<b>%{customdata[2]}</b> (%{customdata[0]})<br>" + nom +
-                                           " : %{x:,.0f} M€<extra></extra>"))
-    fig.add_trace(go.Scatter(y=S.libelle, x=S.cp_eur / 1e6, mode="text", showlegend=False, hoverinfo="skip",
-                             text=[f"  {fr(v / 1e6, 0)} M€" for v in S.cp_eur], textposition="middle right",
-                             textfont=dict(size=12, color=c.MARINE), cliponaxis=False))
-    fig.update_layout(barmode="stack", height=100 + 40 * len(S), margin=dict(r=70),
-                      xaxis=dict(title="M€ (crédits de paiement 2026)", range=[0, S.cp_eur.max() / 1e6 * 1.3],
-                                 showgrid=True, gridcolor=c.GRILLE),
+    cd = S[["programme", "part_programme_pct", "action"]].values
+    c.barres(fig, S.libelle, S.contraint_eur / 1e6, c.BLEU, name="engagé d'avance", customdata=cd, width=0.66,
+             hover="<b>%{customdata[2]}</b> (%{customdata[0]})<br>engagé d'avance : %{x:,.0f} M€<extra></extra>")
+    c.barres(fig, S.libelle, S.pilotable_eur / 1e6, c.VERT, base=S.contraint_eur / 1e6, name="arbitré chaque année",
+             customdata=cd, width=0.66,
+             hover="<b>%{customdata[2]}</b> (%{customdata[0]})<br>arbitré chaque année : %{x:,.0f} M€<extra></extra>")
+    for r in S.itertuples():
+        # la plus longue barre porte son étiquette à l'intérieur : sur un téléphone, elle sortirait du cadre
+        dedans = r.cp_eur == S.cp_eur.max() and len(S) > 1
+        fig.add_annotation(y=r.libelle, x=r.cp_eur / 1e6, xanchor="right" if dedans else "left",
+                           xshift=-6 if dedans else 5, showarrow=False,
+                           text=f"<b>{fr(r.cp_eur / 1e6, 0)} M€ · {fr(r.part_programme_pct, 0)} %</b>",
+                           font=dict(size=12, color="#FFFFFF" if dedans else
+                                     (c.BLEU if r.contraint_eur > r.pilotable_eur else c.VERT)))
+    fig.update_layout(height=100 + 40 * len(S), margin=dict(r=20),
+                      xaxis=dict(title="M€ (crédits de paiement 2026)", range=[0, S.cp_eur.max() / 1e6 * 1.55],
+                                 showgrid=True, gridcolor=c.GRILLE, nticks=5),
                       yaxis=dict(showgrid=False, tickfont=dict(size=12, color=c.MARINE)),
                       legend=dict(orientation="h", y=1.02, yanchor="bottom"))
     st.plotly_chart(fig, width="stretch", config=c.CONFIG)
@@ -150,23 +157,33 @@ with g:
     fig = go.Figure()
     if vue == "Où, fin 2025":
         S = A[A.restes_a_payer_m >= 10].sort_values("restes_a_payer_m")
-        fig.add_trace(go.Bar(y=S.libelle, x=S.restes_a_payer_m, orientation="h",
-                             marker=dict(color=c.BRUN, line=dict(width=0)),
-                             text=[f"{fr(v, 0)} M€" for v in S.restes_a_payer_m], textposition="outside",
-                             cliponaxis=False, textfont=dict(size=12, color=c.BRUN),
-                             hovertemplate="<b>%{y}</b><br>%{x:,.0f} M€ restant à payer<extra></extra>"))
+        c.barres(fig, S.libelle, S.restes_a_payer_m, c.BLEU, width=0.62,
+                 text=[f"<b>{fr(v, 0)} M€</b>" for v in S.restes_a_payer_m],
+                 hover="<b>%{y}</b><br>%{x:,.0f} M€ restant à payer<extra></extra>")
         fig.update_layout(height=380, margin=dict(r=40), showlegend=False,
                           xaxis=dict(title="M€ restant à payer au 31 décembre 2025", range=[0, 1150],
-                                     showgrid=True, gridcolor=c.GRILLE),
+                                     showgrid=True, gridcolor=c.GRILLE, nticks=5),
                           yaxis=dict(showgrid=False, tickfont=dict(size=12, color=c.MARINE)))
     else:
-        fig.add_trace(go.Scatter(x=R.annee, y=R.restes_a_payer_m / 1000, name="Restes à payer", mode="lines+markers",
-                                 line=dict(color=c.BRUN, width=3), marker=dict(size=6), connectgaps=False,
-                                 hovertemplate="%{x} : %{y:.2f} Md€<extra>Restes à payer</extra>"))
+        # la figure du deck : des barres bleues, la dernière en orange, le budget de la mission en vert
+        Rv = R.dropna(subset=["restes_a_payer_m"])
+        coul = [c.ORANGE if a == Rv.annee.max() else c.BLEU for a in Rv.annee]
+        c.barres(fig, Rv.annee, Rv.restes_a_payer_m / 1000, coul, orientation="v", width=0.62,
+                 name="Restes à payer en fin d'année",
+                 hover="%{x} : %{y:.2f} Md€<extra>Restes à payer</extra>")
+        for a in R[R.restes_a_payer_m.isna()].annee:
+            fig.add_annotation(x=a, y=0, yanchor="bottom", yshift=4, text="n.d.", showarrow=False,
+                               font=dict(size=11, color=c.GRIS))
+        for a, col in ((Rv.annee.min(), c.BLEU), (Rv.annee.max(), c.ORANGE)):
+            v = Rv.set_index("annee").restes_a_payer_m[a] / 1000
+            fig.add_annotation(x=a, y=v, yanchor="bottom", yshift=4, text=f"<b>{fr(v, 2)} Md€</b>",
+                               showarrow=False, font=dict(size=13, color=col))
         fig.add_trace(go.Scatter(x=R.annee, y=R.mission_m / 1000, name="Budget annuel de la mission",
-                                 mode="lines", line=dict(color=c.VERT, width=3, dash="dot"),
+                                 mode="lines", line=dict(color=c.VERT, width=4),
                                  hovertemplate="%{x} : %{y:.2f} Md€<extra>Budget de la mission</extra>"))
-        fig.update_layout(height=340, xaxis=dict(dtick=2), yaxis=dict(title="Md€", range=[0, 3.2]))
+        fig.update_layout(height=360, xaxis=dict(dtick=2, showgrid=False),
+                          yaxis=dict(title="Md€", range=[0, 3.3], showgrid=True, gridcolor=c.GRILLE),
+                          legend=dict(orientation="h", y=1.02, yanchor="bottom"))
     st.plotly_chart(fig, width="stretch", config=c.CONFIG)
 with d:
     carte("Ce graphique montre que…",
@@ -176,11 +193,10 @@ with d:
            f"de ces {sigle('restes à payer')} sont des interventions au profit des collectivités : le paiement suit "
            f"leur ingénierie et leurs chantiers, pas la décision budgétaire.",
            "Et pas seulement : la Cour des comptes relève des projets mal calibrés et des engagements devenus sans "
-           "objet, jamais soldés — 534 M€ d'écart pour la seule année 2025."], "brun")
+           "objet, jamais soldés — 534 M€ d'écart pour la seule année 2025."], "orange")
 pied("Cour des comptes, notes d'exécution budgétaire de la mission Outre-mer 2013-2025 (tableau n° 13 pour 2025). "
      "2016 et 2022 : montant non publié", renvoi=RENVOI)
 
-glossaire(["DGOM", "P138", "P123", "LODEOM", "CP", "restes à payer"])
 st.markdown("##### Télécharger")
 b = st.columns(3)
 telecharger(b[0], "Figure · la mission par action", "mission_outre_mer_par_action.png", figure=True)

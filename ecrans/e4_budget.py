@@ -25,6 +25,7 @@ fisc = lire("fiscal_serie.csv")
 entete("Écran 4 · Le budget", "Quel pouvoir budgétaire réel a le ministère ?",
        "Ce que l'État consacre aux outre-mer, ce que le ministère en porte, et ce qu'il en décide vraiment. "
        "Tous les montants sont en crédits de paiement, l'argent effectivement dépensé dans l'année.")
+glossaire(["DPT", "Mission Outre-mer", "P138", "P123", "LODEOM", "CP", "dépenses fiscales"])
 
 # ───────────────────────────────────────── les quatre chiffres
 t = st.columns(4)
@@ -45,11 +46,9 @@ with g:
     couleurs = [c.MARINE, c.SABLE, c.BLEU_GRIS, c.SABLE, c.VERT]
     libelles = ["Effort total de l'État", "hors Mission Outre-mer", "Mission Outre-mer",
                 "engagements contraints", "Marge réellement arbitrée"]
-    fig = go.Figure(go.Bar(
-        y=libelles, x=(cas.haut_eur - cas.bas_eur) / 1e9, base=cas.bas_eur / 1e9, orientation="h",
-        marker=dict(color=couleurs, line=dict(width=0)), width=0.62,
-        customdata=cas.part_dpt_pct,
-        hovertemplate="%{x:.2f} Md€ · %{customdata:.1f} % de l'effort<extra></extra>"))
+    fig = go.Figure()
+    c.barres(fig, libelles, (cas.haut_eur - cas.bas_eur) / 1e9, couleurs, base=cas.bas_eur / 1e9, width=0.62,
+             customdata=cas.part_dpt_pct, hover="%{x:.2f} Md€ · %{customdata:.1f} % de l'effort<extra></extra>")
     # les valeurs, au bout des barres pleines (le texte « outside » ne suit pas une base décalée)
     for i, (h, col) in enumerate(zip(cas.haut_eur, [c.MARINE, None, c.BLEU_GRIS, None, c.VERT])):
         if col:
@@ -97,12 +96,11 @@ with g:
     parts = [petites.part_pct.sum()] + list(grandes.part_pct)
     montants = [petites.cp_eur.sum()] + list(grandes.cp_eur)
     coul = [c.CLAIR[c.MARINE]] + [c.VERT if n == "Outre-mer" else c.MARINE for n in grandes.mission]
-    fig = go.Figure(go.Bar(
-        y=noms, x=parts, orientation="h", marker=dict(color=coul, line=dict(width=0)),
-        text=[f"{fr(p)} %" for p in parts], textposition="outside", cliponaxis=False,
-        textfont=dict(size=12, color=[c.VERT if "ministère" in n else c.MARINE for n in noms]),
-        customdata=[[o, fr(m / 1e9, 2)] for o, m in zip(officiels, montants)],
-        hovertemplate="<b>%{customdata[0]}</b><br>%{x:.1f} % de l'effort · %{customdata[1]} Md€<extra></extra>"))
+    fig = go.Figure()
+    c.barres(fig, noms, parts, coul, text=[f"<b>{fr(p)} %</b>" for p in parts],
+             textcolor=[c.VERT if "ministère" in n else c.MARINE for n in noms],
+             customdata=[[o, fr(m / 1e9, 2)] for o, m in zip(officiels, montants)],
+             hover="<b>%{customdata[0]}</b><br>%{x:.1f} % de l'effort · %{customdata[1]} Md€<extra></extra>")
     fig.update_layout(height=520, margin=dict(r=30),
                       xaxis=dict(title="% de l'effort de l'État", range=[0, 36], dtick=10,
                                              showgrid=True, gridcolor=c.GRILLE),
@@ -181,14 +179,17 @@ with d:
     fin = fisc.iloc[-1]
     carte("Ce graphique montre que…",
           [f"une part importante du soutien de l'État passe hors budget, par l'impôt : "
-           f"{fr(fin.fiscal_m / 1000, 2)} Md€ en 2026, {fr(fin.ratio, 2)} fois la mission du ministère.",
-           f"Ces {sigle('dépenses fiscales')} ont culminé à 7,09 Md€ en 2023. Ce sont des recettes en moins, pas "
-           f"des crédits : on les montre à côté, on ne les additionne jamais."], "bleu")
+           f"{fr(fin.fiscal_m / 1000, 2)} Md€ en 2026, {fr(fin.ratio, 2)} fois la mission du ministère. Ces "
+           f"{sigle('dépenses fiscales')} ont culminé à 7,09 Md€ en 2023."], "bleu")
+    carte("Pourquoi ne pas les additionner au budget ?",
+          ["Un crédit, c'est de l'argent que l'État verse. Une dépense fiscale, c'est un impôt qu'il ne perçoit pas.",
+           "Son montant est une estimation, qui dépend de ce que font les contribuables et qui est souvent révisée "
+           "après coup. Les additionner reviendrait à mélanger un paiement et un manque à gagner : c'est pourquoi "
+           "le budget de l'État les présente à part."], "bleugris")
 pied("Voies et Moyens, tome II (annexe au PLF), 2009-2026 ; 2020 : note d'exécution de la Cour des comptes",
      renvoi=RENVOI)
 
 # ───────────────────────────────────────── glossaire et téléchargements
-glossaire(["DPT", "Mission Outre-mer", "P138", "P123", "LODEOM", "CP", "dépenses fiscales"])
 st.markdown("##### Télécharger")
 b = st.columns(4)
 telecharger(b[0], "Figure · la cascade", "cascade_budgetaire_2026.png", figure=True)

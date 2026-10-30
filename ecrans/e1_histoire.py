@@ -22,6 +22,7 @@ M = lire("ministres_mandats.csv")
 entete("Écran 1 · L'histoire", "D'où vient le ministère des Outre-mer ?",
        "Un héritage colonial, un statut qui oscille : de 1894 à 2025, le portefeuille change de nom, de rang et de "
        "tutelle.")
+glossaire(["rang", "rattaché à l'Intérieur", "mandat", "DGOM"])
 
 t = st.columns(4)
 tuile(t[0], "1894", "un ministère des Colonies sort de la tutelle de la Marine")
@@ -107,7 +108,11 @@ with d:
            "2012 — plus aucun secrétaire d'État depuis —, de nouveau ministre d'État avec Manuel Valls, neuf jours "
            "après le cyclone Chido.",
            "En orange, les mandats rattachés à l'Intérieur : 1976-1986, 2000-2002, 2007-2012, 2022-2024."], "orange")
+    carte("En chiffres",
+          ["Sur 63 mandats : neuf de ministre d'État, trente de ministre, sept de ministre délégué, dix-sept de "
+           "secrétaire d'État.",
+           "48 sont de plein exercice, quinze rattachés à l'Intérieur. Les deux premiers rangs siègent au Conseil des "
+           "ministres ; les deux autres passent par le ministre dont ils relèvent."], "bleu")
 pied("Journal officiel — base des 63 mandats arrêtée au 23 juin 2026. Une barre = un mandat, de la nomination "
      "à la fin des fonctions", renvoi=RENVOI)
 
-glossaire(["rang", "rattaché à l'Intérieur", "mandat", "DGOM"])

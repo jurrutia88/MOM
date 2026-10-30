@@ -5,6 +5,8 @@ Textes repris du deck du diagnostic (23 septembre 2026), diapositives « Les min
 « Qui occupe le poste », validés par José. Règle d'ancrage du 17 septembre 2026 : seul compte
 l'ancrage antérieur à la nomination ; « autre forme » jamais confondue avec la naissance.
 """
+from html import escape
+
 import pandas as pd
 import plotly.graph_objects as go
 import streamlit as st
@@ -29,7 +31,8 @@ courts = int((M.duree_jours < 183).sum())
 nes = M[M.ancrage == "né outre-mer"]
 
 entete("Écran 3 · Les ministres", "Qui a dirigé le ministère des Outre-mer ?",
-       f"{pers} personnes et {n} mandats depuis 1959. Combien de temps elles restent, à quel rang, et qui elles sont.")
+       f"{pers} personnes et {n} mandats depuis 1959. Combien de temps elles restent, et qui elles sont.")
+glossaire(["mandat", "rang", "ancrage"])
 
 t = st.columns(4)
 tuile(t[0], f"{pers}", f"ministres depuis 1959, pour <b>{n} mandats</b> : une même personne peut être nommée "
@@ -44,38 +47,22 @@ st.markdown("")
 # ───────────────────────────────────────── 1 · un portefeuille qui tourne
 st.markdown("### Un portefeuille qui tourne de plus en plus vite")
 g, d = st.columns([1.65, 1], gap="large")
-RANGS = [("Ministre d'État", c.MARINE), ("Ministre", c.VERT), ("Ministre délégué", "#93B3C8"),
-         ("Secrétaire d'État", "#D8C6A6")]
 with g:
-    vue = st.radio("Afficher", ["Les mandats, par rang", "La durée moyenne", "Le rythme des nominations"],
+    vue = st.radio("Afficher", ["Le nombre de mandats", "La durée moyenne", "Le rythme des nominations"],
                    horizontal=True, label_visibility="collapsed")
-    # présidents en lignes, du plus ancien en haut : huit colonnes ne tiennent pas sur un téléphone
+    # présidents en lignes, du plus ancien en haut : huit colonnes ne tiennent pas sur un téléphone.
+    # Le rang et le rattachement sont à l'écran 1 : ici, seulement la rotation.
+    col, unite, titre, fmt = {
+        "Le nombre de mandats": ("mandats", "", "mandats", lambda v: f"{v:.0f}"),
+        "La durée moyenne": ("duree_moyenne_j", " j", "jours", lambda v: fr(v, 0)),
+        "Le rythme des nominations": ("mandats_par_an", "", "mandats par année de présidence", lambda v: fr(v, 2)),
+    }[vue]
+    coul = [c.ORANGE if p == "Macron" else c.BLEU_GRIS for p in PRES]
     fig = go.Figure()
-    if vue == "Les mandats, par rang":
-        # une case par mandat, empilées par rang ; le survol nomme le ministre
-        for rang, coul in RANGS:
-            S = M[M.rang == rang]
-            fig.add_trace(go.Bar(
-                y=[LIB[PRES.index(p)] for p in S.president], x=[1] * len(S), name=rang, orientation="h",
-                marker=dict(color=coul, line=dict(color="#FFFFFF", width=1.5)),
-                customdata=S[["ministre", "gouvernement", "duree_jours"]].values,
-                hovertemplate="<b>%{customdata[0]}</b><br>" + rang + " · %{customdata[1]}<br>"
-                              "%{customdata[2]} jours<extra></extra>"))
-        for i, row in P.iterrows():
-            fig.add_annotation(y=LIB[i], x=row.mandats, text=f"<b>{row.mandats}</b>", xshift=14,
-                               showarrow=False, font=dict(size=14, color=c.MARINE))
-        fig.update_layout(barmode="stack", xaxis=dict(range=[0, 15], showgrid=False, showticklabels=False,
-                                                      showline=False, title="mandats"))
-    else:
-        col, unite, titre, fmt = (("duree_moyenne_j", " j", "jours", lambda v: fr(v, 0)) if vue == "La durée moyenne"
-                                  else ("mandats_par_an", "", "mandats par année de présidence", lambda v: fr(v, 2)))
-        coul = [c.ORANGE if p == "Macron" else c.BLEU_GRIS for p in PRES]
-        fig.add_trace(go.Bar(y=LIB, x=P[col], orientation="h", marker=dict(color=coul, line=dict(width=0)),
-                             width=0.6, text=[f"<b>{fmt(v)}{unite}</b>" for v in P[col]], textposition="outside",
-                             cliponaxis=False, textfont=dict(size=13, color=coul),
-                             hovertemplate="%{x}" + unite + "<extra></extra>"))
-        fig.update_layout(xaxis=dict(title=titre, range=[0, P[col].max() * 1.25], showgrid=True,
-                                     gridcolor=c.GRILLE), showlegend=False)
+    c.barres(fig, LIB, P[col], coul, width=0.6, text=[f"<b>{fmt(v)}{unite}</b>" for v in P[col]], textsize=13,
+             hover="%{x}" + unite + "<extra></extra>")
+    fig.update_layout(xaxis=dict(title=titre, range=[0, P[col].max() * 1.25], showgrid=True,
+                                 gridcolor=c.GRILLE, nticks=5), showlegend=False)
     fig.update_layout(height=470, bargap=0.28, margin=dict(r=24),
                       yaxis=dict(tickfont=dict(size=12, color=c.MARINE), showgrid=False,
                                  categoryorder="array", categoryarray=LIB[::-1]),
@@ -89,47 +76,56 @@ with d:
            f"présidence — le rythme le plus rapide de la Ve République.",
            f"La durée moyenne tombe à {mac.duree_moyenne_j} jours, contre 634 sous Valéry Giscard d'Estaing."],
           "orange")
-    carte("Le rang et le rattachement oscillent aussi",
-          [f"Neuf mandats de ministre d'État, trente de ministre, sept de ministre délégué, dix-sept de "
-           f"secrétaire d'État ; depuis 2012, plus aucun secrétaire d'État.",
-           f"48 mandats sur 63 sont de plein exercice ; quinze sont "
-           f"{sigle('rattaché à l' + chr(39) + 'Intérieur', 'rattachés à l’Intérieur')} — 1976-1986, "
-           f"2000-2002, 2007-2012, 2022-2024. Les deux premiers {sigle('rang', 'rangs')} siègent au Conseil des "
-           f"ministres ; les deux autres passent par le ministre dont ils relèvent."], "bleu")
+    carte("Le rang et le rattachement",
+          [f"Le {sigle('rang')} du portefeuille et son rattachement à l'Intérieur changent eux aussi d'un "
+           f"gouvernement à l'autre : c'est l'objet de l'écran 1, « L'histoire »."], "bleu")
 pied(SOURCE + ". Un mandat = une nomination dans un gouvernement ; 2022-2024 : deux titulaires simultanés",
      renvoi=RENVOI)
 
 # ───────────────────────────────────────── 2 · qui occupe le poste
 st.markdown("### Qui occupe le poste ?")
 g, d = st.columns([1.65, 1], gap="large")
-ANCRAGE = {"né outre-mer": c.ORANGE, "autre forme": "#A08F76", "aucun": "#E2DDD4"}
+ANCRAGE = {"né outre-mer": c.ORANGE, "autre forme": "#A08F76", "aucun": c.FILET}
 with g:
-    # une ligne par président, une case par mandat dans l'ordre chronologique
+    # une ligne par président, une étiquette par mandat dans l'ordre chronologique : le nom et les années
     M = M.sort_values("debut")
-    pos = {}
-    for p in PRES:
-        for k, idx in enumerate(M[M.president == p].index):
-            pos[idx] = (k + 1, LIB[PRES.index(p)])
-    M["x"] = [pos[i][0] for i in M.index]
-    M["y"] = [pos[i][1] for i in M.index]
-    fig = go.Figure()
-    for anc, coul in ANCRAGE.items():
-        S = M[M.ancrage == anc]
-        fig.add_trace(go.Scatter(
-            x=S.x, y=S.y, mode="markers", name=anc if anc != "aucun" else "aucun ancrage",
-            marker=dict(symbol="square", size=17, color=coul, line=dict(width=0)),
-            customdata=S[["ministre", "fonction", "duree_jours"]].values,
-            hovertemplate="<b>%{customdata[0]}</b><br>%{customdata[1]}<br>%{customdata[2]} jours<extra></extra>"))
-    F = M[M.sexe == "F"]
-    fig.add_trace(go.Scatter(x=F.x, y=F.y, mode="markers", name="une femme", hoverinfo="skip",
-                             marker=dict(symbol="circle", size=6, color=c.MARINE,
-                                         line=dict(color="#FFFFFF", width=1))))
-    fig.update_layout(height=430, xaxis=dict(range=[0.3, 13.7], showgrid=False, showline=False,
-                                             showticklabels=False),
-                      yaxis=dict(showgrid=False, showline=False, tickfont=dict(size=12, color=c.MARINE),
-                                 categoryorder="array", categoryarray=LIB[::-1]),
-                      legend=dict(orientation="h", y=1.08))
-    st.plotly_chart(fig, width="stretch", config=c.CONFIG)
+    der = M.debut.max()
+
+    def annees(r):
+        a, b = r.debut[:4], r.fin[:4]
+        if r.debut == der:                       # la ministre en fonction à la date d'arrêt de la base
+            return f"depuis {a}"
+        return a if a == b else f"{a}-{b}"
+
+    def puce(r):
+        col = ANCRAGE[r.ancrage]
+        femme = f'<span class="f" style="color:{c.MARINE}">●</span>' if r.sexe == "F" else ""
+        info = escape(f"{r.fonction} · gouvernement {r.gouvernement} · {r.duree_jours} jours")
+        return (f'<span class="puce" title="{info}" style="background:{c.teinte(col, 0.16)};'
+                f'border-left:4px solid {col}">{femme}{escape(r.ministre)} <i>({annees(r)})</i></span>')
+
+    legende = " ".join(f'<span class="puce" style="background:{c.teinte(k, 0.16)};border-left:4px solid {k}">'
+                       f'{"aucun ancrage" if a == "aucun" else a}</span>' for a, k in ANCRAGE.items())
+    lignes = "".join(
+        f'<div class="poste"><div class="pres">{p}<span>{a}–{"" if pd.isna(b) else int(b)}</span></div>'
+        f'<div>{"".join(puce(r) for r in M[M.president == p].itertuples())}</div></div>'
+        for p, a, b in zip(P.president, P.debut, P.fin))
+    st.markdown(f"""<style>
+        .postes .puce {{ display:inline-block; font-size:.84rem; line-height:1.3; padding:3px 8px; margin:0 5px 5px 0;
+                         color:{c.MARINE}; cursor:help; }}
+        .postes .puce i {{ color:{c.GRIS}; font-style:normal; white-space:nowrap; }}
+        .postes .puce .f {{ font-size:.7rem; margin-right:4px; vertical-align:1px; }}
+        .postes .poste {{ display:grid; grid-template-columns:118px 1fr; gap:10px; padding:7px 0;
+                          border-top:1px solid {c.GRILLE}; }}
+        .postes .pres {{ font-weight:700; font-size:.9rem; color:{c.MARINE}; }}
+        .postes .pres span {{ display:block; font-weight:400; font-size:.78rem; color:{c.GRIS}; }}
+        .postes .leg {{ margin-bottom:6px; font-size:.8rem; color:{c.GRIS}; }}
+        @media (max-width:640px) {{ .postes .poste {{ grid-template-columns:1fr; gap:4px; }} }}
+        </style>""", unsafe_allow_html=True)
+    # sans retour à la ligne : une ligne indentée deviendrait un bloc de code pour le Markdown
+    st.markdown(f'<div class="postes"><div class="leg">{legende} <span class="puce" style="background:#fff">'
+                f'<span class="f" style="color:{c.MARINE}">●</span>une femme</span></div>{lignes}</div>',
+                unsafe_allow_html=True)
 with d:
     carte("Ce graphique montre que…",
           ["aucune femme et aucun ministre lié à l'outre-mer avant 2002. Les quatre ministres nés outre-mer se "
@@ -164,7 +160,6 @@ st.dataframe(pd.DataFrame({
     height=min(38 + 35 * len(T), 420))
 pied(SOURCE + ". Fin du dernier mandat : date d'arrêt de la base, la ministre étant toujours en fonction")
 
-glossaire(["mandat", "rang", "rattaché à l'Intérieur", "ancrage"])
 st.markdown("##### Télécharger")
 b = st.columns(3)
 telecharger(b[0], "Figure · mandats par président", "mandats_par_president.png", figure=True)

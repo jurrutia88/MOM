@@ -31,8 +31,8 @@ GLOSSAIRE = {
     "CP": "Crédits de paiement : l'argent effectivement décaissé dans l'année. C'est la mesure retenue partout "
           "dans cette application.",
     "dépenses fiscales": "Impôts que l'État renonce à percevoir (réductions, exonérations, taux réduits). "
-                         "Elles soutiennent les outre-mer hors budget : on les montre à côté des crédits, "
-                         "jamais additionnées.",
+                         "Elles soutiennent les outre-mer hors budget : c'est un manque à gagner estimé, pas "
+                         "de l'argent versé, et il ne s'additionne donc pas aux crédits.",
     "DGOM": "Direction générale des outre-mer : l'administration centrale du ministère depuis 2013, environ "
             "180 agents répartis en quatre sous-directions.",
     "restes à payer": "Ce que l'État s'est engagé à payer et n'a pas encore payé. Il engage une opération entière "
@@ -60,6 +60,19 @@ GLOSSAIRE = {
             "des ministres ; les deux autres passent par le ministre dont ils relèvent.",
     "rattaché à l'Intérieur": "Le portefeuille des outre-mer n'est pas autonome : il est placé auprès du "
                               "ministre de l'Intérieur, qui en a l'autorité.",
+    "seuil de pauvreté national": "Un ménage est pauvre lorsque son niveau de vie est inférieur à 60 % du niveau "
+                                  "de vie médian national. Avec ce seuil commun, la pauvreté des outre-mer se "
+                                  "compare directement à celle de l'Hexagone.",
+    "NEET": "Jeunes de 15 à 29 ans qui ne sont ni en emploi, ni en études, ni en formation (de l'anglais « not in "
+            "education, employment or training »).",
+    "indice de Gini": "Mesure des inégalités de revenus : 0 si tout le monde a le même revenu, 1 si une seule "
+                      "personne a tout. Plus il est élevé, plus les revenus sont inégaux.",
+    "PIB par habitant": "La richesse produite sur le territoire en un an, divisée par le nombre d'habitants. Elle ne "
+                        "mesure pas le niveau de vie des habitants.",
+    "législature": "La période entre deux élections de l'Assemblée nationale, cinq ans au plus. La 17e a commencé "
+                   "en juillet 2024.",
+    "groupe politique": "Les députés se rassemblent par affinités politiques. Il faut au moins quinze députés pour "
+                        "former un groupe, qui donne des moyens et du temps de parole.",
     "ancrage": "Un lien avec un territoire d'outre-mer antérieur à la nomination. « Né outre-mer » : la "
                "naissance. « Autre forme » : ascendance, résidence, activité, mandat ou engagement, d'après la "
                "grille d'ancrage du CLSE.",
@@ -126,7 +139,16 @@ def pied(source, statut="Confirmé", renvoi=None):
 
 
 def glossaire(termes):
-    with st.expander("Les mots de cet écran"):
+    """En tête d'écran, juste sous le titre : un bandeau teinté qui annonce combien de mots il explique."""
+    from charte import VERT, teinte
+    st.markdown(f"""<style>
+    [data-testid="stExpander"] details {{ border: none; border-left: 4px solid {VERT};
+        background: linear-gradient(90deg, {teinte(VERT, 0.12)} 0%, #FFFFFF 100%); border-radius: 0; }}
+    [data-testid="stExpander"] summary {{ padding: 12px 16px; }}
+    [data-testid="stExpander"] summary p {{ font-weight: 700; color: {VERT}; font-size: 1rem; }}
+    [data-testid="stExpander"] summary:hover p {{ color: {VERT}; text-decoration: underline; }}
+    </style>""", unsafe_allow_html=True)
+    with st.expander(f"📖  Les {len(termes)} mots de cet écran — sigles et notions, expliqués en une phrase"):
         for t in termes:
             st.markdown(f"**{t}** — {fr_typo(GLOSSAIRE[t])}")
 
