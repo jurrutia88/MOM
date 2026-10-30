@@ -25,11 +25,13 @@ serie = lire("budget_serie.csv")
 fisc = lire("fiscal_serie.csv")
 A = lire("fonctionnement_actions.csv")
 A["libelle"] = A.action.map(lambda t: deux_lignes(t, 26))
+R = lire("restes_serie.csv")
+rap_2025 = R.restes_a_payer_m.iloc[-1]
 
 entete("Écran 4 · Le budget", "Quel pouvoir budgétaire réel a le ministère ?",
        "Ce que l'État consacre aux outre-mer, ce que le ministère en porte, et ce qu'il en décide vraiment. "
        "Tous les montants sont en crédits de paiement, l'argent effectivement dépensé dans l'année.")
-glossaire(["DPT", "Mission Outre-mer", "P138", "P123", "LODEOM", "CP", "dépenses fiscales"])
+glossaire(["DPT", "Mission Outre-mer", "P138", "P123", "LODEOM", "CP", "restes à payer", "dépenses fiscales"])
 
 # ───────────────────────────────────────── les quatre chiffres
 t = st.columns(4)
@@ -126,7 +128,55 @@ with d:
 pied(f"PAP Mission Outre-mer 2026, récapitulation des crédits par programme et action ({sigle('CP')})",
      renvoi=RENVOI)
 
-# ───────────────────────────────────────── 3 · qui porte l'effort
+# ───────────────────────────────────────── 3 · les restes à payer
+st.markdown("### Voté n'est pas dépensé")
+g, d = st.columns([1.65, 1], gap="large")
+with g:
+    vue = st.radio("Afficher", ["Où, fin 2025", "Depuis 2013"], horizontal=True, label_visibility="collapsed")
+    fig = go.Figure()
+    if vue == "Où, fin 2025":
+        S = A[A.restes_a_payer_m >= 10].sort_values("restes_a_payer_m")
+        c.barres(fig, S.libelle, S.restes_a_payer_m, c.BLEU, width=0.62,
+                 text=[f"<b>{fr(v, 0)} M€</b>" for v in S.restes_a_payer_m],
+                 hover="<b>%{y}</b><br>%{x:,.0f} M€ restant à payer<extra></extra>")
+        fig.update_layout(height=380, margin=dict(r=40), showlegend=False,
+                          xaxis=dict(title="M€ restant à payer au 31 décembre 2025", range=[0, 1150],
+                                     showgrid=True, gridcolor=c.GRILLE, nticks=5),
+                          yaxis=dict(showgrid=False, tickfont=dict(size=12, color=c.MARINE)))
+    else:
+        # la figure du deck : des barres bleues, la dernière en orange, le budget de la mission en vert
+        Rv = R.dropna(subset=["restes_a_payer_m"])
+        coul = [c.ORANGE if a == Rv.annee.max() else c.BLEU for a in Rv.annee]
+        c.barres(fig, Rv.annee, Rv.restes_a_payer_m / 1000, coul, orientation="v", width=0.62,
+                 name="Restes à payer en fin d'année",
+                 hover="%{x} : %{y:.2f} Md€<extra>Restes à payer</extra>")
+        for a in R[R.restes_a_payer_m.isna()].annee:
+            fig.add_annotation(x=a, y=0, yanchor="bottom", yshift=4, text="n.d.", showarrow=False,
+                               font=dict(size=11, color=c.GRIS))
+        for a, col in ((Rv.annee.min(), c.BLEU), (Rv.annee.max(), c.ORANGE)):
+            v = Rv.set_index("annee").restes_a_payer_m[a] / 1000
+            fig.add_annotation(x=a, y=v, yanchor="bottom", yshift=4, text=f"<b>{fr(v, 2)} Md€</b>",
+                               showarrow=False, font=dict(size=13, color=col))
+        fig.add_trace(go.Scatter(x=R.annee, y=R.mission_m / 1000, name="Budget annuel de la mission",
+                                 mode="lines", line=dict(color=c.VERT, width=4),
+                                 hovertemplate="%{x} : %{y:.2f} Md€<extra>Budget de la mission</extra>"))
+        fig.update_layout(height=360, xaxis=dict(dtick=2, showgrid=False),
+                          yaxis=dict(title="Md€", range=[0, 3.3], showgrid=True, gridcolor=c.GRILLE),
+                          legend=dict(orientation="h", y=1.02, yanchor="bottom"))
+    st.plotly_chart(fig, width="stretch", config=c.CONFIG)
+with d:
+    carte("Ce graphique montre que…",
+          [f"<b>fin 2025, {fr(rap_2025 / 1000, 2)} Md€ d'engagements pris et non payés : plus que le budget "
+           f"d'une année, + 76 % depuis 2017.</b>",
+           f"Pourquoi : l'État engage l'opération entière dès la signature et paie au rythme des travaux. Or 62 % "
+           f"de ces {sigle('restes à payer')} sont des interventions au profit des collectivités : le paiement suit "
+           f"leur ingénierie et leurs chantiers, pas la décision budgétaire.",
+           "Et pas seulement : la Cour des comptes relève des projets mal calibrés et des engagements devenus sans "
+           "objet, jamais soldés — 534 M€ d'écart pour la seule année 2025."], "orange")
+pied("Cour des comptes, notes d'exécution budgétaire de la mission Outre-mer 2013-2025 (tableau n° 13 pour 2025). "
+     "2016 et 2022 : montant non publié", renvoi=RENVOI)
+
+# ───────────────────────────────────────── 4 · qui porte l'effort
 st.markdown("### Qui porte l'effort de l'État outre-mer ?")
 g, d = st.columns([1.65, 1], gap="large")
 with g:
@@ -174,7 +224,7 @@ with d:
 pied("DPT Outre-mer 2026, annexe « Synthèse tous crédits », p. 229-232, PLF 2026 ; 30 missions, 104 programmes",
      renvoi=RENVOI)
 
-# ───────────────────────────────────────── 4 · la trajectoire
+# ───────────────────────────────────────── 5 · la trajectoire
 st.markdown("### Depuis 2007, l'effort grossit ailleurs")
 g, d = st.columns([1.65, 1], gap="large")
 with g:
@@ -210,7 +260,7 @@ with d:
 pied("Documents de politique transversale « Outre-mer » 2007-2026 ; PLF, État B (Mission Outre-mer, CP)",
      renvoi=RENVOI)
 
-# ───────────────────────────────────────── 5 · les dépenses fiscales, à part
+# ───────────────────────────────────────── 6 · les dépenses fiscales, à part
 st.markdown("### À côté du budget : les impôts auxquels l'État renonce")
 g, d = st.columns([1.65, 1], gap="large")
 with g:
@@ -242,11 +292,13 @@ pied("Voies et Moyens, tome II (annexe au PLF), 2009-2026 ; 2020 : note d'exécu
 
 # ───────────────────────────────────────── glossaire et téléchargements
 st.markdown("##### Télécharger")
-b = st.columns(3)
+b = st.columns(4)
 telecharger(b[0], "Figure · la cascade", "cascade_budgetaire_2026.png", figure=True)
 telecharger(b[1], "Figure · la mission par action", "mission_outre_mer_par_action.png", figure=True)
-telecharger(b[2], "Figure · qui porte l'effort", "missions_contributrices_2026.png", figure=True)
-b = st.columns(3)
+telecharger(b[2], "Figure · les restes à payer", "restes_a_payer.png", figure=True)
+telecharger(b[3], "Figure · qui porte l'effort", "missions_contributrices_2026.png", figure=True)
+b = st.columns(4)
 telecharger(b[0], "Données · les 12 actions", "fonctionnement_actions.csv")
-telecharger(b[1], "Données · missions 2026", "budget_contributeurs.csv")
-telecharger(b[2], "Données · série 2007-2026", "budget_serie.csv")
+telecharger(b[1], "Données · restes à payer 2013-2025", "restes_serie.csv")
+telecharger(b[2], "Données · missions 2026", "budget_contributeurs.csv")
+telecharger(b[3], "Données · série 2007-2026", "budget_serie.csv")
