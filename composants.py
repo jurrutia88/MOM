@@ -196,6 +196,26 @@ def _svg_fond(en_avant):
     return "data:image/svg+xml;utf8," + quote(svg), round(100 * cx), round(100 * cy)
 
 
+@st.cache_data(show_spinner=False)
+def silhouette(territoire, taille=46, couleur="#465D6C"):
+    """Le contour réel d'un territoire (Natural Earth), en SVG en ligne, dans un carré de `taille` pixels."""
+    from charte import teinte
+    K = lire("territoires_contours.csv")
+    T = K[K.territoire == territoire]
+    if T.empty:
+        return ""
+    w, h = T.x.max(), T.y.max()
+    # archipels étendus : à cette taille leurs îles ne seraient que des points ; un trait épais les rend visibles
+    trait = 0.07 if territoire in ("Polynésie française", "Wallis-et-Futuna", "TAAF") else 0.022
+    formes = "".join(
+        '<polygon points="' + " ".join(f"{x:.4f},{y:.4f}" for x, y in zip(P.x, P.y)) + '"/>'
+        for _, P in T.groupby("partie"))
+    return (f'<svg viewBox="-0.04 -0.04 {w + 0.08:.3f} {h + 0.08:.3f}" width="{taille}" height="{taille}" '
+            f'preserveAspectRatio="xMidYMid meet" style="flex:0 0 auto" aria-hidden="true">'
+            f'<g fill="{teinte(couleur, 0.22)}" stroke="{couleur}" stroke-width="{trait}" stroke-linejoin="round">'
+            f'{formes}</g></svg>')
+
+
 def fond(en_avant=(), voile=0.70):
     """Le fond de l'écran : dégradé clair et contours des territoires, `en_avant` soulignés en vert."""
     url, px, py = _svg_fond(tuple(en_avant))

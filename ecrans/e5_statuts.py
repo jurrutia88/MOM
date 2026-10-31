@@ -9,7 +9,7 @@ from html import escape
 import streamlit as st
 
 import charte as c
-from composants import carte, entete, fond, fr_typo, glossaire, lire, pied, sigle, tuile
+from composants import carte, entete, fond, fr_typo, glossaire, lire, pied, sigle, silhouette, tuile
 
 RENVOI = "partie « Comment fonctionne le ministère »"       # intitulé définitif à caler sur le rapport
 
@@ -56,12 +56,13 @@ for gr in ordre:
     T = S[S[col] == gr]
     k = COUL[gr]
     puces = "".join(
-        f'<div style="border:1px solid {c.GRILLE};border-left:3px solid {k};background:#fff;padding:7px 11px;'
-        f'min-width:150px;flex:1 1 150px">'
+        f'<div style="border:1px solid {c.GRILLE};border-left:3px solid {k};background:#fff;padding:7px 10px;'
+        f'min-width:170px;flex:1 1 170px;display:flex;gap:10px;align-items:center">'
+        f'{silhouette(t.territoire, 46, k)}<div>'
         f'<div style="font-weight:700;color:{c.MARINE}">{escape(t.territoire)}</div>'
         f'<div style="font-size:.8rem;color:{c.GRIS};line-height:1.35">{escape(fr_typo(t.statut))}'
         f'{" · " + escape(t.regime_europeen) if t.regime_europeen != "aucun" else ""}'
-        f'{"" if t.habite == "oui" else " · sans population permanente"}</div></div>'
+        f'{"" if t.habite == "oui" else " · sans population permanente"}</div></div></div>'
         for t in T.itertuples())
     blocs.append(
         f'<div class="carte" style="background:linear-gradient(180deg,{c.teinte(k)} 0%,#fff 100%)">'
@@ -71,7 +72,8 @@ for gr in ordre:
         f'<div style="display:flex;flex-wrap:wrap;gap:8px">{puces}</div></div>')
 st.markdown("".join(blocs), unsafe_allow_html=True)
 pied("Constitution, articles 72-3, 73, 74, 76 et 77 ; traité sur le fonctionnement de l'Union européenne, article 349 "
-     "et annexe II ; loi n° 55-1052 (TAAF) ; loi du 21 février 2007 (Clipperton)", renvoi=RENVOI)
+     "et annexe II ; loi n° 55-1052 (TAAF) ; loi du 21 février 2007 (Clipperton). Contours : Natural Earth, chaque "
+     "territoire à sa propre échelle", renvoi=RENVOI)
 
 # ───────────────────────────────────────── 2 · ce que chaque régime change
 st.markdown("### Ce que chaque régime change")

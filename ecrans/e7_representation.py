@@ -103,7 +103,7 @@ pied("Fiche variable V4, « Représentativité politico-territoriale », v4 (202
      "des groupes et de la délégation aux outre-mer (16e et 17e législatures)", renvoi=RENVOI)
 
 # ───────────────────────────────────────── 3 · les couleurs politiques, 1958-2026
-st.markdown("### Quelles couleurs politiques, territoire par territoire ?")
+st.markdown("### Quelles couleurs politiques, territoire par territoire, de 1958 à 2026 ?")
 PT = lire("politique_territoires.csv")
 PM = lire("politique_mandats.csv")
 # couleurs : la convention politique (gauche rouge, centre or, droite bleue) plutôt que la palette du deck ;
@@ -116,7 +116,11 @@ TERR = ["Guadeloupe", "Martinique", "Guyane", "La Réunion", "Mayotte", "Saint-P
 COURT_T = {"Saint-Pierre-et-Miquelon": "St-Pierre-et-Miquelon", "Saint-Barthélemy et Saint-Martin":
            "St-Barth. et St-Martin", "Polynésie française": "Polynésie", "Nouvelle-Calédonie": "Nouv.-Calédonie"}
 LEGS = sorted(PM.legislature.unique())
-AN_LEG = PM.groupby("legislature").debut.min().str[:4]
+# chaque législature par sa période : de la première élection à la dernière fin de mandat (la 17e court jusqu'à
+# la date d'arrêt de la collecte, octobre 2026)
+_deb = PM.groupby("legislature").debut.min().str[:4]
+_fin = PM.groupby("legislature").fin.max().str[:4]
+AN_LEG = {l: f"{_deb[l]}-{_fin[l][2:]}" for l in _deb.index}
 g, d = st.columns([1.65, 1], gap="large")
 with g:
     vue_p = st.radio("Afficher", ["Territoire par territoire", "L'ensemble des outre-mer"], horizontal=True,
@@ -158,7 +162,7 @@ with g:
         fig.update_layout(height=500, margin=dict(l=10, r=10, t=10, b=10), barmode="overlay",
                           legend=dict(orientation="h", y=-0.2, yanchor="top", x=0, font=dict(size=10),
                                       entrywidth=150, itemwidth=30),
-                          xaxis=dict(type="category", title="année d'élection de la législature", showgrid=False,
+                          xaxis=dict(type="category", title="législature (période)", showgrid=False,
                                      tickfont=dict(size=9), tickangle=-90, showline=False),
                           yaxis=dict(autorange="reversed", showgrid=False, showline=False,
                                      tickfont=dict(size=11, color=c.MARINE)))

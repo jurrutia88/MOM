@@ -11,7 +11,7 @@ import plotly.graph_objects as go
 import streamlit as st
 
 import charte as c
-from composants import carte, entete, fond, fr, glossaire, lire, pied, sigle, telecharger, tuile
+from composants import NBSP, carte, entete, fond, fr, glossaire, lire, pied, sigle, telecharger, tuile
 
 RENVOI = "partie « Rôle et histoire du ministère »"        # intitulé définitif à caler sur le rapport
 SOURCE = "Journal officiel — base des 63 mandats arrêtée au 23 juin 2026"
@@ -118,50 +118,68 @@ pied("Journal officiel — base des 63 mandats arrêtée au 23 juin 2026. Une ba
 
 # ───────────────────────────────────────── 3 · qui occupe le poste
 st.markdown("### Qui occupe le poste ?")
-# toute la largeur : les noms prennent de la place ; les cartes passent dessous
-g = st.container()
-cs = st.columns(3, gap="medium")
-ANCRAGE = {"né outre-mer": c.ORANGE, "autre forme": c.BRUN, "aucun": "#93A1AC"}
+g, d = st.columns([1.65, 1], gap="large")
+cs = [d, d, g]
+# la figure du deck (« Quatre ministres nés outre-mer… ») : une colonne par président, une case par mandat dans
+# l'ordre chronologique (de gauche à droite, puis de bas en haut), la couleur de l'ancrage, un point pour une femme.
+# Le survol donne le nom et les années.
+ANCRAGE = {"né outre-mer": c.ORANGE, "autre forme": "#B8AA96", "aucun": "#DAD5CC"}
 with g:
-    # une ligne par personne, dans l'ordre de sa première nomination ; une barre par mandat, couleur de l'ancrage.
-    # Un mandat de quelques jours resterait invisible : la barre dure au moins quatre mois, le survol dit la durée.
     M = M.sort_values("debut")
     der = M.debut.max()
-    ms = lambda d: (pd.to_datetime(d) - pd.Timestamp("1970-01-01")).dt.total_seconds() * 1000
-    pers = list(dict.fromkeys(M.ministre))
-    lab = {}
-    for p in pers:
-        X = M[M.ministre == p]
-        a_, b_ = X.debut.min()[:4], X.fin.max()[:4]
-        an = f"depuis {a_}" if X.debut.max() == der else (a_ if a_ == b_ else f"{a_}-{b_[2:]}")
-        nom = f"<b>{p}</b>" if X.sexe.iloc[0] == "F" else p
-        lab[p] = f"{nom}  <span style='color:{c.GRIS}'>{an}</span>"
-    M["etiquette"] = M.ministre.map(lab)
+
+    def annees(r):
+        a_, b_ = r.debut[:4], r.fin[:4]
+        return f"depuis {a_}" if r.debut == der else (a_ if a_ == b_ else f"{a_}-{b_}")
+
+    def case(x0, y0, x1, y1, r=0.1):
+        return (f"M {x0 + r},{y0} L {x1 - r},{y0} Q {x1},{y0} {x1},{y0 + r} L {x1},{y1 - r} Q {x1},{y1} {x1 - r},{y1} "
+                f"L {x0 + r},{y1} Q {x0},{y1} {x0},{y1 - r} L {x0},{y0 + r} Q {x0},{y0} {x0 + r},{y0} Z")
+
     fig = go.Figure()
-    for i, (p_, a_, b_) in enumerate(zip(P.president, P.debut, P.fin)):
-        fin_ = f"{int(b_)}-05-15" if pd.notna(b_) else "2026-07-01"
-        if i % 2 == 0:
-            fig.add_vrect(x0=f"{a_}-05-15" if a_ > 1959 else "1959-01-08", x1=fin_, fillcolor=c.GRILLE,
-                          opacity=0.55, line_width=0, layer="below")
-        fig.add_annotation(x=f"{a_}-05-15" if a_ > 1959 else "1959-01-08", y=1.0, yref="paper", yanchor="bottom",
-                           xanchor="left", textangle=-90, showarrow=False,
-                           text=p_.replace(" d'Estaing", ""), font=dict(size=9, color=c.GRIS))
-    for anc, coul in ANCRAGE.items():
-        S = M[M.ancrage == anc]
-        duree = (ms(S.fin) - ms(S.debut)).clip(lower=120 * 86400 * 1000)
-        c.barres(fig, S.etiquette, duree, coul, base=ms(S.debut), width=0.68, n=8,
-                 name="aucun ancrage" if anc == "aucun" else anc,
-                 customdata=S[["ministre", "fonction", "duree_jours"]].values,
-                 hover="<b>%{customdata[0]}</b><br>%{customdata[1]}<br>%{customdata[2]} jours<extra></extra>")
-    fig.update_layout(height=150 + 19 * len(pers), margin=dict(t=78, r=10),
-                      legend=dict(orientation="h", y=-0.03, yanchor="top", x=0),
-                      xaxis=dict(type="date", range=["1958-09-01", "2026-12-31"], dtick="M120", tickformat="%Y",
-                                 showgrid=False, side="bottom"),
-                      yaxis=dict(categoryorder="array", categoryarray=[lab[p] for p in pers][::-1], showgrid=False,
-                                 tickfont=dict(size=11, color=c.MARINE)))
+    cx, cy, info, fem = [], [], [], []
+    for i_, p in enumerate(PRES):
+        for k, r in enumerate(M[M.president == p].itertuples()):
+            x = 4 * i_ + k % 3
+            y = k // 3
+            fig.add_shape(type="path", path=case(x - 0.42, y - 0.44, x + 0.42, y + 0.44), line=dict(width=0),
+                          fillcolor=ANCRAGE[r.ancrage], layer="below")
+            cx.append(x)
+            cy.append(y)
+            info.append(f"<b>{r.ministre}</b> ({annees(r)})<br>{r.fonction}<br>{r.duree_jours} jours")
+            if r.sexe == "F":
+                fem.append((x, y))
+    fig.add_trace(go.Scatter(x=cx, y=cy, mode="markers", marker=dict(size=18, opacity=0), hovertext=info,
+                             hoverinfo="text", showlegend=False))
+    fig.add_trace(go.Scatter(x=[a for a, _ in fem], y=[b for _, b in fem], mode="markers", name="une femme",
+                             hoverinfo="skip",
+                             marker=dict(size=9, color=c.MARINE, line=dict(color="#FFFFFF", width=1.5))))
+    for anc, col in ANCRAGE.items():                       # la légende : une pastille par ancrage
+        fig.add_trace(go.Scatter(x=[None], y=[None], mode="markers",
+                                 name={"aucun": "aucun ancrage", "autre forme": "autre forme d'ancrage"}.get(anc, anc),
+                                 marker=dict(symbol="square", size=13, color=col)))
+    # sous chaque colonne, la part des mandats : une femme, né outre-mer, autre forme d'ancrage
+    LIGNES = [("part_femmes_pct", "une femme", -1.55), ("part_nes_om_pct", "né outre-mer", -2.2),
+              ("part_autre_forme_pct", "autre forme", -2.85)]
+    for i_, row in P.iterrows():
+        for col, _, yy in LIGNES:
+            fig.add_annotation(x=4 * i_ + 1, y=yy, text=f"<b>{row[col]:.0f}{NBSP}%</b>", showarrow=False,
+                               font=dict(size=11, color=c.ORANGE if col == "part_nes_om_pct" and row[col]
+                                         else c.MARINE))
+    COURT_P = {"Giscard d'Estaing": "Giscard"}
+    fig.update_layout(
+        height=540, margin=dict(l=10, r=10, t=10, b=10),
+        legend=dict(orientation="h", y=-0.02, yanchor="top", x=0),
+        xaxis=dict(range=[-0.7, 4 * len(PRES) - 1.3], showgrid=False, showline=False, zeroline=False,
+                   tickvals=[4 * i_ + 1 for i_ in range(len(PRES))], side="top",
+                   ticktext=[f"{COURT_P.get(p, p)}<br>{a_}-{str(int(b_))[2:] if pd.notna(b_) else ''}"
+                             for p, a_, b_ in zip(P.president, P.debut, P.fin)],
+                   tickfont=dict(size=11, color=c.MARINE)),
+        yaxis=dict(range=[-3.25, M.groupby("president").size().max() // 3 + 0.6], showgrid=False, showline=False,
+                   zeroline=False, tickvals=[yy for *_, yy in LIGNES], ticktext=[t for _, t, _ in LIGNES],
+                   tickfont=dict(size=11, color=c.GRIS)))
+    fig.add_hline(y=-1.05, line=dict(color=c.FILET, width=1))
     st.plotly_chart(fig, width="stretch", config=c.CONFIG)
-    st.caption("En gras : une femme. Bandes : les présidences. Une barre par mandat ; un mandat de moins de quatre "
-               "mois est allongé pour rester visible.")
 carte("Ce graphique montre que…",
       ["aucune femme et aucun ministre lié à l'outre-mer avant 2002. Les quatre ministres nés outre-mer se "
        "succèdent tous entre 2009 et 2017, sous des majorités de droite puis de gauche ; depuis, plus aucun.",
