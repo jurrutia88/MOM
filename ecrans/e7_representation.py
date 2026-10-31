@@ -110,7 +110,13 @@ PM = lire("politique_mandats.csv")
 # une lettre dans chaque case double la couleur
 FAM = {"Gauche": ("#C2553D", "G"), "Centre": ("#D9A441", "C"), "Droite": (c.BLEU, "D"),
        "Extrême droite": (c.MARINE, "ED"), "Hors groupe ou groupe charnière": ("#A39C90", "H"),
-       "Partagé": (c.SABLE, "="), "Groupe non renseigné": ("#F2F0EC", "?")}
+       "Partagé": (c.SABLE, "="), "Groupe non renseigné": ("#F2F0EC", "?"),
+       "Pas de député propre": ("#E4E1DB", "–")}
+# avant leur propre circonscription, ces territoires n'élisaient pas de député à eux
+SANS_DEPUTE = {"Mayotte": "Mayotte fait alors partie du territoire des Comores ; son premier député est élu en 1977",
+               "Saint-Barthélemy et Saint-Martin": "Saint-Barthélemy et Saint-Martin votent alors dans une "
+                                                   "circonscription de la Guadeloupe ; leur propre député est élu "
+                                                   "en 2012"}
 TERR = ["Guadeloupe", "Martinique", "Guyane", "La Réunion", "Mayotte", "Saint-Pierre-et-Miquelon",
         "Saint-Barthélemy et Saint-Martin", "Polynésie française", "Nouvelle-Calédonie", "Wallis-et-Futuna"]
 COURT_T = {"Saint-Pierre-et-Miquelon": "St-Pierre-et-Miquelon", "Saint-Barthélemy et Saint-Martin":
@@ -134,9 +140,10 @@ with g:
             zl, tl, il = [], [], []
             for leg in LEGS:
                 if (t, leg) not in idx.index:
-                    zl.append(None)
-                    tl.append("")
-                    il.append("")
+                    zl.append(noms.index("Pas de député propre"))
+                    tl.append(FAM["Pas de député propre"][1])
+                    il.append(f"<b>{t}</b> · {leg}<sup>e</sup> législature ({AN_LEG[leg]})<br>Pas de député "
+                              f"propre<br>{SANS_DEPUTE.get(t, '')}")
                     continue
                 r = idx.loc[(t, leg)]
                 zl.append(noms.index(r.famille_dominante))
@@ -198,7 +205,10 @@ with d:
            "autonomistes ou indépendantistes (PPM, PCR, Tavini, FLNKS…) se rattachent à un groupe national ou "
            "restent non inscrits : leur position ne se range pas sur l'axe gauche-droite de l'Hexagone.",
            "Le classement des groupes en familles est un codage du CLSE. Chaque case pèse les jours de siège : un "
-           "suppléant compte le temps qu'il a siégé. « = » : deux familles à égalité."], "bleugris")
+           "suppléant compte le temps qu'il a siégé. « = » : deux familles à égalité.",
+           "« – » : pas de député propre. Mayotte, partie du territoire des Comores, élit son premier député en "
+           "1977 ; Saint-Barthélemy et Saint-Martin votent dans une circonscription de la Guadeloupe jusqu'en "
+           "2012."], "bleugris")
 pied("Assemblée nationale, base Sycomore des députés (fiches consultées le 29 octobre 2026) ; regroupement des "
      "groupes parlementaires en familles politiques : CLSE. Saint-Barthélemy et Saint-Martin : circonscription "
      "propre depuis 2012", statut="Reconstitué", renvoi=RENVOI)
