@@ -1,0 +1,10 @@
+﻿ordre;position;famille;couleur;code;definition
+1;Gauche autonomiste / indépendantiste;Gauche;#6E0F14;AI;Élus de formations ultramarines qui revendiquent l'autonomie ou l'indépendance de leur territoire. Codés élu par élu au sein du groupe GDR, d'après le parti de rattachement ou l'étiquette.
+2;Gauche radicale / communiste;Gauche;#B3261E;GR;Groupes explicitement communistes, apparentés communistes et groupes La France insoumise. Convention de regroupement, pas identité doctrinale.
+3;Gauche socialiste / réformiste;Gauche;#E89A8F;GS;Groupes socialistes et alliances à dominante socialiste ou radicale de gauche (dont « Radical, citoyen et verts », 1997-2002).
+4;Centre;Droite;#C6D9EC;C;"Groupes centristes historiques, UDF, MoDem et groupes macronistes ; sous-étiquettes exactes conservées."
+5;Centre droit;Droite;#8DB0D3;CD;UDI, UDI-Agir et Les Constructifs.
+6;Droite;Droite;#46709A;D;Groupes gaullistes, Républicains indépendants, RPR, UMP, LR.
+7;Extrême droite;Droite;#1D323F;ED;"FN / RN ; autres formations à examiner au cas par cas."
+8;Composite / transversal;Composite;#FFCB54;Co;Groupe sans famille gauche-droite unique retenue : LIOT, République et liberté.
+9;Non déterminée;Non déterminée;#FFF0C2;ND;Aucune famille déduite du groupe : non-inscrits ou information absente. La colonne « nature » distingue ces situations.

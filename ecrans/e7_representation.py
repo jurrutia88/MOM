@@ -106,12 +106,14 @@ pied("Fiche variable V4, « Représentativité politico-territoriale », v4 (202
 st.markdown("### Quelles couleurs politiques, territoire par territoire, de 1958 à 2026 ?")
 PT = lire("politique_territoires.csv")
 PM = lire("politique_mandats.csv")
-# couleurs : la convention politique (gauche rouge, centre or, droite bleue) plutôt que la palette du deck ;
-# une lettre dans chaque case double la couleur
-FAM = {"Gauche": ("#C2553D", "G"), "Centre": ("#D9A441", "C"), "Droite": (c.BLEU, "D"),
-       "Extrême droite": (c.MARINE, "ED"), "Hors groupe ou groupe charnière": ("#A39C90", "H"),
-       "Partagé": (c.SABLE, "="), "Groupe non renseigné": ("#F2F0EC", "?"),
-       "Pas de député propre": ("#E4E1DB", "–")}
+PP = lire("politique_positions.csv").sort_values("ordre")
+CH = lire("politique_chiffres.csv")
+# couleurs : celles de la grille des positions (18 novembre 2026) — rouge à gauche, du plus foncé (autonomiste ou
+# indépendantiste) au plus clair (réformiste) ; bleu à droite, du centre (clair) à l'extrême droite (foncé) ; jaune
+# pour le composite et le non déterminé. Un code dans chaque case double la couleur.
+FAM = {r.position: (r.couleur, r.code) for r in PP.itertuples()}
+FAM.update({"Partagé": (c.SABLE, "="), "Pas de député propre": ("#E4E1DB", "–")})
+FAMILLE = dict(zip(PP.position, PP.famille))
 # avant leur propre circonscription, ces territoires n'élisaient pas de député à eux
 SANS_DEPUTE = {"Mayotte": "Mayotte fait alors partie du territoire des Comores ; son premier député est élu en 1977",
                "Saint-Barthélemy et Saint-Martin": "Saint-Barthélemy et Saint-Martin votent alors dans une "
@@ -146,12 +148,14 @@ with g:
                               f"propre<br>{SANS_DEPUTE.get(t, '')}")
                     continue
                 r = idx.loc[(t, leg)]
-                zl.append(noms.index(r.famille_dominante))
-                tl.append(FAM[r.famille_dominante][1])
+                zl.append(noms.index(r.position_dominante))
+                tl.append(FAM[r.position_dominante][1])
                 deps = PM[(PM.territoire == t) & (PM.legislature == leg)].sort_values("debut")
+                fam = FAMILLE.get(r.position_dominante)
                 il.append(f"<b>{t}</b> · {leg}<sup>e</sup> législature ({AN_LEG[leg]})<br>"
-                          f"{r.famille_dominante}<br>" +
-                          "<br>".join(f"{x.depute} — {x.groupe} ({x.jours} j)" for x in deps.itertuples()))
+                          f"{r.position_dominante}" + (f" · famille : {fam.lower()}" if fam else "") + "<br>" +
+                          "<br>".join(f"{x.depute} — {x.groupe} · {x.position} ({x.jours} j)"
+                                      for x in deps.itertuples()))
             z.append(zl)
             txt.append(tl)
             info.append(il)
@@ -163,56 +167,79 @@ with g:
                                  zmin=-0.5, zmax=n - 0.5, colorscale=echelle, showscale=False, xgap=2, ygap=2,
                                  text=txt, texttemplate="%{text}", textfont=dict(size=10),   # couleur du texte : contraste automatique
                                  customdata=info, hovertemplate="%{customdata}<extra></extra>"))
-        # une légende lisible : une pastille par famille
+        # une légende lisible : une pastille par position, dans l'ordre de l'axe
         for f in noms:
-            fig.add_trace(go.Bar(x=[None], y=[None], name=f"{FAM[f][1]} {f.lower()}", marker=dict(color=FAM[f][0])))
-        fig.update_layout(height=500, margin=dict(l=10, r=10, t=10, b=10), barmode="overlay",
-                          legend=dict(orientation="h", y=-0.2, yanchor="top", x=0, font=dict(size=10),
-                                      entrywidth=150, itemwidth=30),
+            fig.add_trace(go.Bar(x=[None], y=[None], name=f"{FAM[f][1]} {f[0].lower() + f[1:]}",
+                                 marker=dict(color=FAM[f][0], line=dict(color=c.FILET, width=1))))
+        fig.update_layout(height=600, margin=dict(l=10, r=10, t=10, b=10), barmode="overlay",
+                          legend=dict(orientation="h", y=-0.3, yanchor="top", x=0, font=dict(size=10),
+                                      entrywidth=225, itemwidth=30),
                           xaxis=dict(type="category", title="législature (période)", showgrid=False,
                                      tickfont=dict(size=9), tickangle=-90, showline=False),
                           yaxis=dict(autorange="reversed", showgrid=False, showline=False,
                                      tickfont=dict(size=11, color=c.MARINE)))
     else:
-        A = PM.groupby(["legislature", "famille"]).jours.sum().unstack(fill_value=0)
+        A = PM.groupby(["legislature", "position"]).jours.sum().unstack(fill_value=0)
         A = A.div(A.sum(axis=1), axis=0) * 100
         base = pd.Series(0.0, index=A.index)
-        for f in ["Gauche", "Centre", "Droite", "Extrême droite", "Hors groupe ou groupe charnière",
-                  "Groupe non renseigné"]:
+        for f in PP.position:                            # dans l'ordre de l'axe, de la gauche à la droite
             if f not in A:
                 continue
-            c.barres(fig, [AN_LEG[l] for l in A.index], A[f], FAM[f][0], base=base, orientation="v", width=0.78,
-                     name=f.lower(), customdata=[f] * len(A),
-                     hover="%{x} · %{customdata} : %{y:.0f} %<extra></extra>")
+            fig.add_trace(go.Bar(x=[AN_LEG[l] for l in A.index], y=A[f], base=base, width=0.78,
+                                 marker=dict(color=FAM[f][0], line=dict(color=c.FILET, width=0.5)),
+                                 name=f"{FAM[f][1]} {f[0].lower() + f[1:]}", customdata=[f] * len(A),
+                                 hovertemplate="%{x} · %{customdata} : %{y:.0f} %<extra></extra>"))
             base = base + A[f]
-        fig.update_layout(height=430, margin=dict(t=10),
-                          legend=dict(orientation="h", y=-0.15, yanchor="top", x=0, font=dict(size=11)),
+        fig.update_layout(height=520, margin=dict(t=10), barmode="overlay",
+                          legend=dict(orientation="h", y=-0.15, yanchor="top", x=0, font=dict(size=10),
+                                      entrywidth=225, itemwidth=30),
                           xaxis=dict(type="category", tickangle=-90, tickfont=dict(size=10), showgrid=False),
                           yaxis=dict(title="% des jours de siège", range=[0, 100], dtick=25, showgrid=True,
                                      gridcolor=c.GRILLE, ticksuffix=" %"))
     st.plotly_chart(fig, width="stretch", config=c.CONFIG)
 with d:
+    def part(zone, periode, niveau, valeur):
+        x = CH[(CH.zone == zone) & (CH.periode == periode) & (CH.niveau == niveau) & (CH.valeur == valeur)]
+        return float(x.part_jours_pct.iloc[0]) if len(x) else 0.0
+
+    def tete(zone, periode, niveau="famille"):
+        x = CH[(CH.zone == zone) & (CH.periode == periode) & (CH.niveau == niveau)]
+        x = x.sort_values("part_jours_pct", ascending=False).iloc[0]
+        return x.valeur, float(x.part_jours_pct)
+
+    DOM, PAC = "Antilles, Guyane, La Réunion", "Pacifique"
+    AI = "Gauche autonomiste / indépendantiste"
+    f1, p1 = tete(DOM, "1958-1981")
+    f2, p2 = tete(DOM, "1981-2017")
+    f3, p3 = tete(DOM, "2017-2026")
+    q1, q2 = part(PAC, "1958-1981", "famille", "Droite"), part(PAC, "1981-2017", "famille", "Droite")
+    n_ed = int(CH[(CH.niveau == "nombre") & (CH.valeur == "Extrême droite")].part_jours_pct.iloc[0])
     carte("Ce graphique montre que…",
-          ["de 1958 à 1981, les députés des Antilles, de la Guyane et de La Réunion siègent surtout dans les groupes "
-           "de droite (54 % des jours de siège) ; de 1981 à 2017, surtout à gauche (56 %), et plus encore depuis "
-           "2017 (66 %).",
-           "Dans le Pacifique, le centre domine jusqu'en 1981, la droite de 1981 à 2017, de nouveau le centre "
-           "depuis 2017 (68 %).",
-           "En 2024, pour la première fois, deux députés ultramarins siègent à l'extrême droite : à La Réunion et "
-           "à Mayotte."], "orange")
+          [f"dans les Antilles, en Guyane et à La Réunion, les députés siègent surtout à {f1.lower()} de 1958 à 1981 "
+           f"({fr(p1, 0)} % des jours de siège), à {f2.lower()} de 1981 à 2017 ({fr(p2, 0)} %), et plus encore "
+           f"depuis 2017 ({fr(p3, 0)} %). Depuis 2017, les élus autonomistes ou indépendantistes y tiennent "
+           f"{fr(part(DOM, '2017-2026', 'position', AI), 0)} % des jours de siège, contre "
+           f"{fr(part(DOM, '1981-2017', 'position', AI), 0)} % avant.",
+           f"Dans le Pacifique, la droite et le centre tiennent {fr(q1, 0)} % des jours de siège jusqu'en 1981 et "
+           f"{fr(q2, 0)} % jusqu'en 2017 ; depuis 2017, les indépendantistes polynésiens et calédoniens en tiennent "
+           f"{fr(part(PAC, '2017-2026', 'position', AI), 0)} %.",
+           f"En 2024, pour la première fois, {n_ed} députés ultramarins siègent à l'extrême droite : à La Réunion "
+           f"et à Mayotte."], "orange")
     carte("À lire avec prudence",
-          ["On lit le groupe auquel le député s'inscrit à Paris, pas son étiquette locale. Les partis "
-           "autonomistes ou indépendantistes (PPM, PCR, Tavini, FLNKS…) se rattachent à un groupe national ou "
-           "restent non inscrits : leur position ne se range pas sur l'axe gauche-droite de l'Hexagone.",
-           "Le classement des groupes en familles est un codage du CLSE. Chaque case pèse les jours de siège : un "
-           "suppléant compte le temps qu'il a siégé. « = » : deux familles à égalité.",
+          ["Chaque député est rangé d'après le groupe auquel il s'inscrit à Paris, sauf au groupe de la Gauche "
+           "démocrate et républicaine, où beaucoup d'élus ultramarins viennent de partis locaux autonomistes ou "
+           "indépendantistes : ceux-là sont rangés d'après leur parti. Le rattachement financier déclaré à "
+           "l'Assemblée sert de recoupement, pas de critère : plusieurs élus indépendantistes déclarent certaines "
+           "années le Parti communiste français.",
+           "Le classement en positions et en familles est un codage du CLSE ; le centre est rangé au bout clair de "
+           "la droite. Chaque case pèse les jours de siège : un suppléant compte le temps qu'il a siégé. « = » : deux "
+           "positions à égalité. « ND » : non-inscrit ou groupe non renseigné.",
            "« – » : pas de député propre. Mayotte, partie du territoire des Comores, élit son premier député en "
            "1977 ; Saint-Barthélemy et Saint-Martin votent dans une circonscription de la Guadeloupe jusqu'en "
            "2012."], "bleugris")
-pied("Assemblée nationale, base Sycomore des députés (fiches consultées le 29 octobre 2026) ; regroupement des "
-     "groupes parlementaires en familles politiques : CLSE. Saint-Barthélemy et Saint-Martin : circonscription "
-     "propre depuis 2012", statut="Reconstitué", renvoi=RENVOI)
-
+pied("Assemblée nationale, base Sycomore des députés (fiches consultées le 29 octobre 2026) et listes annuelles de "
+     "rattachement des députés aux partis ; codage des positions politiques : CLSE (grille du 18 novembre 2026). "
+     "Saint-Barthélemy et Saint-Martin : circonscription propre depuis 2012", statut="Reconstitué", renvoi=RENVOI)
 # ───────────────────────────────────────── 4 · et dans l'administration
 st.markdown("### Et dans l'administration ?")
 g, d = st.columns([1.65, 1], gap="large")

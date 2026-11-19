@@ -1,154 +1,154 @@
-﻿legislature;territoire;famille_dominante;part_dominante_pct;part_Gauche_pct;part_Centre_pct;part_Droite_pct;part_Extrême droite_pct;part_Hors groupe ou groupe charnière_pct;part_Groupe non renseigné_pct
-1;Guadeloupe;Droite;66,7;33,3;0,0;66,7;0,0;0,0;0,0
-1;Guyane;Hors groupe ou groupe charnière;92,3;7,7;0,0;0,0;0,0;92,3;0,0
-1;La Réunion;Hors groupe ou groupe charnière;65,1;0,0;0,0;34,9;0,0;65,1;0,0
-1;Martinique;Partagé;33,4;33,4;33,4;0,0;0,0;33,2;0,0
-1;Nouvelle-Calédonie;Centre;100,0;0,0;100,0;0,0;0,0;0,0;0,0
-1;Polynésie française;Centre;65,3;0,0;65,3;0,0;0,0;0,0;34,7
-1;Saint-Pierre-et-Miquelon;Droite;89,1;10,9;0,0;89,1;0,0;0,0;0,0
-1;Wallis-et-Futuna;Droite;100,0;0,0;0,0;100,0;0,0;0,0;0,0
-2;Guadeloupe;Droite;66,7;33,3;0,0;66,7;0,0;0,0;0,0
-2;Guyane;Gauche;100,0;100,0;0,0;0,0;0,0;0,0;0,0
-2;La Réunion;Centre;66,6;0,0;66,6;33,4;0,0;0,0;0,0
-2;Martinique;Partagé;33,5;33,5;33,4;0,0;0,0;33,1;0,0
-2;Nouvelle-Calédonie;Centre;100,0;0,0;100,0;0,0;0,0;0,0;0,0
-2;Polynésie française;Centre;100,0;0,0;100,0;0,0;0,0;0,0;0,0
-2;Saint-Pierre-et-Miquelon;Groupe non renseigné;64,5;0,0;0,0;0,0;0,0;35,5;64,5
-2;Wallis-et-Futuna;Droite;100,0;0,0;0,0;100,0;0,0;0,0;0,0
-3;Guadeloupe;Gauche;66,7;66,7;0,0;33,3;0,0;0,0;0,0
-3;Guyane;Droite;100,0;0,0;0,0;100,0;0,0;0,0;0,0
-3;La Réunion;Droite;100,0;0,0;0,0;100,0;0,0;0,0;0,0
-3;Martinique;Droite;68,0;0,0;0,0;68,0;0,0;32,0;0,0
-3;Nouvelle-Calédonie;Centre;100,0;0,0;100,0;0,0;0,0;0,0;0,0
-3;Polynésie française;Droite;100,0;0,0;0,0;100,0;0,0;0,0;0,0
-3;Saint-Pierre-et-Miquelon;Droite;100,0;0,0;0,0;100,0;0,0;0,0;0,0
-3;Wallis-et-Futuna;Droite;100,0;0,0;0,0;100,0;0,0;0,0;0,0
-4;Guadeloupe;Droite;66,7;33,3;0,0;66,7;0,0;0,0;0,0
-4;Guyane;Droite;100,0;0,0;0,0;100,0;0,0;0,0;0,0
-4;La Réunion;Droite;100,0;0,0;0,0;100,0;0,0;0,0;0,0
-4;Martinique;Droite;66,9;0,0;0,0;66,9;0,0;33,1;0,0
-4;Nouvelle-Calédonie;Centre;100,0;0,0;100,0;0,0;0,0;0,0;0,0
-4;Polynésie française;Centre;100,0;0,0;100,0;0,0;0,0;0,0;0,0
-4;Saint-Pierre-et-Miquelon;Droite;100,0;0,0;0,0;100,0;0,0;0,0;0,0
-4;Wallis-et-Futuna;Droite;100,0;0,0;0,0;100,0;0,0;0,0;0,0
-5;Guadeloupe;Droite;37,4;0,0;0,0;37,4;0,0;33,6;29,0
-5;Guyane;Droite;100,0;0,0;0,0;100,0;0,0;0,0;0,0
-5;La Réunion;Droite;66,4;0,0;33,6;66,4;0,0;0,0;0,0
-5;Martinique;Droite;67,0;0,0;0,0;67,0;0,0;33,0;0,0
-5;Mayotte;Groupe non renseigné;100,0;0,0;0,0;0,0;0,0;0,0;100,0
-5;Nouvelle-Calédonie;Centre;100,0;0,0;100,0;0,0;0,0;0,0;0,0
-5;Polynésie française;Centre;100,0;0,0;100,0;0,0;0,0;0,0;0,0
-5;Saint-Pierre-et-Miquelon;Centre;100,0;0,0;100,0;0,0;0,0;0,0;0,0
-5;Wallis-et-Futuna;Droite;100,0;0,0;0,0;100,0;0,0;0,0;0,0
-6;Guadeloupe;Droite;100,0;0,0;0,0;100,0;0,0;0,0;0,0
-6;Guyane;Droite;100,0;0,0;0,0;100,0;0,0;0,0;0,0
-6;La Réunion;Partagé;33,5;0,0;33,5;32,9;0,0;33,5;0,0
-6;Martinique;Partagé;33,5;32,9;33,5;33,5;0,0;0,0;0,0
-6;Mayotte;Centre;100,0;0,0;100,0;0,0;0,0;0,0;0,0
-6;Nouvelle-Calédonie;Partagé;50,3;0,0;0,0;49,7;0,0;50,3;0,0
-6;Polynésie française;Partagé;50,0;0,0;50,0;50,0;0,0;0,0;0,0
-6;Saint-Pierre-et-Miquelon;Hors groupe ou groupe charnière;100,0;0,0;0,0;0,0;0,0;100,0;0,0
-6;Wallis-et-Futuna;Droite;100,0;0,0;0,0;100,0;0,0;0,0;0,0
-7;Guadeloupe;Gauche;66,7;66,7;33,3;0,0;0,0;0,0;0,0
-7;Guyane;Gauche;100,0;100,0;0,0;0,0;0,0;0,0;0,0
-7;La Réunion;Partagé;33,3;33,3;0,0;33,3;0,0;33,3;0,0
-7;Martinique;Partagé;33,3;33,3;0,0;33,3;0,0;33,3;0,0
-7;Mayotte;Gauche;100,0;100,0;0,0;0,0;0,0;0,0;0,0
-7;Nouvelle-Calédonie;Partagé;50,9;50,9;0,0;49,1;0,0;0,0;0,0
-7;Polynésie française;Hors groupe ou groupe charnière;51,1;0,0;0,0;48,9;0,0;51,1;0,0
-7;Saint-Pierre-et-Miquelon;Gauche;100,0;100,0;0,0;0,0;0,0;0,0;0,0
-7;Wallis-et-Futuna;Droite;100,0;0,0;0,0;100,0;0,0;0,0;0,0
-8;Guadeloupe;Partagé;50,0;50,0;0,0;50,0;0,0;0,0;0,0
-8;Guyane;Partagé;50,0;50,0;0,0;50,0;0,0;0,0;0,0
-8;La Réunion;Gauche;40,0;40,0;20,0;20,0;0,0;20,0;0,0
-8;Martinique;Gauche;50,0;50,0;25,0;25,0;0,0;0,0;0,0
-8;Mayotte;Centre;100,0;0,0;100,0;0,0;0,0;0,0;0,0
-8;Nouvelle-Calédonie;Droite;100,0;0,0;0,0;100,0;0,0;0,0;0,0
-8;Polynésie française;Partagé;50,0;0,0;0,0;50,0;0,0;0,0;50,0
-8;Saint-Pierre-et-Miquelon;Centre;74,0;26,0;74,0;0,0;0,0;0,0;0,0
-8;Wallis-et-Futuna;Droite;100,0;0,0;0,0;100,0;0,0;0,0;0,0
-9;Guadeloupe;Gauche;75,0;75,0;0,0;25,0;0,0;0,0;0,0
-9;Guyane;Partagé;50,1;50,1;0,0;0,0;0,0;49,9;0,0
-9;La Réunion;Hors groupe ou groupe charnière;60,0;0,0;20,0;20,0;0,0;60,0;0,0
-9;Martinique;Gauche;100,0;100,0;0,0;0,0;0,0;0,0;0,0
-9;Mayotte;Centre;100,0;0,0;100,0;0,0;0,0;0,0;0,0
-9;Nouvelle-Calédonie;Droite;100,0;0,0;0,0;100,0;0,0;0,0;0,0
-9;Polynésie française;Hors groupe ou groupe charnière;100,0;0,0;0,0;0,0;0,0;100,0;0,0
-9;Saint-Pierre-et-Miquelon;Centre;100,0;0,0;100,0;0,0;0,0;0,0;0,0
-9;Wallis-et-Futuna;Gauche;90,4;90,4;0,0;9,6;0,0;0,0;0,0
-10;Guadeloupe;Gauche;64,7;64,7;0,0;35,3;0,0;0,0;0,0
-10;Guyane;Droite;100,0;0,0;0,0;100,0;0,0;0,0;0,0
-10;La Réunion;Droite;59,1;20,4;20,4;59,1;0,0;0,0;0,0
-10;Martinique;Droite;75,0;25,0;0,0;75,0;0,0;0,0;0,0
-10;Mayotte;Centre;100,0;0,0;100,0;0,0;0,0;0,0;0,0
-10;Nouvelle-Calédonie;Droite;100,0;0,0;0,0;100,0;0,0;0,0;0,0
-10;Polynésie française;Droite;100,0;0,0;0,0;100,0;0,0;0,0;0,0
-10;Saint-Pierre-et-Miquelon;Centre;100,0;0,0;100,0;0,0;0,0;0,0;0,0
-10;Wallis-et-Futuna;Gauche;100,0;100,0;0,0;0,0;0,0;0,0;0,0
-11;Guadeloupe;Gauche;75,0;75,0;0,0;25,0;0,0;0,0;0,0
-11;Guyane;Partagé;50,0;50,0;0,0;50,0;0,0;0,0;0,0
-11;La Réunion;Gauche;79,2;79,2;0,0;0,0;0,0;20,8;0,0
-11;Martinique;Droite;50,0;25,0;0,0;50,0;0,0;25,0;0,0
-11;Mayotte;Centre;100,0;0,0;100,0;0,0;0,0;0,0;0,0
-11;Nouvelle-Calédonie;Droite;100,0;0,0;0,0;100,0;0,0;0,0;0,0
-11;Polynésie française;Droite;100,0;0,0;0,0;100,0;0,0;0,0;0,0
-11;Saint-Pierre-et-Miquelon;Centre;100,0;0,0;100,0;0,0;0,0;0,0;0,0
-11;Wallis-et-Futuna;Droite;100,0;0,0;0,0;100,0;0,0;0,0;0,0
-12;Guadeloupe;Droite;50,0;25,0;0,0;50,0;0,0;25,0;0,0
-12;Guyane;Partagé;50,0;0,0;0,0;50,0;0,0;50,0;0,0
-12;La Réunion;Droite;58,4;20,8;0,0;58,4;0,0;20,8;0,0
-12;Martinique;Hors groupe ou groupe charnière;49,3;25,3;0,0;25,3;0,0;49,3;0,0
-12;Mayotte;Droite;100,0;0,0;0,0;100,0;0,0;0,0;0,0
-12;Nouvelle-Calédonie;Droite;100,0;0,0;0,0;100,0;0,0;0,0;0,0
-12;Polynésie française;Droite;100,0;0,0;0,0;100,0;0,0;0,0;0,0
-12;Saint-Pierre-et-Miquelon;Droite;100,0;0,0;0,0;100,0;0,0;0,0;0,0
-12;Wallis-et-Futuna;Droite;100,0;0,0;0,0;100,0;0,0;0,0;0,0
-13;Guadeloupe;Gauche;75,0;75,0;0,0;25,0;0,0;0,0;0,0
-13;Guyane;Gauche;99,9;99,9;0,0;0,0;0,0;0,0;0,1
-13;La Réunion;Gauche;61,8;61,8;0,0;34,6;0,0;0,0;3,6
-13;Martinique;Gauche;75,0;75,0;0,0;25,0;0,0;0,0;0,0
-13;Mayotte;Hors groupe ou groupe charnière;100,0;0,0;0,0;0,0;0,0;100,0;0,0
-13;Nouvelle-Calédonie;Droite;100,0;0,0;0,0;100,0;0,0;0,0;0,0
-13;Polynésie française;Droite;100,0;0,0;0,0;100,0;0,0;0,0;0,0
-13;Saint-Pierre-et-Miquelon;Gauche;100,0;100,0;0,0;0,0;0,0;0,0;0,0
-13;Wallis-et-Futuna;Gauche;100,0;100,0;0,0;0,0;0,0;0,0;0,0
-14;Guadeloupe;Gauche;91,1;91,1;0,0;0,0;0,0;0,0;8,9
-14;Guyane;Gauche;100,0;100,0;0,0;0,0;0,0;0,0;0,0
-14;La Réunion;Gauche;100,0;100,0;0,0;0,0;0,0;0,0;0,0
-14;Martinique;Gauche;100,0;100,0;0,0;0,0;0,0;0,0;0,0
-14;Mayotte;Gauche;100,0;100,0;0,0;0,0;0,0;0,0;0,0
-14;Nouvelle-Calédonie;Centre;100,0;0,0;100,0;0,0;0,0;0,0;0,0
-14;Polynésie française;Centre;100,0;0,0;100,0;0,0;0,0;0,0;0,0
-14;Saint-Barthélemy et Saint-Martin;Droite;100,0;0,0;0,0;100,0;0,0;0,0;0,0
-14;Saint-Pierre-et-Miquelon;Gauche;100,0;100,0;0,0;0,0;0,0;0,0;0,0
-14;Wallis-et-Futuna;Gauche;87,6;87,6;0,0;0,0;0,0;12,4;0,0
-15;Guadeloupe;Centre;75,0;25,0;75,0;0,0;0,0;0,0;0,0
-15;Guyane;Centre;53,6;46,4;53,6;0,0;0,0;0,0;0,0
-15;La Réunion;Droite;54,2;42,8;3,0;54,2;0,0;0,0;0,0
-15;Martinique;Gauche;100,0;100,0;0,0;0,0;0,0;0,0;0,0
-15;Mayotte;Partagé;50,9;0,0;49,1;50,9;0,0;0,0;0,0
-15;Nouvelle-Calédonie;Centre;100,0;0,0;100,0;0,0;0,0;0,0;0,0
-15;Polynésie française;Centre;66,7;33,3;66,7;0,0;0,0;0,0;0,0
-15;Saint-Barthélemy et Saint-Martin;Droite;100,0;0,0;0,0;100,0;0,0;0,0;0,0
-15;Saint-Pierre-et-Miquelon;Centre;100,0;0,0;100,0;0,0;0,0;0,0;0,0
-15;Wallis-et-Futuna;Centre;100,0;0,0;100,0;0,0;0,0;0,0;0,0
-16;Guadeloupe;Partagé;50,0;50,0;0,0;0,0;0,0;50,0;0,0
-16;Guyane;Gauche;100,0;100,0;0,0;0,0;0,0;0,0;0,0
-16;La Réunion;Gauche;85,7;85,7;0,0;0,0;0,0;14,3;0,0
-16;Martinique;Gauche;100,0;100,0;0,0;0,0;0,0;0,0;0,0
-16;Mayotte;Partagé;50,0;0,0;0,0;50,0;0,0;50,0;0,0
-16;Nouvelle-Calédonie;Centre;100,0;0,0;100,0;0,0;0,0;0,0;0,0
-16;Polynésie française;Gauche;100,0;100,0;0,0;0,0;0,0;0,0;0,0
-16;Saint-Barthélemy et Saint-Martin;Centre;100,0;0,0;100,0;0,0;0,0;0,0;0,0
-16;Saint-Pierre-et-Miquelon;Hors groupe ou groupe charnière;100,0;0,0;0,0;0,0;0,0;100,0;0,0
-16;Wallis-et-Futuna;Centre;100,0;0,0;100,0;0,0;0,0;0,0;0,0
-17;Guadeloupe;Partagé;50,0;50,0;0,0;0,0;0,0;50,0;0,0
-17;Guyane;Gauche;100,0;100,0;0,0;0,0;0,0;0,0;0,0
-17;La Réunion;Gauche;85,7;85,7;0,0;0,0;14,3;0,0;0,0
-17;Martinique;Gauche;100,0;100,0;0,0;0,0;0,0;0,0;0,0
-17;Mayotte;Partagé;50,2;0,0;0,0;0,0;49,8;50,2;0,0
-17;Nouvelle-Calédonie;Partagé;50,0;50,0;50,0;0,0;0,0;0,0;0,0
-17;Polynésie française;Partagé;33,5;33,2;33,5;0,0;0,0;33,2;0,0
-17;Saint-Barthélemy et Saint-Martin;Centre;100,0;0,0;100,0;0,0;0,0;0,0;0,0
-17;Saint-Pierre-et-Miquelon;Hors groupe ou groupe charnière;100,0;0,0;0,0;0,0;0,0;100,0;0,0
-17;Wallis-et-Futuna;Centre;100,0;0,0;100,0;0,0;0,0;0,0;0,0
+﻿legislature;territoire;position_dominante;part_dominante_pct;famille_dominante;part_AI_pct;part_GR_pct;part_GS_pct;part_C_pct;part_CD_pct;part_D_pct;part_ED_pct;part_Co_pct;part_ND_pct
+1;Guadeloupe;Droite;66,7;Droite;0,0;0,0;33,3;0,0;0,0;66,7;0,0;0,0;0,0
+1;Guyane;Non déterminée;92,3;Non déterminée;0,0;0,0;7,7;0,0;0,0;0,0;0,0;0,0;92,3
+1;La Réunion;Non déterminée;65,1;Non déterminée;0,0;0,0;0,0;0,0;0,0;34,9;0,0;0,0;65,1
+1;Martinique;Partagé;33,4;Partagé;0,0;0,0;33,4;33,4;0,0;0,0;0,0;0,0;33,2
+1;Nouvelle-Calédonie;Centre;100,0;Droite;0,0;0,0;0,0;100,0;0,0;0,0;0,0;0,0;0,0
+1;Polynésie française;Centre;65,3;Droite;0,0;0,0;0,0;65,3;0,0;0,0;0,0;0,0;34,7
+1;Saint-Pierre-et-Miquelon;Droite;89,1;Droite;0,0;0,0;10,9;0,0;0,0;89,1;0,0;0,0;0,0
+1;Wallis-et-Futuna;Droite;100,0;Droite;0,0;0,0;0,0;0,0;0,0;100,0;0,0;0,0;0,0
+2;Guadeloupe;Droite;66,7;Droite;0,0;0,0;33,3;0,0;0,0;66,7;0,0;0,0;0,0
+2;Guyane;Gauche socialiste / réformiste;100,0;Gauche;0,0;0,0;100,0;0,0;0,0;0,0;0,0;0,0;0,0
+2;La Réunion;Centre;66,6;Droite;0,0;0,0;0,0;66,6;0,0;33,4;0,0;0,0;0,0
+2;Martinique;Partagé;33,5;Partagé;0,0;0,0;33,5;33,4;0,0;0,0;0,0;0,0;33,1
+2;Nouvelle-Calédonie;Centre;100,0;Droite;0,0;0,0;0,0;100,0;0,0;0,0;0,0;0,0;0,0
+2;Polynésie française;Centre;100,0;Droite;0,0;0,0;0,0;100,0;0,0;0,0;0,0;0,0;0,0
+2;Saint-Pierre-et-Miquelon;Non déterminée;100,0;Non déterminée;0,0;0,0;0,0;0,0;0,0;0,0;0,0;0,0;100,0
+2;Wallis-et-Futuna;Droite;100,0;Droite;0,0;0,0;0,0;0,0;0,0;100,0;0,0;0,0;0,0
+3;Guadeloupe;Partagé;33,3;Partagé;0,0;33,3;33,3;0,0;0,0;33,3;0,0;0,0;0,0
+3;Guyane;Droite;100,0;Droite;0,0;0,0;0,0;0,0;0,0;100,0;0,0;0,0;0,0
+3;La Réunion;Droite;100,0;Droite;0,0;0,0;0,0;0,0;0,0;100,0;0,0;0,0;0,0
+3;Martinique;Droite;68,0;Droite;0,0;0,0;0,0;0,0;0,0;68,0;0,0;0,0;32,0
+3;Nouvelle-Calédonie;Centre;100,0;Droite;0,0;0,0;0,0;100,0;0,0;0,0;0,0;0,0;0,0
+3;Polynésie française;Droite;100,0;Droite;0,0;0,0;0,0;0,0;0,0;100,0;0,0;0,0;0,0
+3;Saint-Pierre-et-Miquelon;Droite;100,0;Droite;0,0;0,0;0,0;0,0;0,0;100,0;0,0;0,0;0,0
+3;Wallis-et-Futuna;Droite;100,0;Droite;0,0;0,0;0,0;0,0;0,0;100,0;0,0;0,0;0,0
+4;Guadeloupe;Droite;66,7;Droite;0,0;33,3;0,0;0,0;0,0;66,7;0,0;0,0;0,0
+4;Guyane;Droite;100,0;Droite;0,0;0,0;0,0;0,0;0,0;100,0;0,0;0,0;0,0
+4;La Réunion;Droite;100,0;Droite;0,0;0,0;0,0;0,0;0,0;100,0;0,0;0,0;0,0
+4;Martinique;Droite;66,9;Droite;0,0;0,0;0,0;0,0;0,0;66,9;0,0;0,0;33,1
+4;Nouvelle-Calédonie;Centre;100,0;Droite;0,0;0,0;0,0;100,0;0,0;0,0;0,0;0,0;0,0
+4;Polynésie française;Centre;100,0;Droite;0,0;0,0;0,0;100,0;0,0;0,0;0,0;0,0;0,0
+4;Saint-Pierre-et-Miquelon;Droite;100,0;Droite;0,0;0,0;0,0;0,0;0,0;100,0;0,0;0,0;0,0
+4;Wallis-et-Futuna;Droite;100,0;Droite;0,0;0,0;0,0;0,0;0,0;100,0;0,0;0,0;0,0
+5;Guadeloupe;Non déterminée;62,6;Non déterminée;0,0;0,0;0,0;0,0;0,0;37,4;0,0;0,0;62,6
+5;Guyane;Droite;100,0;Droite;0,0;0,0;0,0;0,0;0,0;100,0;0,0;0,0;0,0
+5;La Réunion;Droite;66,4;Droite;0,0;0,0;0,0;33,6;0,0;66,4;0,0;0,0;0,0
+5;Martinique;Droite;67,0;Droite;0,0;0,0;0,0;0,0;0,0;67,0;0,0;0,0;33,0
+5;Mayotte;Non déterminée;100,0;Non déterminée;0,0;0,0;0,0;0,0;0,0;0,0;0,0;0,0;100,0
+5;Nouvelle-Calédonie;Centre;100,0;Droite;0,0;0,0;0,0;100,0;0,0;0,0;0,0;0,0;0,0
+5;Polynésie française;Centre;100,0;Droite;0,0;0,0;0,0;100,0;0,0;0,0;0,0;0,0;0,0
+5;Saint-Pierre-et-Miquelon;Centre;100,0;Droite;0,0;0,0;0,0;100,0;0,0;0,0;0,0;0,0;0,0
+5;Wallis-et-Futuna;Droite;100,0;Droite;0,0;0,0;0,0;0,0;0,0;100,0;0,0;0,0;0,0
+6;Guadeloupe;Droite;100,0;Droite;0,0;0,0;0,0;0,0;0,0;100,0;0,0;0,0;0,0
+6;Guyane;Droite;100,0;Droite;0,0;0,0;0,0;0,0;0,0;100,0;0,0;0,0;0,0
+6;La Réunion;Partagé;33,5;Partagé;0,0;0,0;0,0;33,5;0,0;32,9;0,0;0,0;33,5
+6;Martinique;Partagé;33,5;Partagé;0,0;0,0;32,9;33,5;0,0;33,5;0,0;0,0;0,0
+6;Mayotte;Centre;100,0;Droite;0,0;0,0;0,0;100,0;0,0;0,0;0,0;0,0;0,0
+6;Nouvelle-Calédonie;Partagé;50,3;Partagé;0,0;0,0;0,0;0,0;0,0;49,7;0,0;0,0;50,3
+6;Polynésie française;Partagé;50,0;Partagé;0,0;0,0;0,0;50,0;0,0;50,0;0,0;0,0;0,0
+6;Saint-Pierre-et-Miquelon;Non déterminée;100,0;Non déterminée;0,0;0,0;0,0;0,0;0,0;0,0;0,0;0,0;100,0
+6;Wallis-et-Futuna;Droite;100,0;Droite;0,0;0,0;0,0;0,0;0,0;100,0;0,0;0,0;0,0
+7;Guadeloupe;Partagé;33,3;Partagé;0,0;33,3;33,3;33,3;0,0;0,0;0,0;0,0;0,0
+7;Guyane;Gauche socialiste / réformiste;100,0;Gauche;0,0;0,0;100,0;0,0;0,0;0,0;0,0;0,0;0,0
+7;La Réunion;Partagé;33,3;Partagé;0,0;0,0;33,3;0,0;0,0;33,3;0,0;0,0;33,3
+7;Martinique;Partagé;33,3;Partagé;0,0;0,0;33,3;0,0;0,0;33,3;0,0;0,0;33,3
+7;Mayotte;Gauche socialiste / réformiste;100,0;Gauche;0,0;0,0;100,0;0,0;0,0;0,0;0,0;0,0;0,0
+7;Nouvelle-Calédonie;Partagé;50,9;Partagé;0,0;0,0;50,9;0,0;0,0;49,1;0,0;0,0;0,0
+7;Polynésie française;Non déterminée;51,1;Non déterminée;0,0;0,0;0,0;0,0;0,0;48,9;0,0;0,0;51,1
+7;Saint-Pierre-et-Miquelon;Gauche socialiste / réformiste;100,0;Gauche;0,0;0,0;100,0;0,0;0,0;0,0;0,0;0,0;0,0
+7;Wallis-et-Futuna;Droite;100,0;Droite;0,0;0,0;0,0;0,0;0,0;100,0;0,0;0,0;0,0
+8;Guadeloupe;Droite;50,0;Droite;0,0;25,0;25,0;0,0;0,0;50,0;0,0;0,0;0,0
+8;Guyane;Partagé;50,0;Partagé;0,0;0,0;50,0;0,0;0,0;50,0;0,0;0,0;0,0
+8;La Réunion;Gauche radicale / communiste;40,0;Gauche;0,0;40,0;0,0;20,0;0,0;20,0;0,0;0,0;20,0
+8;Martinique;Gauche socialiste / réformiste;50,0;Gauche;0,0;0,0;50,0;25,0;0,0;25,0;0,0;0,0;0,0
+8;Mayotte;Centre;100,0;Droite;0,0;0,0;0,0;100,0;0,0;0,0;0,0;0,0;0,0
+8;Nouvelle-Calédonie;Droite;100,0;Droite;0,0;0,0;0,0;0,0;0,0;100,0;0,0;0,0;0,0
+8;Polynésie française;Partagé;50,0;Partagé;0,0;0,0;0,0;0,0;0,0;50,0;0,0;0,0;50,0
+8;Saint-Pierre-et-Miquelon;Centre;74,0;Droite;0,0;0,0;26,0;74,0;0,0;0,0;0,0;0,0;0,0
+8;Wallis-et-Futuna;Droite;100,0;Droite;0,0;0,0;0,0;0,0;0,0;100,0;0,0;0,0;0,0
+9;Guadeloupe;Gauche socialiste / réformiste;50,0;Gauche;0,0;25,0;50,0;0,0;0,0;25,0;0,0;0,0;0,0
+9;Guyane;Partagé;50,1;Partagé;0,0;0,0;50,1;0,0;0,0;0,0;0,0;0,0;49,9
+9;La Réunion;Non déterminée;60,0;Non déterminée;0,0;0,0;0,0;20,0;0,0;20,0;0,0;0,0;60,0
+9;Martinique;Gauche socialiste / réformiste;100,0;Gauche;0,0;0,0;100,0;0,0;0,0;0,0;0,0;0,0;0,0
+9;Mayotte;Centre;100,0;Droite;0,0;0,0;0,0;100,0;0,0;0,0;0,0;0,0;0,0
+9;Nouvelle-Calédonie;Droite;100,0;Droite;0,0;0,0;0,0;0,0;0,0;100,0;0,0;0,0;0,0
+9;Polynésie française;Non déterminée;100,0;Non déterminée;0,0;0,0;0,0;0,0;0,0;0,0;0,0;0,0;100,0
+9;Saint-Pierre-et-Miquelon;Centre;100,0;Droite;0,0;0,0;0,0;100,0;0,0;0,0;0,0;0,0;0,0
+9;Wallis-et-Futuna;Gauche socialiste / réformiste;90,4;Gauche;0,0;0,0;90,4;0,0;0,0;9,6;0,0;0,0;0,0
+10;Guadeloupe;Gauche socialiste / réformiste;39,4;Gauche;0,0;25,3;39,4;0,0;0,0;25,3;0,0;9,9;0,0
+10;Guyane;Partagé;50,0;Partagé;0,0;0,0;0,0;0,0;0,0;50,0;0,0;50,0;0,0
+10;La Réunion;Composite / transversal;38,7;Composite;0,0;0,0;20,4;20,4;0,0;20,4;0,0;38,7;0,0
+10;Martinique;Droite;75,0;Droite;0,0;0,0;25,0;0,0;0,0;75,0;0,0;0,0;0,0
+10;Mayotte;Centre;100,0;Droite;0,0;0,0;0,0;100,0;0,0;0,0;0,0;0,0;0,0
+10;Nouvelle-Calédonie;Droite;100,0;Droite;0,0;0,0;0,0;0,0;0,0;100,0;0,0;0,0;0,0
+10;Polynésie française;Partagé;50,0;Partagé;0,0;0,0;0,0;0,0;0,0;50,0;0,0;50,0;0,0
+10;Saint-Pierre-et-Miquelon;Centre;100,0;Droite;0,0;0,0;0,0;100,0;0,0;0,0;0,0;0,0;0,0
+10;Wallis-et-Futuna;Gauche socialiste / réformiste;100,0;Gauche;0,0;0,0;100,0;0,0;0,0;0,0;0,0;0,0;0,0
+11;Guadeloupe;Gauche socialiste / réformiste;50,0;Gauche;0,0;25,0;50,0;0,0;0,0;25,0;0,0;0,0;0,0
+11;Guyane;Partagé;50,0;Partagé;0,0;0,0;50,0;0,0;0,0;50,0;0,0;0,0;0,0
+11;La Réunion;Gauche socialiste / réformiste;79,2;Gauche;0,0;0,0;79,2;0,0;0,0;0,0;0,0;0,0;20,8
+11;Martinique;Droite;50,0;Droite;0,0;0,0;25,0;0,0;0,0;50,0;0,0;0,0;25,0
+11;Mayotte;Centre;100,0;Droite;0,0;0,0;0,0;100,0;0,0;0,0;0,0;0,0;0,0
+11;Nouvelle-Calédonie;Droite;100,0;Droite;0,0;0,0;0,0;0,0;0,0;100,0;0,0;0,0;0,0
+11;Polynésie française;Droite;100,0;Droite;0,0;0,0;0,0;0,0;0,0;100,0;0,0;0,0;0,0
+11;Saint-Pierre-et-Miquelon;Centre;100,0;Droite;0,0;0,0;0,0;100,0;0,0;0,0;0,0;0,0;0,0
+11;Wallis-et-Futuna;Droite;100,0;Droite;0,0;0,0;0,0;0,0;0,0;100,0;0,0;0,0;0,0
+12;Guadeloupe;Droite;50,0;Droite;0,0;0,0;25,0;0,0;0,0;50,0;0,0;0,0;25,0
+12;Guyane;Partagé;50,0;Partagé;0,0;0,0;0,0;0,0;0,0;50,0;0,0;0,0;50,0
+12;La Réunion;Droite;58,4;Droite;0,0;0,0;20,8;0,0;0,0;58,4;0,0;0,0;20,8
+12;Martinique;Non déterminée;49,3;Non déterminée;0,0;0,0;25,3;0,0;0,0;25,3;0,0;0,0;49,3
+12;Mayotte;Droite;100,0;Droite;0,0;0,0;0,0;0,0;0,0;100,0;0,0;0,0;0,0
+12;Nouvelle-Calédonie;Droite;100,0;Droite;0,0;0,0;0,0;0,0;0,0;100,0;0,0;0,0;0,0
+12;Polynésie française;Droite;100,0;Droite;0,0;0,0;0,0;0,0;0,0;100,0;0,0;0,0;0,0
+12;Saint-Pierre-et-Miquelon;Droite;100,0;Droite;0,0;0,0;0,0;0,0;0,0;100,0;0,0;0,0;0,0
+12;Wallis-et-Futuna;Droite;100,0;Droite;0,0;0,0;0,0;0,0;0,0;100,0;0,0;0,0;0,0
+13;Guadeloupe;Gauche socialiste / réformiste;75,0;Gauche;0,0;0,0;75,0;0,0;0,0;25,0;0,0;0,0;0,0
+13;Guyane;Gauche socialiste / réformiste;99,9;Gauche;0,0;0,0;99,9;0,0;0,0;0,0;0,0;0,0;0,1
+13;La Réunion;Gauche socialiste / réformiste;41,2;Gauche;0,0;20,6;41,2;0,0;0,0;34,6;0,0;0,0;3,6
+13;Martinique;Gauche socialiste / réformiste;50,0;Gauche;25,0;0,0;50,0;0,0;0,0;25,0;0,0;0,0;0,0
+13;Mayotte;Non déterminée;100,0;Non déterminée;0,0;0,0;0,0;0,0;0,0;0,0;0,0;0,0;100,0
+13;Nouvelle-Calédonie;Droite;100,0;Droite;0,0;0,0;0,0;0,0;0,0;100,0;0,0;0,0;0,0
+13;Polynésie française;Droite;100,0;Droite;0,0;0,0;0,0;0,0;0,0;100,0;0,0;0,0;0,0
+13;Saint-Pierre-et-Miquelon;Gauche socialiste / réformiste;100,0;Gauche;0,0;0,0;100,0;0,0;0,0;0,0;0,0;0,0;0,0
+13;Wallis-et-Futuna;Gauche socialiste / réformiste;100,0;Gauche;0,0;0,0;100,0;0,0;0,0;0,0;0,0;0,0;0,0
+14;Guadeloupe;Gauche socialiste / réformiste;91,1;Gauche;0,0;0,0;91,1;0,0;0,0;0,0;0,0;0,0;8,9
+14;Guyane;Gauche socialiste / réformiste;100,0;Gauche;0,0;0,0;100,0;0,0;0,0;0,0;0,0;0,0;0,0
+14;La Réunion;Gauche socialiste / réformiste;85,7;Gauche;0,0;14,3;85,7;0,0;0,0;0,0;0,0;0,0;0,0
+14;Martinique;Partagé;50,0;Partagé;50,0;0,0;50,0;0,0;0,0;0,0;0,0;0,0;0,0
+14;Mayotte;Gauche socialiste / réformiste;100,0;Gauche;0,0;0,0;100,0;0,0;0,0;0,0;0,0;0,0;0,0
+14;Nouvelle-Calédonie;Centre droit;100,0;Droite;0,0;0,0;0,0;0,0;100,0;0,0;0,0;0,0;0,0
+14;Polynésie française;Centre droit;100,0;Droite;0,0;0,0;0,0;0,0;100,0;0,0;0,0;0,0;0,0
+14;Saint-Barthélemy et Saint-Martin;Droite;100,0;Droite;0,0;0,0;0,0;0,0;0,0;100,0;0,0;0,0;0,0
+14;Saint-Pierre-et-Miquelon;Gauche socialiste / réformiste;100,0;Gauche;0,0;0,0;100,0;0,0;0,0;0,0;0,0;0,0;0,0
+14;Wallis-et-Futuna;Gauche socialiste / réformiste;87,6;Gauche;0,0;0,0;87,6;0,0;0,0;0,0;0,0;0,0;12,4
+15;Guadeloupe;Centre;75,0;Droite;0,0;0,0;25,0;75,0;0,0;0,0;0,0;0,0;0,0
+15;Guyane;Centre;53,6;Droite;46,4;0,0;0,0;53,6;0,0;0,0;0,0;0,0;0,0
+15;La Réunion;Droite;54,2;Droite;0,0;28,3;14,5;3,0;0,0;54,2;0,0;0,0;0,0
+15;Martinique;Gauche socialiste / réformiste;73,7;Gauche;26,3;0,0;73,7;0,0;0,0;0,0;0,0;0,0;0,0
+15;Mayotte;Partagé;50,9;Partagé;0,0;0,0;0,0;49,1;0,0;50,9;0,0;0,0;0,0
+15;Nouvelle-Calédonie;Centre droit;100,0;Droite;0,0;0,0;0,0;0,0;100,0;0,0;0,0;0,0;0,0
+15;Polynésie française;Centre droit;66,7;Droite;33,3;0,0;0,0;0,0;66,7;0,0;0,0;0,0;0,0
+15;Saint-Barthélemy et Saint-Martin;Droite;100,0;Droite;0,0;0,0;0,0;0,0;0,0;100,0;0,0;0,0;0,0
+15;Saint-Pierre-et-Miquelon;Centre;100,0;Droite;0,0;0,0;0,0;100,0;0,0;0,0;0,0;0,0;0,0
+15;Wallis-et-Futuna;Centre droit;100,0;Droite;0,0;0,0;0,0;0,0;100,0;0,0;0,0;0,0;0,0
+16;Guadeloupe;Partagé;50,0;Partagé;0,0;0,0;50,0;0,0;0,0;0,0;0,0;50,0;0,0
+16;Guyane;Gauche autonomiste / indépendantiste;100,0;Gauche;100,0;0,0;0,0;0,0;0,0;0,0;0,0;0,0;0,0
+16;La Réunion;Gauche radicale / communiste;57,1;Gauche;0,0;57,1;28,6;0,0;0,0;0,0;0,0;14,3;0,0
+16;Martinique;Gauche autonomiste / indépendantiste;50,0;Gauche;50,0;25,0;25,0;0,0;0,0;0,0;0,0;0,0;0,0
+16;Mayotte;Partagé;50,0;Partagé;0,0;0,0;0,0;0,0;0,0;50,0;0,0;50,0;0,0
+16;Nouvelle-Calédonie;Centre;100,0;Droite;0,0;0,0;0,0;100,0;0,0;0,0;0,0;0,0;0,0
+16;Polynésie française;Gauche autonomiste / indépendantiste;100,0;Gauche;100,0;0,0;0,0;0,0;0,0;0,0;0,0;0,0;0,0
+16;Saint-Barthélemy et Saint-Martin;Centre;100,0;Droite;0,0;0,0;0,0;100,0;0,0;0,0;0,0;0,0;0,0
+16;Saint-Pierre-et-Miquelon;Composite / transversal;100,0;Composite;0,0;0,0;0,0;0,0;0,0;0,0;0,0;100,0;0,0
+16;Wallis-et-Futuna;Centre;100,0;Droite;0,0;0,0;0,0;100,0;0,0;0,0;0,0;0,0;0,0
+17;Guadeloupe;Partagé;50,0;Partagé;0,0;0,0;50,0;0,0;0,0;0,0;0,0;50,0;0,0
+17;Guyane;Gauche autonomiste / indépendantiste;100,0;Gauche;100,0;0,0;0,0;0,0;0,0;0,0;0,0;0,0;0,0
+17;La Réunion;Gauche radicale / communiste;57,1;Gauche;0,0;57,1;28,6;0,0;0,0;0,0;14,3;0,0;0,0
+17;Martinique;Gauche socialiste / réformiste;50,0;Gauche;25,0;25,0;50,0;0,0;0,0;0,0;0,0;0,0;0,0
+17;Mayotte;Partagé;50,2;Partagé;0,0;0,0;0,0;0,0;0,0;0,0;49,8;50,2;0,0
+17;Nouvelle-Calédonie;Partagé;50,0;Partagé;50,0;0,0;0,0;50,0;0,0;0,0;0,0;0,0;0,0
+17;Polynésie française;Partagé;33,5;Partagé;33,2;0,0;0,0;33,5;0,0;0,0;0,0;33,2;0,0
+17;Saint-Barthélemy et Saint-Martin;Centre;100,0;Droite;0,0;0,0;0,0;100,0;0,0;0,0;0,0;0,0;0,0
+17;Saint-Pierre-et-Miquelon;Composite / transversal;100,0;Composite;0,0;0,0;0,0;0,0;0,0;0,0;0,0;100,0;0,0
+17;Wallis-et-Futuna;Centre;100,0;Droite;0,0;0,0;0,0;100,0;0,0;0,0;0,0;0,0;0,0
