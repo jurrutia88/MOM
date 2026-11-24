@@ -9,8 +9,8 @@ import plotly.graph_objects as go
 import streamlit as st
 
 import charte as c
-from composants import (carte, deux_lignes, entete, fond, fr, glossaire, lire, pied, sigle, telecharger,
-                        tuile)
+from composants import (annees, carte, deux_lignes, en_lettres, entete, fond, fr, glossaire, lire, pied, sigle,
+                        telecharger, tuile)
 
 RENVOI = "partie « Comment fonctionne le ministère »"       # intitulé définitif à caler sur le rapport
 
@@ -27,6 +27,14 @@ A = lire("fonctionnement_actions.csv")
 A["libelle"] = A.action.map(lambda t: deux_lignes(t, 26))
 R = lire("restes_serie.csv")
 rap_2025 = R.restes_a_payer_m.iloc[-1]
+an_rap = int(R.annee.iloc[-1])
+mis_rap = R.mission_m.iloc[-1]
+rap_2017 = R.set_index("annee").restes_a_payer_m[2017]
+# tous les chiffres des phrases viennent des données : rien n'est écrit à la main (José, 24 novembre 2026)
+K = lire("chiffres_cites.csv").set_index("cle").valeur
+lodeom = A.set_index("code").loc["138-01"]
+dot = A.set_index("code").loc["123-06"]
+engage = A.contraint_eur.sum() / A.cp_eur.sum()               # part de la mission engagée d'avance
 
 entete("Écran 4 · Le budget", "Quel pouvoir budgétaire réel a le ministère ?",
        "Ce que l'État consacre aux outre-mer, ce que le ministère en porte, et ce qu'il en décide vraiment. "
@@ -36,8 +44,8 @@ glossaire(["DPT", "Mission Outre-mer", "P138", "P123", "LODEOM", "CP", "restes �
 # ───────────────────────────────────────── les quatre chiffres
 t = st.columns(4)
 tuile(t[0], f"{fr(dpt / 1e9, 2)} Md€", "consacrés par l'État aux outre-mer en 2026, tous ministères confondus")
-tuile(t[1], f"{fr(p_mission)} %", "portés par le ministère des Outre-mer, soit 2,83 Md€", "bleugris")
-tuile(t[2], f"{fr(p_marge)} %", "<b>soit cinq euros sur cent</b> : la part que le ministère décide réellement",
+tuile(t[1], f"{fr(p_mission)} %", f"portés par le ministère des Outre-mer, soit {fr(mission / 1e9, 2)} Md€", "bleugris")
+tuile(t[2], f"{fr(p_marge)} %", f"<b>soit {en_lettres(p_marge)} euros sur cent</b> : la part que le ministère décide réellement",
       "orange")
 tuile(t[3], f"{fr(100 - p_mission, 0)} %", "de l'effort passe par d'autres ministères, qui le décident selon "
       "leurs propres règles", "orange")
@@ -70,14 +78,16 @@ with g:
     st.plotly_chart(fig, width="stretch", config=c.CONFIG)
 with d:
     carte("Ce graphique montre que…",
-          [f"sur 100 euros que l'État consacre aux outre-mer, le ministère en porte près de 13, et n'en "
-           f"décide réellement que 5.",
+          [f"sur 100 euros que l'État consacre aux outre-mer, le ministère en porte près de {fr(p_mission, 0)}, "
+           f"et n'en décide réellement que {fr(p_marge, 0)}.",
            f"Le reste de sa {sigle('Mission Outre-mer', 'mission')} est engagé d'avance : la compensation "
-           f"automatique des exonérations de charges ({sigle('LODEOM')}, 1,48 Md€) et la moitié des dotations "
-           f"aux collectivités. Restent 1,12 Md€ que le ministère arbitre chaque année."], "orange")
+           f"automatique des exonérations de charges ({sigle('LODEOM')}, {fr(lodeom.cp_eur / 1e9, 2)} Md€) et la "
+           f"moitié des dotations aux collectivités. Restent {fr(marge / 1e9, 2)} Md€ que le ministère arbitre "
+           f"chaque année."], "orange")
     carte("Comment c'est calculé",
-          [f"Mission Outre-mer 2,83 Md€ − compensation LODEOM 1,48 − moitié des dotations aux collectivités "
-           f"0,23 = 1,12 Md€, rapportés aux 21,94 Md€ du {sigle('DPT')}.",
+          [f"Mission Outre-mer {fr(mission / 1e9, 2)} Md€ − compensation LODEOM {fr(lodeom.cp_eur / 1e9, 2)} − moitié "
+           f"des dotations aux collectivités {fr(dot.contraint_eur / 1e9, 2)} = {fr(marge / 1e9, 2)} Md€, rapportés "
+           f"aux {fr(dpt / 1e9, 2)} Md€ du {sigle('DPT')}.",
            "La moitié des dotations est une convention : elles sont en partie garanties par la loi."], "bleugris")
 pied("DPT Outre-mer 2026, p. 10 ; PAP Mission Outre-mer 2026, récapitulation par action", renvoi=RENVOI)
 
@@ -113,10 +123,8 @@ with g:
                       legend=dict(orientation="h", y=1.02, yanchor="bottom"))
     st.plotly_chart(fig, width="stretch", config=c.CONFIG)
 with d:
-    lodeom = A.set_index("code").loc["138-01"]
-    dot = A.set_index("code").loc["123-06"]
     carte("Ce graphique montre que…",
-          [f"<b>six euros sur dix sont engagés d'avance</b> : la compensation des exonérations de charges "
+          [f"<b>{en_lettres(10 * engage)} euros sur dix sont engagés d'avance</b> : la compensation des exonérations de charges "
            f"({sigle('LODEOM')}, {fr(lodeom.cp_eur / 1e9, 2)} Md€, {fr(lodeom.part_programme_pct, 0)} % du "
            f"programme emploi), qui suit la masse salariale, et la moitié des dotations aux collectivités "
            f"({fr(dot.contraint_eur / 1e6, 0)} M€ sur {fr(dot.cp_eur / 1e6, 0)}).",
@@ -166,15 +174,20 @@ with g:
     st.plotly_chart(fig, width="stretch", config=c.CONFIG)
 with d:
     carte("Ce graphique montre que…",
-          [f"<b>fin 2025, {fr(rap_2025 / 1000, 2)} Md€ d'engagements pris et non payés : plus que le budget "
-           f"d'une année, + 76 % depuis 2017.</b>",
-           f"Pourquoi : l'État engage l'opération entière dès la signature et paie au rythme des travaux. Or 62 % "
-           f"de ces {sigle('restes à payer')} sont des interventions au profit des collectivités : le paiement suit "
-           f"leur ingénierie et leurs chantiers, pas la décision budgétaire.",
-           "Et pas seulement : la Cour des comptes relève des projets mal calibrés et des engagements devenus sans "
-           "objet, jamais soldés — 534 M€ d'écart pour la seule année 2025."], "orange")
-pied("Cour des comptes, notes d'exécution budgétaire de la mission Outre-mer 2013-2025 (tableau n° 13 pour 2025). "
-     "2016 et 2022 : montant non publié", renvoi=RENVOI)
+          [f"<b>fin {an_rap}, {fr(rap_2025 / 1000, 2)} Md€ d'engagements pris et non payés : "
+           f"{'plus' if rap_2025 > mis_rap else 'moins'} que le budget d'une année, "
+           f"+ {fr(100 * (rap_2025 / rap_2017 - 1), 0)} % depuis 2017.</b>",
+           f"Pourquoi : l'État engage l'opération entière dès la signature et paie au rythme des travaux. Or "
+           f"{fr(K['rap_interventions_collectivites_2025'], 0)} % de ces {sigle('restes à payer')} sont des "
+           f"interventions au profit des collectivités : le paiement suit leur ingénierie et leurs chantiers, pas "
+           f"la décision budgétaire.",
+           f"Et le stock se nourrit chaque année : en 2025, la loi de finances a ouvert sur le programme 123 "
+           f"{fr(K['ecart_ae_cp_p123_2025'], 0)} M€ d'autorisations d'engagement de plus que de crédits de "
+           f"paiement. La Cour des comptes relève aussi des projets mal calibrés et des engagements devenus sans "
+           f"objet, jamais soldés."], "orange")
+pied(f"Cour des comptes, notes d'exécution budgétaire de la mission Outre-mer {R.annee.min()}-{an_rap} (exécution "
+     f"2025 : p. 6 et 31, tableau n° 13). {annees(R[R.restes_a_payer_m.isna()].annee)} : montant non publié",
+     renvoi=RENVOI)
 
 # ───────────────────────────────────────── 4 · qui porte l'effort
 st.markdown("### Qui porte l'effort de l'État outre-mer ?")
@@ -190,10 +203,11 @@ with g:
              "Administration générale et territoriale de l'État": "Administration territoriale",
              "Agriculture, alimentation, forêt et affaires rurales": "Agriculture"}
     seuil = 1.0
+    part = lambda m: contrib.set_index("mission").part_pct[m]        # noqa: E731 — part d'une mission, en %
     grandes = contrib[contrib.part_pct >= seuil].sort_values("part_pct")
     petites = contrib[contrib.part_pct < seuil]
     noms = [f"Les {len(petites)} autres"] + [COURT.get(n, n) for n in grandes.mission]
-    officiels = [f"{len(petites)} missions sous 1 %"] + list(grandes.mission)
+    officiels = [f"{len(petites)} missions sous {fr(seuil, 0)} %"] + list(grandes.mission)
     parts = [petites.part_pct.sum()] + list(grandes.part_pct)
     montants = [petites.cp_eur.sum()] + list(grandes.cp_eur)
     coul = [c.CLAIR[c.MARINE]] + [c.VERT if n == "Outre-mer" else c.MARINE for n in grandes.mission]
@@ -209,20 +223,25 @@ with g:
     st.plotly_chart(fig, width="stretch", config=c.CONFIG)
 with d:
     carte("Ce graphique montre que…",
-          ["l'enseignement scolaire porte presque un tiers de l'effort, deux fois et demie plus que le ministère "
-           "des Outre-mer lui-même.",
-           "Trente missions budgétaires se partagent les 21,94 Md€ : le ministère coordonne une politique dont "
-           "il ne tient pas les crédits."], "orange")
+          [f"l'enseignement scolaire porte {fr(part('Enseignement scolaire'), 0)} % de l'effort, "
+           f"{fr(part('Enseignement scolaire') / part('Outre-mer'), 1)} fois plus que le ministère des Outre-mer "
+           f"lui-même.",
+           f"{en_lettres(len(contrib)).capitalize()} missions budgétaires se partagent les {fr(dpt / 1e9, 2)} Md€ : "
+           f"le ministère coordonne une politique dont il ne tient pas les crédits."], "orange")
     carte("À quoi correspondent ces crédits",
-          ["<b>Enseignement scolaire, 30 %</b> : pour l'essentiel, les salaires des enseignants des écoles, "
-           "collèges et lycées.",
-           "<b>Relations avec les collectivités, 11 %</b> : les dotations de l'État aux collectivités d'outre-mer.",
-           "<b>Solidarité, 9 %</b> : des prestations versées par l'État — prime d'activité, allocation aux adultes "
-           "handicapés, RSA repris par l'État en Guyane, à Mayotte et à La Réunion.",
-           "<b>Sécurités, 8 %, et Défense, 5 %</b> : police, gendarmerie, forces armées stationnées outre-mer."],
+          [f"<b>Enseignement scolaire, {fr(part('Enseignement scolaire'), 0)} %</b> : pour l'essentiel, les "
+           f"salaires des enseignants des écoles, collèges et lycées.",
+           f"<b>Relations avec les collectivités, {fr(part('Relations avec les collectivités territoriales'), 0)} %"
+           f"</b> : les dotations de l'État aux collectivités d'outre-mer.",
+           f"<b>Solidarité, {fr(part('Solidarité, insertion et égalité des chances'), 0)} %</b> : des prestations "
+           f"versées par l'État — prime d'activité, allocation aux adultes handicapés, RSA repris par l'État en "
+           f"Guyane, à Mayotte et à La Réunion.",
+           f"<b>Sécurités, {fr(part('Sécurités'), 0)} %, et Défense, {fr(part('Défense'), 0)} %</b> : police, "
+           f"gendarmerie, forces armées stationnées outre-mer."],
           "bleugris")
-pied("DPT Outre-mer 2026, annexe « Synthèse tous crédits », p. 229-232, PLF 2026 ; 30 missions, 104 programmes",
-     renvoi=RENVOI)
+pied(f"DPT Outre-mer 2026, annexe « Synthèse tous crédits », p. 229-232, PLF 2026 ; {len(contrib)} missions, "
+     f"{fr(K['programmes_dpt_2026'], 0)} programmes dont {fr(K['psr_dpt_2026'], 0)} prélèvements sur recettes "
+     f"(DPT, p. 10)", renvoi=RENVOI)
 
 # ───────────────────────────────────────── 5 · la trajectoire
 st.markdown("### Depuis 2007, l'effort grossit ailleurs")
@@ -251,13 +270,18 @@ with g:
     fig.update_layout(height=360, xaxis=dict(dtick=2))
     st.plotly_chart(fig, width="stretch", config=c.CONFIG)
 with d:
+    s0, s1 = serie.iloc[0], serie.iloc[-1]
     carte("Ce graphique montre que…",
-          ["la part du ministère dans l'effort de l'État recule : 16,4 % en 2007, 12,9 % en 2026.",
-           "Ce n'est pas que sa mission baisse — elle passe de 1,96 à 2,83 Md€ — mais que l'effort de l'État "
-           "outre-mer croît beaucoup plus vite, et ailleurs : de 12,0 à 21,94 Md€."], "bleugris")
-    carte("À savoir", ["2008 n'est pas renseigné : le document de politique transversale de cette année-là ne "
-                       "donne pas l'effort global en crédits de paiement."], "marine")
-pied("Documents de politique transversale « Outre-mer » 2007-2026 ; PLF, État B (Mission Outre-mer, CP)",
+          [f"la part du ministère dans l'effort de l'État recule : {fr(s0.part_pct)} % en {s0.annee}, "
+           f"{fr(s1.part_pct)} % en {s1.annee}.",
+           f"Ce n'est pas que sa mission baisse — elle passe de {fr(s0.mission_m / 1000, 2)} à "
+           f"{fr(s1.mission_m / 1000, 2)} Md€ — mais que l'effort de l'État outre-mer croît beaucoup plus vite, "
+           f"et ailleurs : de {fr(s0.dpt_md, 1)} à {fr(s1.dpt_md, 2)} Md€."], "bleugris")
+    trous = serie[serie.dpt_md.isna()].annee
+    carte("À savoir", [f"{annees(trous)} n'{'est' if len(trous) == 1 else 'sont'} pas "
+                       f"renseigné{'' if len(trous) == 1 else 's'} : le document de politique transversale de cette "
+                       f"année-là ne donne pas l'effort global en crédits de paiement."], "marine")
+pied(f"Documents de politique transversale « Outre-mer » {s0.annee}-{s1.annee} ; PLF, État B (Mission Outre-mer, CP)",
      renvoi=RENVOI)
 
 # ───────────────────────────────────────── 6 · les dépenses fiscales, à part
@@ -283,13 +307,14 @@ with d:
     carte("Ce graphique montre que…",
           [f"une part importante du soutien de l'État passe hors budget, par l'impôt : "
            f"{fr(fin.fiscal_m / 1000, 2)} Md€ en 2026, {fr(fin.ratio, 2)} fois la mission du ministère. Ces "
-           f"{sigle('dépenses fiscales')} ont culminé à 7,09 Md€ en 2023."], "bleu")
+           f"{sigle('dépenses fiscales')} ont culminé à {fr(pic.fiscal_m / 1000, 2)} Md€ en {pic.annee}."], "bleu")
     carte("Pourquoi ne pas les additionner au budget ?",
           ["Un crédit, c'est de l'argent que l'État verse. Une dépense fiscale, c'est un impôt qu'il ne perçoit pas.",
            "Son montant est une estimation, qui dépend de ce que font les contribuables et qui est souvent révisée "
            "après coup. Les additionner reviendrait à mélanger un paiement et un manque à gagner : c'est pourquoi "
            "le budget de l'État les présente à part."], "bleugris")
-pied("Voies et Moyens, tome II (annexe au PLF), 2009-2026 ; 2020 : note d'exécution de la Cour des comptes",
+pied(f"Voies et Moyens, tome II (annexe au PLF), {fisc.annee.min()}-{fisc.annee.max()} ; 2020 : note d'exécution "
+     "de la Cour des comptes",
      renvoi=RENVOI)
 
 # ───────────────────────────────────────── glossaire et téléchargements

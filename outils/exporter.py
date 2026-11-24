@@ -83,6 +83,21 @@ def effort_programmes():
              [round(tot / 1e9, 2), len(porteurs), round(100 * psr / tot, 1)])
 
 
+def chiffres_cites():
+    """Les chiffres que les écrans citent tels que la source les donne (onglet REF_Chiffres_cites) : contrôlés ici,
+    transmis aux écrans par donnees/chiffres_cites.csv. Aucun chiffre n'est écrit dans le code des écrans."""
+    L = tableau("REF_Chiffres_cites")
+    v = {l["cle"]: l["valeur"] for l in L}
+    assert v["missions_dpt_2026"] == len(tableau("DATA_Missions_DPT_2026")), \
+        "le DPT annonce un nombre de missions différent de celui de DATA_Missions_DPT_2026"
+    controle("Chiffres cités : écart AE-CP du P123 en LFI 2025 (M€) ; restes à payer en interventions aux "
+             "collectivités (%) ; programmes du DPT 2026 ; dont PSR ; missions",
+             [v["ecart_ae_cp_p123_2025"], v["rap_interventions_collectivites_2025"], v["programmes_dpt_2026"],
+              v["psr_dpt_2026"], v["missions_dpt_2026"]])
+    ecrire("chiffres_cites.csv", ["cle", "valeur", "unite", "libelle", "source"],
+           [[l["cle"], l["valeur"], l["unite"], l["libelle"], l["source"]] for l in L])
+
+
 # ─────────────────────────────────────────────── 1 · budget : cascade, missions, séries
 def budget():
     ref = {l["repere"]: l["valeur_eur"] for l in tableau("REF_Budget_2026")}
@@ -554,6 +569,7 @@ def main():
     WB = openpyxl.load_workbook(SOCLE, data_only=True)
     pap, mission, marge = budget()
     effort_programmes()
+    chiffres_cites()
     fonctionnement(pap, mission, marge)
     ministres()
     histoire()

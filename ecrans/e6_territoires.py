@@ -13,7 +13,7 @@ from plotly.subplots import make_subplots
 import streamlit as st
 
 import charte as c
-from composants import carte, entete, fond, fr, glossaire, lire, pied, telecharger, tuile
+from composants import a, carte, en_lettres, le, entete, fond, fr, glossaire, lire, pied, telecharger, tuile
 
 RENVOI = "partie IV « Des droits aux réalités »"            # intitulé de travail de la Partie IV du rapport
 
@@ -26,6 +26,21 @@ E = lire("territoires_pib_effort.csv")
 
 def val(num, terr):
     return I[(I.num == num) & (I.territoire == terr)].valeur.iloc[0]
+
+
+def millesime(num, terr):
+    return str(I[(I.num == num) & (I.territoire == terr)].millesime.iloc[0])
+
+
+def maj(t):
+    return t[:1].upper() + t[1:]
+
+
+def liste(noms):
+    """« la Guadeloupe, La Réunion et la Martinique » : une liste de territoires, à la française."""
+    n = list(noms)
+    n = [le(x) for x in n]
+    return n[0] if len(n) == 1 else ", ".join(n[:-1]) + " et " + n[-1]
 
 
 def silhouettes(T):
@@ -80,7 +95,7 @@ tuile(t[0], f"{fr(val(1, 'Mayotte'), 0)} %", f"de la population de Mayotte sous 
       f"contre {fr(val(1, 'France (réf.)'))} % en France", "orange")
 tuile(t[1], f"+{fr(min(alim), 0)} à +{fr(max(alim), 0)} %", "de prix alimentaires dans les départements d'outre-mer "
       "par rapport à l'Hexagone")
-tuile(t[2], f"{fr(val(5, 'Mayotte'), 0)} %", f"de chômage à Mayotte en 2024 ; de {fr(val(5, 'Martinique'))} à "
+tuile(t[2], f"{fr(val(5, 'Mayotte'), 0)} %", f"de chômage à Mayotte en {millesime(5, 'Mayotte')} ; de {fr(val(5, 'Martinique'))} à "
       f"{fr(val(5, 'La Réunion'))} % dans les autres départements ; {fr(val(5, 'France (réf.)'))} % en France",
       "bleugris")
 tuile(t[3], f"de 1 à {fr(pib['Saint-Barthélemy'] / pib['Mayotte'])}", "l'écart de richesse produite par habitant, "
@@ -237,22 +252,31 @@ with g:
     st.plotly_chart(fig, width="stretch", config=c.CONFIG)
 with d:
     pire = ind.idxmax()
+    rang = ind.sort_values(ascending=False)
+    dims = X[X.dimension.isin(DIMS)].groupby("dimension").indice.mean()
+    illet = XD[XD.num == 8].rapport_a_la_france
+    ecart = (f"Le plus grand écart est l'éducation : l'illettrisme y est {fr(illet.min(), 1)} à "
+             f"{fr(illet.max(), 1)} fois plus fréquent qu'en moyenne." if dims.idxmax() == "Éducation" else
+             f"Le plus grand écart porte sur la dimension « {dims.idxmax()} ».")
     carte("Ce graphique montre que…",
-          [f"dans les cinq départements, la précarité dépasse partout la situation nationale : de "
-           f"{fr(ind.min(), 1)} fois ({ind.idxmin()}) à {fr(ind.max(), 1)} fois ({pire}).",
-           "Mayotte et la Guyane se détachent ; la Guadeloupe, La Réunion et la Martinique sont proches. Le plus "
-           "grand écart est l'éducation : l'illettrisme y est deux à cinq fois plus fréquent qu'en moyenne."],
+          [f"dans les {en_lettres(len(ind))} départements, la précarité "
+           f"{'dépasse partout' if ind.min() > 1 else 'ne dépasse pas partout'} la situation nationale : de "
+           f"{fr(ind.min(), 1)} fois ({le(ind.idxmin())}) à {fr(ind.max(), 1)} fois ({le(pire)}).",
+           f"{maj(liste(rang.index[:2]))} se détachent ; {liste(rang.index[2:])} sont proches. {ecart}"],
           "orange")
     carte("Comment c'est calculé",
-          ["Neuf indicateurs, chacun rapporté à la situation nationale (pour les prix, à l'Hexagone) : pauvreté et inégalités (revenus) ; chômage, "
+          [f"{en_lettres(XD.num.nunique()).capitalize()} indicateurs, chacun rapporté à la situation nationale (pour les prix, à l'Hexagone) : pauvreté et inégalités (revenus) ; chômage, "
            "chômage des jeunes, jeunes sans emploi ni formation (emploi) ; illettrisme (éducation) ; mortalité "
            "infantile, incapacités des 65 ans et plus (santé) ; prix alimentaires (vie chère).",
            "Moyenne géométrique dans chaque dimension, puis entre les cinq dimensions, à poids égaux. 1 = la "
            "situation nationale ; 2 = deux fois plus défavorable."], "bleugris")
-    carte("Pourquoi seulement cinq territoires",
-          ["Les collectivités du Pacifique, Saint-Martin, Saint-Barthélemy, Saint-Pierre-et-Miquelon et "
-           "Wallis-et-Futuna n'ont que deux à six de ces indicateurs, souvent mesurés autrement : un indice les "
-           "comparerait à tort.",
+    autres = I[I.num.isin(set(XD.num)) & I.valeur.notna() & (I.reference == "non")
+               & ~I.territoire.isin(DROM)].groupby("territoire").num.nunique()
+    carte(f"Pourquoi seulement {en_lettres(len(ind))} territoires",
+          [f"La Nouvelle-Calédonie, la Polynésie française, Saint-Martin, Saint-Barthélemy, Saint-Pierre-et-Miquelon "
+           f"et Wallis-et-Futuna n'ont {"qu'" if en_lettres(autres.min())[0] in "aeiouéh" else "que "}{en_lettres(autres.min())} à {en_lettres(autres.max())} des "
+           f"{en_lettres(XD.num.nunique())} indicateurs, souvent mesurés autrement : un indice les comparerait à "
+           f"tort. Les Terres australes et Clipperton n'ont pas de population permanente.",
            "Dans un radar, l'aire dépend de l'ordre des pointes : le classement reste la lecture exacte."], "bleu")
 pied("Calcul du CLSE à partir du socle « chiffres clés » de la Partie IV (Sénat 2026, d'après INSEE, DEPP, DGS, "
      "DREES). Millésimes 2019 à 2026 ; jeunes sans emploi ni formation lus sur un graphique ; inégalités de la Guyane "
@@ -303,21 +327,29 @@ with g:
                           yaxis=dict(showgrid=False, tickfont=dict(size=12, color=c.MARINE)))
         st.plotly_chart(fig, width="stretch", config=c.CONFIG)
 cs = st.columns(3, gap="medium") if d is None else [d, d, d]
-carte("De 1 à 7,5 — l'écart de richesse",
-      ["De 11 977 € de PIB par habitant à Mayotte à 90 103 € à Saint-Barthélemy : il n'y a pas « un » "
-       "outre-mer, mais des réalités très hétérogènes. Le PIB par habitant mesure la richesse produite sur le "
-       "territoire, pas le niveau de vie de ses habitants."], "bleugris", cs[0])
+# les onze territoires habités (les Terres australes et Clipperton n'ont pas de population permanente)
+H = E[E.cp_2026_eur.notna()].set_index("territoire")
+pb, pr = H.pib_hab_eur.idxmin(), H.pib_hab_eur.idxmax()
+ef = H.effort_hab_eur.sort_values(ascending=False)
+plus = (ef > ef[pb]).sum()                                      # territoires qui reçoivent plus que le plus pauvre
+r1 = H.richesse_pour_1_euro.sort_values()
+carte(f"De 1 à {fr(H.pib_hab_eur[pr] / H.pib_hab_eur[pb])} — l'écart de richesse",
+      [f"Sur les {en_lettres(len(H))} territoires habités, de {fr(H.pib_hab_eur[pb], 0)} € de PIB par habitant "
+       f"{a(pb)} à {fr(H.pib_hab_eur[pr], 0)} € {a(pr)} : il n'y a pas « un » outre-mer, mais des réalités très "
+       f"hétérogènes. Le PIB par habitant mesure la richesse produite sur le territoire, pas le niveau de vie de ses "
+       f"habitants."], "bleugris", cs[0])
 carte("En euros par habitant",
-      ["Mayotte, le territoire le plus pauvre, reçoit 6 435 € par habitant : moins que La Réunion (7 949 €), la "
-       "Guadeloupe (7 681 €) ou la Martinique (7 512 €), plus de deux fois plus riches. Seule la Guyane, parmi "
-       "les départements, reçoit davantage (10 173 €)."], "bleu", cs[1])
+      [f"L'effort de l'État va de {fr(ef.iloc[-1], 0)} € par habitant {a(ef.index[-1])} à {fr(ef.iloc[0], 0)} € "
+       f"{a(ef.index[0])}. {maj(le(pb))}, le territoire le plus pauvre, reçoit {fr(ef[pb], 0)} € : "
+       f"{en_lettres(plus)} territoires sur {en_lettres(len(H))} reçoivent davantage."], "bleu", cs[1])
 carte("Pour 1 € dépensé par l'État",
-      ["le territoire produit 1,1 € de richesse à Wallis-et-Futuna, 1,9 € à Mayotte, 23,6 € à "
-       "Saint-Barthélemy.",
+      [f"le territoire produit {fr(r1.iloc[0], 1)} € de richesse {a(r1.index[0])}, {fr(r1[pb], 1)} € {a(pb)}, "
+       f"{fr(r1.iloc[-1], 1)} € {a(r1.index[-1])}.",
        "<b>Plus ce nombre est bas, plus l'économie tient à la dépense publique.</b> Ce n'est pas un meilleur "
        "service rendu : c'est une dépendance."], "orange", cs[2])
 pied("DPT Outre-mer 2026, annexe territoriale (CP) ; INSEE, ISEE, ISPF, populations ; INSEE, CEROM, IEOM, IEDOM, PIB "
-     "par habitant. Millésimes du PIB différents (2015 à 2024) : écarts indicatifs. L'INSEE compte Saint-Martin "
+     f"par habitant. Millésimes du PIB différents ({H.annee_pib.astype(str).str[:4].min()} à "
+     f"{H.annee_pib.astype(str).str[:4].max()}) : écarts indicatifs. L'INSEE compte Saint-Martin "
      "avec la Guadeloupe ; crédits non répartis et Terres australes hors calcul", statut="Estimé", renvoi=RENVOI)
 
 st.markdown("##### Télécharger")

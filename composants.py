@@ -96,6 +96,37 @@ def fr(x, dec=1):
     return s
 
 
+LETTRES = {0: "zéro", 1: "un", 2: "deux", 3: "trois", 4: "quatre", 5: "cinq", 6: "six", 7: "sept", 8: "huit",
+           9: "neuf", 10: "dix", 11: "onze", 12: "douze", 13: "treize", 14: "quatorze", 15: "quinze", 16: "seize",
+           20: "vingt", 30: "trente", 40: "quarante", 50: "cinquante"}
+
+
+def en_lettres(n):
+    """Un nombre calculé, écrit en toutes lettres quand l'usage le veut (« cinq euros sur cent ») ; en chiffres
+    s'il n'a pas de forme simple. Le chiffre vient toujours des données, jamais du texte."""
+    n = int(round(n))
+    return LETTRES.get(n, fr(n, 0))
+
+
+FEMININS = ("Guadeloupe", "Martinique", "Guyane", "Nouvelle-Calédonie", "Polynésie française")
+
+
+def le(t):
+    """Le nom d'un territoire avec son article : « la Guyane », « Mayotte », « La Réunion »."""
+    return "la " + t if t in FEMININS else t
+
+
+def a(t):
+    """« à Mayotte », « en Guyane », « à La Réunion »."""
+    return "en " + t if t in FEMININS else "à " + t
+
+
+def annees(liste):
+    """« 2016 et 2022 », « 2008 » : une liste d'années, à la française."""
+    a = [str(int(x)) for x in liste]
+    return a[0] if len(a) == 1 else ", ".join(a[:-1]) + " et " + a[-1]
+
+
 def deux_lignes(t, n=20):
     """Un libellé d'axe sur deux lignes au plus : les noms longs débordent sur un écran étroit."""
     return "<br>".join(textwrap.wrap(t, n)[:2]) if len(t) > n else t
