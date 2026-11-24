@@ -64,6 +64,11 @@ def css():
                         margin-bottom: 8px; }}
     .carte p {{ font-size: .97rem; line-height: 1.55; margin: 0 0 .5rem 0; color: {MARINE}; }}
     .carte p:last-child {{ margin-bottom: 0; }}
+    .carte ul {{ margin: 0; padding-left: 1.1rem; }}
+    .carte li {{ font-size: .97rem; line-height: 1.55; margin: 0 0 .35rem 0; color: {MARINE}; }}
+    .carte li:last-child {{ margin-bottom: 0; }}
+    .chiffres-cles {{ font-size: .74rem; font-weight: 700; letter-spacing: .09em; text-transform: uppercase;
+                      color: {GRIS}; margin: 6px 0 2px 0; }}
 
     .tuile {{ padding: 4px 0 10px 0; }}
     .tuile {{ min-width: 0; }}

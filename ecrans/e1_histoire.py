@@ -9,7 +9,7 @@ from html import escape
 import streamlit as st
 
 import charte as c
-from composants import carte, en_lettres, entete, fond, fr_typo, glossaire, lire, pied, sigle, tuile
+from composants import chiffres_cles, carte, en_lettres, entete, fond, fr_typo, glossaire, lire, pied, sigle, tuile
 
 RENVOI = "partie « Rôle et histoire du ministère »"        # intitulé définitif à caler sur le rapport
 
@@ -23,6 +23,7 @@ entete("Écran 1 · L'histoire", "D'où vient le ministère des Outre-mer ?",
 glossaire(["rang", "rattaché à l'Intérieur", "mandat", "DGOM"])
 
 PERIODES = int(lire("ministres_chiffres.csv").set_index("indicateur").valeur["Nombre de périodes de rattachement"])
+chiffres_cles()
 t = st.columns(4)
 tuile(t[0], "1894", "un ministère des Colonies sort de la tutelle de la Marine")
 tuile(t[1], "1946", "la Guadeloupe, la Martinique, la Guyane et La Réunion deviennent des départements", "bleugris")
@@ -71,9 +72,6 @@ with d:
            f"Sous la Ve République, le portefeuille change de nom, de rang et de tutelle — il est rattaché à "
            f"l'Intérieur pendant {en_lettres(PERIODES)} périodes. Depuis 2025, il est de plein exercice, mais par un décret que le "
            "Premier ministre écrit seul."], "orange")
-    carte("Ce que cela veut dire",
-          ["<b>Ce qui s'obtient par décret se perd par décret</b> : c'est la première fragilité du portefeuille."],
-          "bleugris")
     carte("Sur les sources",
           ["Les jalons fondés sur un texte — loi, décret — sont confirmés. Ceux qui reposent sur des travaux "
            "d'histoire ou des ouvrages de référence sont signalés « source secondaire »."], "marine")

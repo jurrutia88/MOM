@@ -10,7 +10,7 @@ import plotly.graph_objects as go
 import streamlit as st
 
 import charte as c
-from composants import carte, deux_lignes, en_lettres, entete, fond, fr, glossaire, lire, pied, telecharger, tuile
+from composants import chiffres_cles, carte, deux_lignes, en_lettres, entete, fond, fr, glossaire, lire, pied, telecharger, tuile
 
 RENVOI = "partie « Comment fonctionne le ministère »"       # intitulé définitif à caler sur le rapport
 
@@ -26,10 +26,11 @@ SIEGES_AN = K["Sièges de l'Assemblée nationale"]
 C = lire("chiffres_cites.csv").set_index("cle").valeur          # groupe GDR et seuil d'un groupe
 
 entete("Écran 7 · La représentation", "Comment les outre-mer sont-ils représentés ?",
-       "À l'Assemblée nationale, des sièges proportionnés à la population d'ensemble, mais très inégalement "
-       "répartis entre territoires. Et, selon les majorités, un poids qui change du tout au tout.")
+       "À l'Assemblée nationale, des sièges très inégalement répartis entre territoires. Et, selon les "
+       "majorités, un poids qui change du tout au tout.")
 glossaire(["législature", "groupe politique"])
 
+chiffres_cles()
 t = st.columns(4)
 tuile(t[0], f"{SIEGES_OM:.0f} sur {SIEGES_AN:.0f}",
       f"sièges de députés, soit {fr(K['Part des sièges (%)'], 2)} % de l'Assemblée nationale")
@@ -69,7 +70,7 @@ with g:
     st.plotly_chart(fig, width="stretch", config=c.CONFIG)
 with d:
     carte("Ce graphique montre que…",
-          [f"à l'échelle des outre-mer, la représentation est proportionnée : {fr(K['Part des sièges (%)'], 2)} % "
+          [f"à l'échelle des outre-mer, {fr(K['Part des sièges (%)'], 2)} % "
            f"des sièges pour environ {fr(K['Part de la population (%)'])} % de la population.",
            f"Mais d'un territoire à l'autre, un député représente de {fr(mini.habitants_par_depute, 0)} habitants "
            f"({mini.territoire}) à {fr(maxi.habitants_par_depute, 0)} ({maxi.territoire}) : près de "

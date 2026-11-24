@@ -13,7 +13,7 @@ import plotly.graph_objects as go
 import streamlit as st
 
 import charte as c
-from composants import NBSP, carte, en_lettres, entete, fond, fr, glossaire, lire, pied, sigle, telecharger, tuile
+from composants import chiffres_cles, NBSP, carte, en_lettres, entete, fond, fr, glossaire, lire, pied, sigle, telecharger, tuile
 
 RENVOI = "partie « Rôle et histoire du ministère »"        # intitulé définitif à caler sur le rapport
 
@@ -63,6 +63,7 @@ entete("Écran 3 · Les ministres", "Qui a dirigé le ministère des Outre-mer ?
        f"{pers} personnes et {n} mandats depuis {AN0}. À quel rang, combien de temps elles restent, et qui elles sont.")
 glossaire(["mandat", "rang", "rattaché à l'Intérieur", "ancrage"])
 
+chiffres_cles()
 t = st.columns(4)
 tuile(t[0], f"{pers}", f"ministres depuis {AN0}, pour <b>{n} mandats</b> : une même personne peut être nommée "
       f"dans plusieurs gouvernements")
@@ -234,8 +235,7 @@ carte("Ce que ces dates suivent",
        f"<b>{nes.debut.min()[:4]}</b> — la première ministre née outre-mer, {NOMS_NES[0]}, est nommée un mois "
        f"après le décret du 27 mai 2009 qui clôt la grève générale de Guadeloupe, "
        f"{en_lettres(int(nes.debut.min()[:4]) - AN0)} ans après la création du portefeuille.",
-       f"<b>{nes.fin.max()[:4]}</b> — la parenthèse se ferme trois semaines après l'accord qui clôt le conflit guyanais.",
-       "La coïncidence est de date, non de cause."], "bleugris", cs[1])
+       f"<b>{nes.fin.max()[:4]}</b> — la parenthèse se ferme trois semaines après l'accord qui clôt le conflit guyanais."], "bleugris", cs[1])
 carte("Qui, et de quel ancrage",
       [f"<b>Nés outre-mer</b> : {', '.join(NOMS_NES)}.",
        f"<b>Autre forme d'{sigle('ancrage')}</b> : {', '.join(NOMS_AUTRES)} — "

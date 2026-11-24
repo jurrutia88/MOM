@@ -9,7 +9,7 @@ from html import escape
 import streamlit as st
 
 import charte as c
-from composants import carte, en_lettres, entete, fond, fr_typo, glossaire, lire, pied, sigle, silhouette, tuile
+from composants import chiffres_cles, carte, en_lettres, entete, fond, fr_typo, glossaire, lire, pied, sigle, silhouette, tuile
 
 RENVOI = "partie « Comment fonctionne le ministère »"       # intitulé définitif à caler sur le rapport
 
@@ -29,16 +29,14 @@ entete("Écran 5 · Les statuts", f"Pourquoi les {NB} outre-mer n'ont-ils pas to
        f"ne traite pas de la même façon.")
 glossaire(["DROM", "COM", "article 73", "article 74", "habilitation", "sui generis", "RUP", "PTOM"])
 
-t = st.columns(4)
+chiffres_cles()
+t = st.columns(3)
 tuile(t[0], f"{NB}", f"territoires, dont {int((S.habite == 'oui').sum())} habités — les TAAF et Clipperton n'ont pas "
       f"de population permanente")
 tuile(t[1], f"{REGIMES} régimes", f"dans la Constitution : {sigle('article 73')}, {sigle('article 74')}, titre "
       f"XIII — plus {en_lettres(PARTICULIERS)} statuts particuliers", "bleugris")
 tuile(t[2], f"{int((S.regime_europeen == 'RUP').sum())} sur {NB}", f"font partie de l'Union européenne ({sigle('RUP')}) ; "
       f"{int((S.regime_europeen == 'PTOM').sum())} y sont seulement associés ({sigle('PTOM')})", "bleu")
-tuile(t[3], f"{MARTINIQUE - REVISION} ans", f"avant le premier projet de loi d'{sigle('habilitation')} dédié, "
-      f"pour la Martinique, en {MARTINIQUE}",
-      "orange")
 st.markdown("")
 
 # ───────────────────────────────────────── 1 · les treize territoires
@@ -103,37 +101,4 @@ carte("Titre XIII · la Nouvelle-Calédonie",
        "l'Assemblée nationale le 2 avril 2026 : le cadre reste celui de Nouméa."], "marine", d)
 pied("Fiche variable V5, « Diversité institutionnelle », v4 (2026) : Constitution, code général des collectivités "
      "territoriales, rapports parlementaires", renvoi=RENVOI)
-
-# ───────────────────────────────────────── 3 · un levier peu utilisé
-st.markdown("### Un levier ouvert en 2003, resté sous-utilisé")
-g, d = st.columns([1.65, 1], gap="large")
-with g:
-    st.markdown(f"""
-    <div style="display:flex;align-items:stretch;gap:0;margin:8px 0 14px 0">
-      <div style="flex:0 0 auto;text-align:center;padding:0 10px">
-        <div style="font-size:1.9rem;font-weight:700;color:{c.MARINE}">2003</div>
-        <div style="font-size:.85rem;color:{c.GRIS};max-width:150px">la Constitution ouvre l'habilitation</div></div>
-      <div style="flex:1;display:flex;align-items:center;min-width:40px">
-        <div style="flex:1;height:3px;background:linear-gradient(90deg,{c.MARINE},{c.ORANGE})"></div></div>
-      <div style="flex:0 0 auto;text-align:center;padding:0 10px">
-        <div style="font-size:1.9rem;font-weight:700;color:{c.ORANGE}">2024</div>
-        <div style="font-size:.85rem;color:{c.GRIS};max-width:170px">premier projet de loi d'habilitation dédié,
-        pour la Martinique</div></div>
-    </div>""", unsafe_allow_html=True)
-    carte("Ce que montre cette frise",
-          [f"Il faut {en_lettres(MARTINIQUE - REVISION)} ans pour qu'un premier projet de loi d'habilitation dédié "
-           f"soit adopté par le Sénat, le 31 mars {MARTINIQUE} : il autorise l'Assemblée de Martinique à fixer les règles en matière d'énergie, d'eau et "
-           "d'assainissement.",
-           "Trois raisons à cette sous-utilisation : une procédure lourde, que les collectivités « hésitent à "
-           f"utiliser » ; l'exclusion de La Réunion, qui ne laisse que {en_lettres(DROM - 1)} collectivités ; une "
-           f"lecture restrictive "
-           "du Conseil constitutionnel."], "orange")
-with d:
-    carte("Et le ministère ?",
-          ["Sa sous-direction des affaires juridiques prépare les textes et tient l'articulation entre les régimes.",
-           "Mais aux moments décisifs — Matignon en 1988, Nouméa en 1998 — les accords ont été portés par le Premier "
-           "ministre ou le président de la République. Bougival, en 2025, fait exception : le ministre d'État chargé "
-           "des Outre-mer l'a signé."], "bleugris")
-pied("Fiche variable V5, v4 (2026) ; rapport du Sénat n° 713 (2020) ; projet de loi d'habilitation pour la "
-     "Martinique, adopté par le Sénat le 31 mars 2024", renvoi=RENVOI)
 

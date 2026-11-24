@@ -13,7 +13,7 @@ from plotly.subplots import make_subplots
 import streamlit as st
 
 import charte as c
-from composants import a, carte, en_lettres, le, entete, fond, fr, glossaire, lire, pied, telecharger, tuile
+from composants import chiffres_cles, a, carte, en_lettres, le, entete, fond, fr, glossaire, lire, pied, telecharger, tuile
 
 RENVOI = "partie IV « Des droits aux réalités »"            # intitulé de travail de la Partie IV du rapport
 
@@ -90,6 +90,7 @@ glossaire(["seuil de pauvreté national", "NEET", "indice de Gini", "PIB par hab
 DROM = ["Guadeloupe", "Martinique", "Guyane", "La Réunion", "Mayotte"]
 alim = [val(3, x) for x in DROM]
 pib = E.set_index("territoire").pib_hab_eur
+chiffres_cles()
 t = st.columns(4)
 tuile(t[0], f"{fr(val(1, 'Mayotte'), 0)} %", f"de la population de Mayotte sous le seuil de pauvreté national, "
       f"contre {fr(val(1, 'France (réf.)'))} % en France", "orange")
@@ -102,69 +103,7 @@ tuile(t[3], f"de 1 à {fr(pib['Saint-Barthélemy'] / pib['Mayotte'])}", "l'écar
       "de Mayotte à Saint-Barthélemy", "orange")
 st.markdown("")
 
-# ───────────────────────────────────────── 1 · un indicateur, tous les territoires
-st.markdown("### Comparer les territoires, indicateur par indicateur")
-noms = I.drop_duplicates("num").set_index("num")
-etiq = {n: f"{r.indicateur} ({r.unite})" for n, r in noms.iterrows()}
-g, d = st.columns([1.65, 1], gap="large")
-with g:
-    choix_ind = st.selectbox("Indicateur", list(etiq.values()), label_visibility="collapsed")
-    num = next(n for n, e in etiq.items() if e == choix_ind)
-    S = I[I.num == num]
-    ref = S[S.reference == "oui"]
-    V = S[(S.reference == "non") & S.valeur.notna()].sort_values("valeur")
-    nd = S[(S.reference == "non") & S.valeur.isna()]
-    unite = noms.loc[num, "unite"]
-    pct = unite.endswith("%") or unite.startswith("%")
-    fmt = (lambda v: fr(v, 2)) if num == 13 else (lambda v: fr(v, 0) if v >= 100 or v == int(v) else fr(v))
-    coul = [c.BLEU_GRIS if comp == "O" else c.CLAIR[c.BLEU_GRIS] for comp in V.comparable]
-    txt = [f"{m if isinstance(m, str) else ''}{fmt(v)}{' %' if pct else ''}"
-           + ("" if comp == "O" else f" ({mil})") for v, m, comp, mil in zip(V.valeur, V.marque, V.comparable,
-                                                                             V.millesime)]
-    fig = go.Figure()
-    c.barres(fig, V.territoire, V.valeur, coul, text=txt, textcolor=c.MARINE,
-             customdata=V[["millesime", "source"]].values,
-             hover="<b>%{y}</b> : %{x}<br>%{customdata[0]} · %{customdata[1]}<extra></extra>")
-    haut = max(V.valeur.max(), ref.valeur.max() if len(ref) else 0)
-    if len(ref):
-        r0 = ref.iloc[0]
-        fig.add_vline(x=r0.valeur, line=dict(color=c.ORANGE, width=2, dash="dash"), layer="below")
-        fig.add_annotation(x=r0.valeur, y=1.0, yref="paper", yanchor="bottom", showarrow=False,
-                           text=f"<b>France : {fmt(r0.valeur)}{' %' if pct else ''}</b>",
-                           font=dict(size=12, color=c.ORANGE))
-    fig.update_layout(height=110 + 38 * len(V), margin=dict(r=40, t=34),
-                      xaxis=dict(range=[0, haut * 1.3], showgrid=True, gridcolor=c.GRILLE, title=unite),
-                      yaxis=dict(showgrid=False, tickfont=dict(size=12, color=c.MARINE)))
-    st.plotly_chart(fig, width="stretch", config=c.CONFIG)
-    if len(nd):
-        st.caption("Non disponible : " + " ; ".join(f"{r.territoire}" + (f" ({r.commentaire})" if r.commentaire
-                                                                        else "") for r in nd.itertuples()))
-with d:
-    # la lecture ne compare que des valeurs comparables entre elles (même millésime, même méthode)
-    comparables = (V.comparable == "O").sum() >= 2
-    Vc = V[V.comparable == "O"] if comparables else V
-    lo, hi = Vc.iloc[0], Vc.iloc[-1]
-    u = " %" if pct else ""
-    m = lambda r: r.marque if isinstance(r.marque, str) else ""
-    lect = [("parmi les territoires comparables" if comparables else "parmi les territoires renseignés — dont les "
-             "chiffres ne sont pas strictement comparables entre eux")
-            + f", l'indicateur va de <b>{m(lo)}{fmt(lo.valeur)}{u}</b> ({lo.territoire}) "
-            f"à <b>{m(hi)}{fmt(hi.valeur)}{u}</b> ({hi.territoire})"
-            + (f", pour une moyenne nationale de {fmt(ref.iloc[0].valeur)}{u}." if len(ref) else ".")]
-    carte("Ce graphique montre que…", lect, "orange")
-    reserves = []
-    if (V.comparable == "N").any():
-        reserves.append("Les barres claires ne sont pas strictement comparables aux autres : millésime ancien, "
-                        "seuil ou méthode différents. Leur année est indiquée.")
-    if V.marque.eq("≈").any():
-        reserves.append("« ≈ » : valeur lue sur un graphique de la source, à quelques points près.")
-    if V.marque.eq(">").any():
-        reserves.append("« > » : la source ne donne qu'un minimum.")
-    reserves.append("Une moyenne territoriale ne dit pas comment l'écart se répartit entre les habitants d'un "
-                    "même territoire.")
-    carte("À lire avec prudence", reserves, "bleugris")
-pied(" ; ".join(dict.fromkeys(S.source)) + f" — millésime de référence : {S.millesime.mode().iloc[0]}",
-     renvoi=RENVOI)
+noms = I.drop_duplicates("num").set_index("num")       # la liste des indicateurs, pour le tableau par territoire
 
 # ───────────────────────────────────────── 2 · un territoire, tous les indicateurs
 st.markdown("### Un territoire, tous ses indicateurs")
@@ -354,6 +293,5 @@ pied("DPT Outre-mer 2026, annexe territoriale (CP) ; INSEE, ISEE, ISPF, populati
 
 st.markdown("##### Télécharger")
 b = st.columns(3)
-telecharger(b[0], "Données · 15 indicateurs par territoire", "territoires_indicateurs.csv")
-telecharger(b[1], "Données · l'indice de précarité", "territoires_precarite_detail.csv")
-telecharger(b[2], "Données · richesse et effort", "territoires_pib_effort.csv")
+telecharger(b[0], "Données · l'indice de précarité", "territoires_precarite_detail.csv")
+telecharger(b[1], "Données · richesse et effort", "territoires_pib_effort.csv")

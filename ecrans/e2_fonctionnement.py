@@ -9,7 +9,7 @@ Textes repris du deck du diagnostic (23 septembre 2026), diapositives « D'où i
 import streamlit as st
 
 import charte as c
-from composants import carte, en_lettres, entete, fond, fr, glossaire, lire, pied, sigle, tuile
+from composants import chiffres_cles, carte, en_lettres, entete, fond, fr, glossaire, lire, pied, sigle, tuile
 
 RENVOI = "partie « Comment fonctionne le ministère »"       # intitulé définitif à caler sur le rapport
 
@@ -28,9 +28,10 @@ entete("Écran 2 · Le fonctionnement", "Comment fonctionne le ministère aujour
        "Une petite administration, deux programmes budgétaires, et des attributions qui tiennent à un décret.")
 glossaire(["DGOM", "P138", "P123", "CP"])
 
+chiffres_cles()
 t = st.columns(4)
 tuile(t[0], f"≈ {K['Agents de la direction générale des outre-mer']:.0f}",
-      f"agents dans sa {sigle('DGOM', 'direction générale')}, répartis en {en_lettres(SOUS_DIR)} sous-directions")
+      f"agents à la Direction générale des Outre-mer ({sigle('DGOM')}), répartis en {en_lettres(SOUS_DIR)} sous-directions")
 tuile(t[1], f"{fr(mission / 1e9, 2)} Md€", "de crédits en propre en 2026, en deux programmes", "bleugris")
 tuile(t[2], f"{fr(part_contrainte / 10, 0)} € sur 10", "de ces crédits sont engagés d'avance, par la loi ou par "
       "des dotations garanties", "orange")
@@ -56,13 +57,13 @@ with g:
     o1, o2 = st.columns(2)
     carte("Le cabinet", [f"<b>{K['Membres du cabinet']:.0f} membres</b> et {K['Personnels support du cabinet']:.0f} "
                          "personnes en fonctions support, au 1er juillet 2025."], "vert", o1)
-    carte("La direction générale", [f"<b>Environ {K['Agents de la direction générale des outre-mer']:.0f} "
+    carte("La Direction générale des Outre-mer (DGOM)", [f"<b>Environ {K['Agents de la direction générale des outre-mer']:.0f} "
                                     f"agents</b>, {en_lettres(SOUS_DIR)} sous-directions, créée en {CREATION}."], "vert", o2)
     carte(f"Ce que portent ses {en_lettres(SOUS_DIR)} sous-directions",
           ["Politiques économiques, de l'emploi et du développement durable.",
            "Politiques internationales, sociales et agricoles.",
            "Affaires juridiques et institutionnelles.",
-           "Évaluation, prospective et dépense de l'État."], "bleugris")
+           "Évaluation, prospective et dépense de l'État."], "bleugris", puces=True)
 with d:
     carte("Payé par l'Intérieur",
           ["Depuis 2012, une convention de gestion confie les personnels du ministère au programme 216 du "
@@ -92,7 +93,6 @@ with g:
 with d:
     carte("Ce que cela veut dire",
           ["<b>Le rang et le périmètre du ministère tiennent à un décret que le Premier ministre écrit seul, et "
-           "qu'il réécrit à chaque gouvernement.</b>",
-           "Ce qui s'obtient par décret se perd par décret : c'est la première fragilité du portefeuille."], "orange")
+           "qu'il réécrit à chaque gouvernement.</b>"], "orange")
 pied("Décret n° 2025-1018 du 29 octobre 2025 relatif aux attributions du ministre des Outre-mer (Légifrance)",
      renvoi=RENVOI)

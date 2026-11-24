@@ -161,24 +161,32 @@ def tuile(col, valeur, legende, accent="marine"):
                  unsafe_allow_html=True)
 
 
-def carte(intitule, paragraphes, accent="vert", conteneur=st):
+def chiffres_cles():
+    """L'intitulé commun au-dessus des quatre tuiles de chaque écran (CLSE, 24 novembre 2026)."""
+    st.markdown('<div class="chiffres-cles">Infos et chiffres clés</div>', unsafe_allow_html=True)
+
+
+def carte(intitule, paragraphes, accent="vert", conteneur=st, puces=False):
     if isinstance(paragraphes, str):
         paragraphes = [paragraphes]
-    corps = "".join(f"<p>{_html(p)}</p>" for p in paragraphes)
+    corps = ("<ul>" + "".join(f"<li>{_html(p)}</li>" for p in paragraphes) + "</ul>" if puces
+             else "".join(f"<p>{_html(p)}</p>" for p in paragraphes))
     conteneur.markdown(f'<div class="carte {accent}"><div class="intitule">{_html(intitule)}</div>{corps}</div>',
                        unsafe_allow_html=True)
 
 
 def pied(source, statut="Confirmé", renvoi=None):
-    """Source officielle, statut de fiabilité (Confirmé / Estimé / Reconstitué), renvoi au rapport."""
-    cls = "statut" + ("" if statut == "Confirmé" else " estime")
+    """Les sources, et la mention « Estimation CLSE » quand le chiffre est un calcul de la mission (statuts
+    Estimé ou Reconstitué de la base). Le classement de fiabilité reste dans la base, pas à l'écran (CLSE,
+    24 novembre 2026)."""
+    marque = "" if statut == "Confirmé" else '<span class="statut estime">Estimation CLSE</span>'
     r = f' · <span class="renvoi">Dans le rapport : {_html(renvoi)}</span>' if renvoi else ""
-    st.markdown(f'<div class="pied"><span class="{cls}">{statut}</span>Source : {_html(source)}{r}</div>',
+    st.markdown(f'<div class="pied">{marque}Sources : {_html(source)}{r}</div>',
                 unsafe_allow_html=True)
 
 
 def glossaire(termes):
-    """En tête d'écran, juste sous le titre : un bandeau teinté qui annonce combien de mots il explique."""
+    """En tête d'écran, juste sous le titre : le glossaire de l'écran (libellé demandé par le CLSE)."""
     from charte import VERT, teinte
     st.markdown(f"""<style>
     [data-testid="stExpander"] details {{ border: none; border-left: 4px solid {VERT};
@@ -187,7 +195,7 @@ def glossaire(termes):
     [data-testid="stExpander"] summary p {{ font-weight: 700; color: {VERT}; font-size: 1rem; }}
     [data-testid="stExpander"] summary:hover p {{ color: {VERT}; text-decoration: underline; }}
     </style>""", unsafe_allow_html=True)
-    with st.expander(f"📖  Les {len(termes)} mots de cet écran — sigles et notions, expliqués en une phrase"):
+    with st.expander("Glossaire · Définition des notions techniques en un coup d'œil"):
         for t in termes:
             st.markdown(f"**{t}** — {fr_typo(GLOSSAIRE[t])}")
 
