@@ -4,3 +4,8 @@ rap_interventions_collectivites_2025;62;%;Part des restes à payer de la mission
 programmes_dpt_2026;104;programmes;Programmes budgétaires contributeurs au DPT Outre-mer 2026;DPT Outre-mer 2026, p. 10
 psr_dpt_2026;9;prélèvements sur recettes;dont prélèvements sur recettes;DPT Outre-mer 2026, p. 10
 missions_dpt_2026;30;missions;Missions budgétaires dont relèvent ces programmes;DPT Outre-mer 2026, p. 10
+seuil_groupe_an;15;députés;Effectif minimal pour constituer un groupe à l'Assemblée nationale (20 avant la réforme de 2009);"Règlement de l'Assemblée nationale, art. 19 ; Assemblée nationale, fiche de synthèse n° 8 « Les groupes politiques »"
+gdr_membres_l16;22;députés;Membres du groupe Gauche démocrate et républicaine, 16e législature (2022-2024);LCP, mai 2024 (source secondaire, à confirmer sur la liste de l'Assemblée nationale)
+gdr_membres_l17;17;députés;Membres du groupe Gauche démocrate et républicaine à sa constitution, 17e législature (juillet 2024);Outremers360, 2024 (source secondaire, à confirmer sur la liste de l'Assemblée nationale)
+gdr_ultramarins_l16;10;députés;Députés ultramarins du groupe GDR en fin de 16e législature;Calcul : onglet POL_GDR_elus (liste des élus)
+gdr_ultramarins_l17;8;députés;Députés ultramarins du groupe GDR en fin de 17e législature;Calcul : onglet POL_GDR_elus (liste des élus)

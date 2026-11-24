@@ -10,7 +10,7 @@ import plotly.graph_objects as go
 import streamlit as st
 
 import charte as c
-from composants import carte, deux_lignes, entete, fond, fr, glossaire, lire, pied, telecharger, tuile
+from composants import carte, deux_lignes, en_lettres, entete, fond, fr, glossaire, lire, pied, telecharger, tuile
 
 RENVOI = "partie « Comment fonctionne le ministère »"       # intitulé définitif à caler sur le rapport
 
@@ -23,6 +23,7 @@ moy = K["Population des onze territoires habités"] / K["Sièges de députés de
 mini, maxi = S.loc[S.habitants_par_depute.idxmin()], S.loc[S.habitants_par_depute.idxmax()]
 SIEGES_OM = K["Sièges de députés des outre-mer"]
 SIEGES_AN = K["Sièges de l'Assemblée nationale"]
+C = lire("chiffres_cites.csv").set_index("cle").valeur          # groupe GDR et seuil d'un groupe
 
 entete("Écran 7 · La représentation", "Comment les outre-mer sont-ils représentés ?",
        "À l'Assemblée nationale, des sièges proportionnés à la population d'ensemble, mais très inégalement "
@@ -92,12 +93,16 @@ carte("Un poids qui dépend des majorités",
        "Macron —, les députés ultramarins pèsent peu. Sans majorité absolue, depuis 2022, leur poids devient "
        "stratégique."], "orange", a)
 carte("Un groupe qui existe grâce à eux",
-      ["Le groupe de la Gauche démocrate et républicaine doit son existence aux dix députés ultramarins qui en sont "
-       "membres : sans eux, il n'atteindrait pas les quinze députés nécessaires pour former un groupe.",
-       "Depuis la dissolution de 2024, ils en sont la moitié — un point d'appui pour des majorités sur les "
-       "questions ultramarines, mais aussi sur la sécurité sociale, l'écologie ou le budget."], "bleu", b)
+      [f"Le groupe de la Gauche démocrate et républicaine doit son existence à ses députés ultramarins : sans eux, "
+       f"il n'atteindrait pas les {en_lettres(C['seuil_groupe_an'])} députés nécessaires pour former un groupe. "
+       f"De 2022 à 2024, ils étaient {en_lettres(C['gdr_ultramarins_l16'])} sur "
+       f"{fr(C['gdr_membres_l16'], 0)}.",
+       f"Depuis la dissolution de 2024, ils sont {en_lettres(C['gdr_ultramarins_l17'])} sur "
+       f"{fr(C['gdr_membres_l17'], 0)}, soit {fr(100 * C['gdr_ultramarins_l17'] / C['gdr_membres_l17'], 0)} % — un point d'appui pour des majorités sur les questions "
+       f"ultramarines, mais aussi sur la sécurité sociale, l'écologie ou le budget."], "bleu", b)
 carte("Mais dispersés",
-      ["Les 27 députés se répartissent entre plusieurs groupes politiques, sans coordination systématique : ils "
+      [f"Les {fr(SIEGES_OM, 0)} députés se répartissent entre plusieurs groupes politiques, sans coordination "
+       "systématique : ils "
        "pèsent rarement en bloc sur les grandes décisions."], "bleugris")
 pied("Fiche variable V4, « Représentativité politico-territoriale », v4 (2026) : Assemblée nationale, composition "
      "des groupes et de la délégation aux outre-mer (16e et 17e législatures)", renvoi=RENVOI)

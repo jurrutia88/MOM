@@ -28,7 +28,13 @@ for m in MOTIFS:
     for f in sorted(glob.glob(os.path.join(ICI, m))):
         rel = os.path.relpath(f, ICI).replace(os.sep, "/")
         # l'empreinte du contenu dans l'adresse : un fichier modifié n'est jamais resservi depuis le cache
-        empreinte = hashlib.sha1(open(f, "rb").read()).hexdigest()[:10]
+        with open(f, "rb") as h:
+            contenu = h.read()
+        # fins de ligne ignorées pour les textes : Windows écrit CRLF, GitHub sert LF ; sans cela, la page refaite
+        # sur un poste et celle refaite par l'action n'ont pas les mêmes empreintes et se contredisent à chaque envoi
+        if not rel.endswith((".png", ".jpg", ".jpeg", ".gif", ".webp", ".ico", ".xlsx", ".pdf")):
+            contenu = contenu.replace(b"\r\n", b"\n")
+        empreinte = hashlib.sha1(contenu).hexdigest()[:10]
         fichiers[rel] = {"url": "./%s?v=%s" % (rel, empreinte)}
 
 PAGE = """<!doctype html>

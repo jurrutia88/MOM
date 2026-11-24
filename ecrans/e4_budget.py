@@ -181,9 +181,9 @@ with d:
            f"{fr(K['rap_interventions_collectivites_2025'], 0)} % de ces {sigle('restes à payer')} sont des "
            f"interventions au profit des collectivités : le paiement suit leur ingénierie et leurs chantiers, pas "
            f"la décision budgétaire.",
-           f"Et le stock se nourrit chaque année : en 2025, la loi de finances a ouvert sur le programme 123 "
+           f"Et le stock se nourrit chaque année : en 2025, la loi de finances a ouvert "
            f"{fr(K['ecart_ae_cp_p123_2025'], 0)} M€ d'autorisations d'engagement de plus que de crédits de "
-           f"paiement. La Cour des comptes relève aussi des projets mal calibrés et des engagements devenus sans "
+           f"paiement sur le programme 123. La Cour des comptes relève aussi des projets mal calibrés et des engagements devenus sans "
            f"objet, jamais soldés."], "orange")
 pied(f"Cour des comptes, notes d'exécution budgétaire de la mission Outre-mer {R.annee.min()}-{an_rap} (exécution "
      f"2025 : p. 6 et 31, tableau n° 13). {annees(R[R.restes_a_payer_m.isna()].annee)} : montant non publié",

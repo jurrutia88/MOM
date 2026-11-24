@@ -94,8 +94,22 @@ def chiffres_cites():
              "collectivités (%) ; programmes du DPT 2026 ; dont PSR ; missions",
              [v["ecart_ae_cp_p123_2025"], v["rap_interventions_collectivites_2025"], v["programmes_dpt_2026"],
               v["psr_dpt_2026"], v["missions_dpt_2026"]])
+    # le groupe GDR : les ultramarins se comptent sur la liste des élus (onglet POL_GDR_elus), en fin de
+    # législature (un siège repris en cours de route n'est compté qu'une fois) ; le total vient de la source
+    G = tableau("POL_GDR_elus")
+    fin = {16: "2024", 17: "2026"}
+    ultra = {lg: sum(1 for g in G if int(g["Législature"]) == lg and str(g["Période"]).endswith(fin[lg]))
+             for lg in fin}
+    for lg in fin:
+        assert v["gdr_membres_l%d" % lg] - ultra[lg] < v["seuil_groupe_an"], \
+            "GDR, %de législature : le groupe atteindrait le seuil sans les ultramarins" % lg
+    controle("Groupe GDR : seuil ; membres 16e ; ultramarins 16e ; membres 17e ; ultramarins 17e",
+             [v["seuil_groupe_an"], v["gdr_membres_l16"], ultra[16], v["gdr_membres_l17"], ultra[17]])
     ecrire("chiffres_cites.csv", ["cle", "valeur", "unite", "libelle", "source"],
-           [[l["cle"], l["valeur"], l["unite"], l["libelle"], l["source"]] for l in L])
+           [[l["cle"], l["valeur"], l["unite"], l["libelle"], l["source"]] for l in L]
+           + [["gdr_ultramarins_l%d" % lg, ultra[lg], "députés",
+               "Députés ultramarins du groupe GDR en fin de %de législature" % lg,
+               "Calcul : onglet POL_GDR_elus (liste des élus)"] for lg in fin])
 
 
 # ─────────────────────────────────────────────── 1 · budget : cascade, missions, séries
