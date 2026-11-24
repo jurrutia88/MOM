@@ -1,6 +1,8 @@
 # CLSE_MOM — le compagnon numérique du rapport du CLSE sur le ministère des Outre-mer
 
-Application web (Streamlit) qui rend le rapport lisible en huit questions.
+Site web qui rend le rapport lisible en huit questions. L'application est écrite en Streamlit et
+tourne entièrement dans le navigateur du lecteur (stlite) : la page est publiée sur GitHub Pages,
+sans serveur à réveiller ni compte à créer.
 Pour chaque indicateur : un chiffre, une phrase de lecture, un graphique, la source et son
 statut, un renvoi vers le rapport, un téléchargement.
 
@@ -42,7 +44,14 @@ Sur GitHub, ouvrir le fichier, cliquer sur le crayon, modifier le texte **entre 
 sans toucher au reste, puis **Commit changes**. Les chiffres cités dans les phrases ne s'écrivent
 pas à la main : ils sont calculés depuis le classeur.
 
-## Lancer en local (facultatif)
+## Consulter le site
+
+Le site est la page `index.html` du dépôt, publiée par GitHub Pages (Settings → Pages, branche
+`main`, dossier racine). Le premier chargement prend une trentaine de secondes : le navigateur
+installe l'application ; les visites suivantes sont plus rapides. Après chaque export, l'action
+refait `index.html` : le site montre les nouveaux chiffres dès la visite suivante.
+
+## Lancer sur un poste (facultatif, pour développer)
 
 ```
 pip install -r requirements.txt
