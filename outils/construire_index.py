@@ -74,7 +74,7 @@ const obs = new MutationObserver(() => {
 function ouvrir(essai) {
   const lien = [...document.querySelectorAll("#root a[href]")]
     .find(a => new URL(a.href).pathname.replace(/[/]+$/, "").endsWith("/" + ECRAN));
-  if (lien) lien.click(); else if (essai < 40) setTimeout(() => ouvrir(essai + 1), 250);
+  if (lien) lien.click(); else if (essai < 180) setTimeout(() => ouvrir(essai + 1), 500);   // le menu peut mettre une minute à paraître
 }
 obs.observe(document.getElementById("root"), { childList: true, subtree: true });
 </script>
