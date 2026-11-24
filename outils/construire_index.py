@@ -14,6 +14,7 @@ import glob
 import hashlib
 import json
 import os
+import tomllib
 
 ICI = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 STLITE = "1.12.1"                       # publié le 5 novembre 2026
@@ -55,6 +56,7 @@ import { mount } from "https://cdn.jsdelivr.net/npm/@stlite/browser@%(v)s/build/
 const app = mount({
   requirements: %(deps)s,
   entrypoint: "app.py",
+  streamlitConfig: %(config)s,
   files: %(files)s,
 }, document.getElementById("root"));
 const obs = new MutationObserver(() => {
@@ -68,7 +70,12 @@ obs.observe(document.getElementById("root"), { childList: true, subtree: true })
 </html>
 """
 
-page = PAGE % {"v": STLITE, "deps": json.dumps(DEPENDANCES),
+# stlite ne lit pas .streamlit/config.toml : on lui passe le thème (clair, couleurs de la charte) au lancement,
+# sinon un navigateur réglé en mode sombre affiche les graphiques sur fond noir.
+with open(os.path.join(ICI, ".streamlit", "config.toml"), "rb") as f:
+    THEME = {"theme." + k: v for k, v in tomllib.load(f).get("theme", {}).items()}
+
+page = PAGE % {"v": STLITE, "config": json.dumps(THEME, ensure_ascii=False), "deps": json.dumps(DEPENDANCES),
                "files": json.dumps(fichiers, indent=2, ensure_ascii=False)}
 # 404.html = la même page : GitHub Pages la sert pour une adresse d'écran (…/budget) ouverte directement ou
 # rechargée, et l'application affiche alors le bon écran au lieu d'une erreur.
