@@ -77,6 +77,15 @@ const obs = new MutationObserver(() => {
     if (ECRAN) ouvrir(0);
   }
 });
+// Les cartes de l'accueil (data-ecran) : on ouvre l'écran par le lien du menu, sans recharger l'application.
+document.addEventListener("click", (e) => {
+  const carte = e.target.closest && e.target.closest("#root a[data-ecran]");
+  if (!carte) return;
+  const ecran = carte.getAttribute("data-ecran");
+  const menu = [...document.querySelectorAll("#root a[href]")].find(a => a !== carte && !a.hasAttribute("data-ecran")
+    && new URL(a.href).pathname.replace(/[/]+$/, "").endsWith("/" + ecran));
+  if (menu) { e.preventDefault(); menu.click(); }
+}, true);
 function ouvrir(essai) {
   const lien = [...document.querySelectorAll("#root a[href]")]
     .find(a => new URL(a.href).pathname.replace(/[/]+$/, "").endsWith("/" + ECRAN));

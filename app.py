@@ -82,7 +82,10 @@ def accueil():
         corps = (f'<span class="num">{i:02d}</span><span><span class="titre">{fr_typo(q)}</span>'
                  f'<span class="desc">{fr_typo(quoi)}</span></span>')
         if cle in CONSTRUITS:
-            items.append(f'<a href="/{cle}" target="_self">{corps}<span class="fleche">→</span></a>')
+            # lien relatif : le site vit sous /MOM/ sur GitHub Pages ; « data-ecran » permet à la page du site
+            # d'ouvrir l'écran comme le menu, sans recharger l'application (outils/construire_index.py)
+            items.append(f'<a href="./{cle}" data-ecran="{cle}" target="_self">{corps}'
+                         f'<span class="fleche">→</span></a>')
         else:
             items.append(f'<div class="q avenir">{corps.replace("</span></span>", "")}'
                          f'<span class="bientot">en préparation</span></span></span><span></span></div>')
