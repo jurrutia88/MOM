@@ -4,6 +4,8 @@
 Textes repris du deck du diagnostic (23 septembre 2026), diapositives « Les ministres » et
 « Qui occupe le poste », validés par José. Règle d'ancrage du 17 septembre 2026 : seul compte
 l'ancrage antérieur à la nomination ; « autre forme » jamais confondue avec la naissance.
+Règle de comptage du 19 novembre 2026 : le titulaire du portefeuille ; le ministre de l'Intérieur seulement
+quand personne d'autre ne le tient. Tous les chiffres des textes sont calculés depuis donnees/.
 """
 
 import pandas as pd
@@ -14,12 +16,17 @@ import charte as c
 from composants import NBSP, carte, entete, fond, fr, glossaire, lire, pied, sigle, telecharger, tuile
 
 RENVOI = "partie « Rôle et histoire du ministère »"        # intitulé définitif à caler sur le rapport
-SOURCE = "Journal officiel — base des 63 mandats arrêtée au 23 juin 2026"
 
 c.css()
 fond(["Saint-Martin", "Saint-Barthélemy", "Martinique"])
 M = lire("ministres_mandats.csv")
 P = lire("ministres_presidents.csv")
+K = lire("ministres_chiffres.csv").set_index("indicateur").valeur
+ARRET = pd.Timestamp(K["Date d'arrêt de la base"])
+SOURCE = f"Journal officiel — base des {K['Mandats']} mandats arrêtée au {ARRET:%d/%m/%Y}"
+REGLE = ("Un mandat = une nomination dans un gouvernement. On compte le membre du gouvernement chargé des outre-mer ; "
+         "le ministre de l'Intérieur seulement quand personne d'autre ne tient le portefeuille. Non comptés : "
+         + K["Titres « outre-mer » non comptés"])
 PRES = list(P.president)
 # libellés courts : huit colonnes doivent tenir sur un téléphone
 LIB = [f"{p.replace(' d' + chr(39) + 'Estaing', '')}<br>{a}-{str(int(b))[2:]}" if pd.notna(b)
@@ -37,11 +44,11 @@ glossaire(["mandat", "rang", "rattaché à l'Intérieur", "ancrage"])
 t = st.columns(4)
 tuile(t[0], f"{pers}", f"ministres depuis 1959, pour <b>{n} mandats</b> : une même personne peut être nommée "
       f"dans plusieurs gouvernements")
-tuile(t[1], f"{fr(moy, 0)} jours", f"durée moyenne d'un mandat, soit environ 13 mois — la moitié dure moins de "
+tuile(t[1], f"{fr(moy, 0)} jours", f"durée moyenne d'un mandat, soit environ {round(moy / 30.44)} mois — la moitié dure moins de "
       f"{fr(med, 0)} jours", "bleugris")
-tuile(t[2], "1 sur 3", f"des mandats dure moins de six mois ({courts} sur {n})", "orange")
-tuile(t[3], f"{nes.ministre.nunique()}", "ministres nés outre-mer en 67 ans, tous entre 2009 et 2017 — "
-      "aucun depuis", "orange")
+tuile(t[2], f"1 sur {round(n / courts)}", f"des mandats dure moins de six mois ({courts} sur {n})", "orange")
+tuile(t[3], f"{nes.ministre.nunique()}", f"ministres nés outre-mer en {ARRET.year - 1959} ans, tous entre "
+      f"{nes.debut.min()[:4]} et {nes.fin.max()[:4]} — aucun depuis", "orange")
 st.markdown("")
 
 # ───────────────────────────────────────── 1 · un portefeuille qui tourne
@@ -70,14 +77,22 @@ with g:
     st.plotly_chart(fig, width="stretch", config=c.CONFIG)
 with d:
     mac = P[P.president == "Macron"].iloc[0]
+    ans = (ARRET - pd.Timestamp(f"{mac.debut}-05-14")).days / 365.25
+    autres = P[P.president != "Macron"]
+    plus_rapide = mac.mandats_par_an > autres.mandats_par_an.max()
+    plus_court = mac.duree_moyenne_j < autres.duree_moyenne_j.min()
+    long_ = autres.loc[autres.duree_moyenne_j.idxmax()]
     carte("Ce graphique montre que…",
-          [f"sous Emmanuel Macron, le portefeuille change de titulaire plus vite que jamais : {mac.mandats} "
-           f"mandats et {mac.ministres} ministres en neuf ans, {fr(mac.mandats_par_an, 2)} mandat par année de "
-           f"présidence — le rythme le plus rapide de la Ve République.",
-           f"La durée moyenne tombe à {mac.duree_moyenne_j} jours, contre 634 sous Valéry Giscard d'Estaing."],
+          [f"sous Emmanuel Macron, le portefeuille change de titulaire "
+           + ("plus vite que jamais" if plus_rapide else "très vite") +
+           f" : {mac.mandats} mandats et {mac.ministres} ministres en {fr(ans, 1)} ans, "
+           f"{fr(mac.mandats_par_an, 2)} mandat par année de présidence"
+           + (" — le rythme le plus rapide de la Ve République." if plus_rapide else "."),
+           f"La durée moyenne " + ("tombe à son plus bas, " if plus_court else "est de ") +
+           f"{mac.duree_moyenne_j} jours, contre {long_.duree_moyenne_j} sous "
+           + {"Giscard d'Estaing": "Valéry Giscard d'Estaing"}.get(long_.president, long_.president) + "."],
           "orange")
-pied(SOURCE + ". Un mandat = une nomination dans un gouvernement ; 2022-2024 : deux titulaires simultanés",
-     renvoi=RENVOI)
+pied(SOURCE + ". " + REGLE, renvoi=RENVOI)
 
 # ───────────────────────────────────────── 2 · le rang et le rattachement, mandat après mandat
 st.markdown("### Un statut qui oscille, mandat après mandat")
@@ -104,17 +119,18 @@ with g:
 with d:
     carte("Ce graphique montre que…",
           [f"le {sigle('rang', 'rang')} du portefeuille monte et descend au gré des gouvernements : ministre d'État "
-           "sous de Gaulle, secrétaire d'État sous Valéry Giscard d'Estaing et François Mitterrand, ministre depuis "
-           "2012 — plus aucun secrétaire d'État depuis —, de nouveau ministre d'État avec Manuel Valls, neuf jours "
-           "après le cyclone Chido.",
-           "En orange, les mandats rattachés à l'Intérieur : 1976-1986, 2000-2002, 2007-2012, 2022-2024."], "orange")
+           "sous de Gaulle, secrétaire d'État sous Valéry Giscard d'Estaing et François Mitterrand, plus aucun "
+           "secrétaire d'État depuis 2012 mais des ministres délégués de 2022 à 2024, de nouveau ministre d'État avec "
+           "Manuel Valls, neuf jours après le cyclone Chido.",
+           f"En orange, les mandats rattachés à l'Intérieur : {K['Périodes de rattachement']}."], "orange")
     carte("En chiffres",
-          ["Sur 63 mandats : neuf de ministre d'État, trente de ministre, sept de ministre délégué, dix-sept de "
-           "secrétaire d'État.",
-           "48 sont de plein exercice, quinze rattachés à l'Intérieur. Les deux premiers rangs siègent au Conseil des "
-           "ministres ; les deux autres passent par le ministre dont ils relèvent."], "bleu")
-pied("Journal officiel — base des 63 mandats arrêtée au 23 juin 2026. Une barre = un mandat, de la nomination "
-     "à la fin des fonctions", renvoi=RENVOI)
+          [f"Sur {K['Mandats']} mandats : {K['Mandats de ministre d' + chr(39) + 'État']} de ministre d'État, "
+           f"{K['Mandats de ministre']} de ministre, {K['Mandats de ministre délégué']} de ministre délégué, "
+           f"{K['Mandats de secrétaire d' + chr(39) + 'État']} de secrétaire d'État.",
+           f"{K['Mandats de plein exercice']} sont de plein exercice, {K['Mandats rattachés à l' + chr(39) + 'Intérieur']} "
+           "rattachés à l'Intérieur. Les deux premiers rangs siègent au Conseil des ministres ; les deux autres "
+           "passent par le ministre dont ils relèvent."], "bleu")
+pied(SOURCE + ". Une barre = un mandat, de la nomination à la fin des fonctions", renvoi=RENVOI)
 
 # ───────────────────────────────────────── 3 · qui occupe le poste
 st.markdown("### Qui occupe le poste ?")
@@ -183,8 +199,9 @@ with g:
 carte("Ce graphique montre que…",
       ["aucune femme et aucun ministre lié à l'outre-mer avant 2002. Les quatre ministres nés outre-mer se "
        "succèdent tous entre 2009 et 2017, sous des majorités de droite puis de gauche ; depuis, plus aucun.",
-       "Les femmes restent présentes, mais leur part recule : 67 % des mandats sous François Hollande, 38 % "
-       "depuis."], "orange", cs[0])
+       f"Les femmes restent présentes, mais leur part recule : "
+       f"{P.set_index('president').part_femmes_pct['Hollande']} % des mandats sous François Hollande, "
+       f"{P.set_index('president').part_femmes_pct['Macron']} % depuis."], "orange", cs[0])
 carte("Ce que ces dates suivent",
       ["<b>2002</b> — la première femme, Brigitte Girardin, arrive deux ans après la loi sur la parité, un an "
        "après la loi Taubira et la loi du 16 novembre 2001 contre les discriminations.",
@@ -213,7 +230,8 @@ st.dataframe(pd.DataFrame({
 pied(SOURCE + ". Fin du dernier mandat : date d'arrêt de la base, la ministre étant toujours en fonction")
 
 st.markdown("##### Télécharger")
-b = st.columns(3)
-telecharger(b[0], "Figure · mandats par président", "mandats_par_president.png", figure=True)
-telecharger(b[1], "Figure · qui occupe le poste", "representativite_des_ministres.png", figure=True)
-telecharger(b[2], "Données · les 63 mandats", "ministres_mandats.csv")
+# les figures du deck portent encore l'ancien décompte : on ne propose que les données (le bouton appareil photo
+# de chaque graphique en donne l'image)
+b = st.columns(2)
+telecharger(b[0], f"Données · les {K['Mandats']} mandats", "ministres_mandats.csv")
+telecharger(b[1], "Données · par présidence", "ministres_presidents.csv")

@@ -1,32 +1,32 @@
 ﻿ecran;indicateur;valeur;millesime;source;statut
-I Histoire;Naissance de l'administration coloniale;"Bureau des colonies 1710 ; ministère des Colonies 20/03/1894";1710 / 1894;"Décret du 20/03/1894 (JORF) ; historiographie";OK
-I Histoire;Superficie de l'empire colonial;≈ 10,6 M km²;1914;"Larousse ; Herodote.net";OK
-I Histoire;Population de l'empire colonial;≈ 55 M colonisés (hors métropole);1914;"Larousse ; Herodote.net";OK
-I Histoire;Départementalisation;4 DOM : Guadeloupe, Martinique, Guyane, La Réunion;1946;Loi n°46-451 du 19/03/1946;OK
-I Histoire;Décolonisation (repère);14 anciennes colonies africaines indépendantes;1960;"France Diplomatie ; historiographie";OK
-I Histoire;DéGéOM → DGOM;"DéGéOM (décret 2008-687, 9/07/2008) ; DGOM (décret 2013-728, 12/08/2013)";2008 / 2013;Legifrance;OK
-II Fonct.;Effectifs DGOM;"≈ 180 agents (administration centrale) ; plafond d'emplois de la mission = SMA seul, 5 589 ETPT dont 4 246 volontaires";2024-2026;"Organigramme DGOM 04/2025 ; PAP 2026";OK
-II Fonct.;Sous-directions DGOM;4 : SDPEEDD, SDPISA, SDAJI, SDEPDE;2013;Arrêté du 30/10/2013 (Legifrance);OK
-II Fonct.;Programmes de la Mission OM;"P138 Emploi (1,80 Md€) ; P123 Conditions de vie (1,03 Md€)";2026 CP;PAP Mission Outre-mer 2026;OK
-II Ministres;Personnes distinctes / mandats;41 personnes / 63 mandats (dont 28 titulaires de plein exercice);1959-2026;"JORF/Legifrance ; fiches AN & Sénat";OK
-II Ministres;Durée moyenne d'un mandat;395 j ≈ 13 mois (médiane 358 j);1959-2026;JORF (décrets nomination/cessation);OK
-II Ministres;Première femme;Brigitte Girardin — 07/05/2002;2002;Décret 07/05/2002, JORFTEXT000000413109;OK
-II Ministres;Part de femmes;"9 personnes / 41 (22 %) ; 16 mandats / 63 (25 %)";1959-2026;"JORF ; fiches AN & Sénat";OK
-II Ministres;Ancrage ultramarin;"Nés outre-mer : 4/41 personnes, 9/63 mandats ; toute forme d'ancrage antérieure à la nomination : 7/41, 15/63";1959-2026;"Fiches biographiques AN/Sénat ; grille CLSE v4";OK
-II Ministres;Premier ministre ultramarin;2009 (Marie-Luce Penchard) — 50 ans après 1959;2009;"JORF ; fiche biographique";OK
-II Budget;Effort total de l'État (DPT);21,94 Md€ (CP);2026;DPT Outre-mer 2026;OK
-II Budget;Mission Outre-mer;2,83 Md€ (CP);2026;PAP Mission Outre-mer 2026;OK
-II Budget;Part Mission / DPT;12,9 % (CP);2026;DPT & PAP 2026;OK
-II Budget;Marge réellement pilotée;1,12 Md€ = 5,11 % (CP);2026;PAP 2026 (hors LODEOM & 50 % dotations);OK
-II Budget;Part avec dépenses fiscales;≈ 4,1 % (CP);2026;DPT & Voies et Moyens t.II 2026;OK
-II Budget;Programmes / missions / ministères;≈ 104 programmes · ≈ 30 missions · 22 ministères;2026;DPT Outre-mer 2026;OK
-II Budget;Dépenses fiscales OM;5,14 Md€ (pic 7,1 en 2023);2026;Voies et Moyens t.II (PLF 2026);OK
-III Statuts;Nomenclature 13 OM;5 DROM + 5 COM + Nouvelle-Calédonie + TAAF + Clipperton;actuel;"Constitution art. 72-3/73/74 ; INSEE";OK
-III Statuts;RUP / PTOM;6 RUP (5 DROM + Saint-Martin) / PTOM (autres);actuel;"TFUE art. 349 (RUP) ; annexe II (PTOM)";OK
-IV Territorial;Pauvreté par territoire;Martinique 27 → Mayotte 77 %;2026 (base INSEE);Sénat, CE Inégalités systémiques OM 2026;OK
-IV Territorial;Écart de prix alimentaire;Mayotte +30 → Guadeloupe +42 % (DROM);2022;INSEE (comparaison spatiale des prix);OK
-IV Territorial;Part alimentation importée;"Guyane 63 / Guadeloupe 82 / Martinique 87 % ; ~70 % OM";2022;"ODEADOM ; Sénat 2026";Partiel (Réu/May/COM : ODEADOM par filière)
-IV Territorial;Chômage par territoire;DROM 12-29 % (2024);2024;"INSEE (taux localisés) ; IEOM (COM)";OK
-IV Représentation;Sièges ultramarins;27 / 577 = 4,68 %;2024 (17e législature);"Code électoral ; Assemblée nationale";OK
-V Transformation;Chiffres pivots;12,9 % / 5,11 % · 104 programmes · 22 ministères · 50 ans · non-rattrapage;—;cf. écrans 2-6;OK (à sélectionner)
-Méthodo;Corpus mobilisé;728 documents (452 primaires + 276 synthèses);2026;Corpus de la mission (bibliographie officielle);OK
+I Histoire;Naissance de l'administration coloniale;"Bureau des colonies 1710 ; ministère des Colonies 20/03/1894";1710 / 1894;"Décret du 20/03/1894 (JORF) ; historiographie";Confirmé
+I Histoire;Superficie de l'empire colonial;≈ 10,6 M km²;1914;"Larousse ; Herodote.net";Secondaire
+I Histoire;Population de l'empire colonial;≈ 55 M colonisés (hors métropole);1914;"Larousse ; Herodote.net";Secondaire
+I Histoire;Départementalisation;4 DOM : Guadeloupe, Martinique, Guyane, La Réunion;1946;Loi n°46-451 du 19/03/1946;Confirmé
+I Histoire;Décolonisation (repère);14 anciennes colonies africaines indépendantes;1960;"France Diplomatie ; historiographie";Confirmé
+I Histoire;DéGéOM → DGOM;"DéGéOM (décret 2008-687, 9/07/2008) ; DGOM (décret 2013-728, 12/08/2013)";2008 / 2013;Legifrance;Confirmé
+II Fonct.;Effectifs DGOM;"≈ 180 agents (administration centrale) ; plafond d'emplois de la mission = SMA seul, 5 589 ETPT dont 4 246 volontaires";2024-2026;"Organigramme DGOM 04/2025 ; PAP 2026";Confirmé
+II Fonct.;Sous-directions DGOM;4 : SDPEEDD, SDPISA, SDAJI, SDEPDE;2013;Arrêté du 30/10/2013 (Legifrance);Confirmé
+II Fonct.;Programmes de la Mission OM;"P138 Emploi (1,80 Md€) ; P123 Conditions de vie (1,03 Md€)";2026 CP;PAP Mission Outre-mer 2026;Confirmé
+II Ministres;Personnes distinctes / mandats;"41 personnes / 62 mandats ; 25 ont exercé au rang de ministre ou de ministre d'État";1959-2026 (arrêt 19/11/2026);"JORF/Legifrance ; fiches AN & Sénat";Reconstitué
+II Ministres;Durée moyenne d'un mandat;396 j ≈ 13 mois (médiane 351 j);1959-2026 (arrêt 19/11/2026);JORF (décrets nomination/cessation);Reconstitué
+II Ministres;Première femme;Brigitte Girardin — 07/05/2002;2002;Décret 07/05/2002, JORFTEXT000000413109;Confirmé
+II Ministres;Part de femmes;"9 personnes / 41 (22 %) ; 17 mandats / 62 (27 %)";1959-2026 (arrêt 19/11/2026);"JORF ; fiches AN & Sénat";Reconstitué
+II Ministres;Ancrage ultramarin;"Nés outre-mer : 4/41 personnes, 9/62 mandats ; toute forme d'ancrage antérieure à la nomination : 7/41, 15/62";1959-2026 (arrêt 19/11/2026);"Fiches biographiques AN/Sénat ; grille CLSE v4";Secondaire
+II Ministres;Premier ministre ultramarin;2009 (Marie-Luce Penchard) — 50 ans après 1959;2009;"JORF ; fiche biographique";Confirmé
+II Budget;Effort total de l'État (DPT);21,94 Md€ (CP);2026;DPT Outre-mer 2026;Confirmé
+II Budget;Mission Outre-mer;2,83 Md€ (CP);2026;PAP Mission Outre-mer 2026;Confirmé
+II Budget;Part Mission / DPT;12,9 % (CP);2026;DPT & PAP 2026;Reconstitué
+II Budget;Marge réellement pilotée;1,12 Md€ = 5,11 % (CP);2026;PAP 2026 (hors LODEOM & 50 % dotations);Reconstitué
+II Budget;Part avec dépenses fiscales;≈ 4,1 % (CP);2026;DPT & Voies et Moyens t.II 2026;Reconstitué
+II Budget;Programmes / missions / ministères;104 programmes selon le DPT (90 dans la synthèse tous crédits) · 30 missions · 19 ministères porteurs + prélèvements sur recettes;2026;"DPT Outre-mer 2026, synthèse tous crédits ; nomenclature PLF 2025";Reconstitué
+II Budget;Dépenses fiscales OM;5,14 Md€ (pic 7,1 en 2023);2026;Voies et Moyens t.II (PLF 2026);Confirmé
+III Statuts;Nomenclature 13 OM;5 DROM + 5 COM + Nouvelle-Calédonie + TAAF + Clipperton;actuel;"Constitution art. 72-3/73/74 ; INSEE";Confirmé
+III Statuts;RUP / PTOM;6 RUP (5 DROM + Saint-Martin) / PTOM (autres);actuel;"TFUE art. 349 (RUP) ; annexe II (PTOM)";Confirmé
+IV Territorial;Pauvreté par territoire;Martinique 27 → Mayotte 77 %;2026 (base INSEE);Sénat, CE Inégalités systémiques OM 2026;Confirmé
+IV Territorial;Écart de prix alimentaire;Mayotte +30 → Guadeloupe +42 % (DROM);2022;INSEE (comparaison spatiale des prix);Confirmé
+IV Territorial;Part alimentation importée;"Guyane 63 / Guadeloupe 82 / Martinique 87 % ; ~70 % OM";2022;"ODEADOM ; Sénat 2026 — partiel : Réu/May/COM : ODEADOM par filière";Confirmé
+IV Territorial;Chômage par territoire;DROM 12-29 % (2024);2024;"INSEE (taux localisés) ; IEOM (COM)";Confirmé
+IV Représentation;Sièges ultramarins;27 / 577 = 4,68 %;2024 (17e législature);"Code électoral ; Assemblée nationale";Confirmé
+V Transformation;Chiffres pivots;12,9 % / 5,11 % · 104 programmes · 50 ans · non-rattrapage;—;cf. écrans 2-6 — sélection à arrêter;Reconstitué
+Méthodo;Corpus mobilisé;728 documents (452 primaires + 276 synthèses);2026;Corpus de la mission (bibliographie officielle);Confirmé

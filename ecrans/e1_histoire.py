@@ -25,7 +25,8 @@ glossaire(["rang", "rattaché à l'Intérieur", "mandat", "DGOM"])
 t = st.columns(4)
 tuile(t[0], "1894", "un ministère des Colonies sort de la tutelle de la Marine")
 tuile(t[1], "1946", "la Guadeloupe, la Martinique, la Guyane et La Réunion deviennent des départements", "bleugris")
-tuile(t[2], "4 périodes", f"où le portefeuille est {sigle('rattaché à l' + chr(39) + 'Intérieur')}", "orange")
+tuile(t[2], f"{lire('ministres_chiffres.csv').set_index('indicateur').valeur['Nombre de périodes de rattachement']} périodes",
+      f"où le portefeuille est {sigle('rattaché à l' + chr(39) + 'Intérieur')}", "orange")
 tuile(t[3], "1 décret", "fixe aujourd'hui son périmètre, et le Premier ministre le réécrit à chaque gouvernement",
       "orange")
 st.markdown("")
@@ -76,5 +77,5 @@ with d:
           ["Les jalons fondés sur un texte — loi, décret — sont confirmés. Ceux qui reposent sur des travaux "
            "d'histoire ou des ouvrages de référence sont signalés « source secondaire »."], "marine")
 pied("Décret du 20 mars 1894 ; loi n° 46-451 du 19 mars 1946 ; décrets n° 2008-687, n° 2013-728 et n° 2025-1018 ; "
-     "base des 63 mandats (Journal officiel) ; sources secondaires signalées jalon par jalon", renvoi=RENVOI)
+     "base des ministres (Journal officiel) ; sources secondaires signalées jalon par jalon", renvoi=RENVOI)
 

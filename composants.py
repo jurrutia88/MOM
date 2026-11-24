@@ -3,6 +3,7 @@
 glossaire et téléchargements. La profondeur est constante d'un écran à l'autre."""
 import os
 import re
+import sys
 import textwrap
 from html import escape
 
@@ -238,6 +239,16 @@ def lire(nom):
 def telecharger(col, libelle, fichier, figure=False):
     """Un bouton de téléchargement : une figure-phare (PNG) ou les données (CSV)."""
     chemin = os.path.join(FIGURES if figure else DONNEES, fichier)
+    if sys.platform == "emscripten":
+        # Version site (stlite, dans le navigateur) : le bouton de Streamlit n'y télécharge pas ; le fichier est
+        # servi à côté de la page, un lien suffit.
+        rel = ("figures/" if figure else "donnees/") + fichier
+        col.markdown(f'<a class="telecharger" href="./{rel}" download="{fichier}">{escape(libelle)}</a>'
+                     '<style>a.telecharger{display:block;text-align:center;padding:.45rem .75rem;border:1px solid '
+                     'rgba(29,50,63,.2);border-radius:.5rem;color:#1D323F !important;text-decoration:none !important;'
+                     'background:#fff;font-size:.95rem}a.telecharger:hover{border-color:#2A7C6F;color:#2A7C6F '
+                     '!important}</style>', unsafe_allow_html=True)
+        return
     with open(chemin, "rb") as f:
         col.download_button(libelle, f.read(), file_name=fichier,
                             mime="image/png" if figure else "text/csv", width="stretch")

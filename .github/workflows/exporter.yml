@@ -1,0 +1,46 @@
+# Quand le socle change, l'export tourne seul : il recalcule les tableaux de donnees/, vérifie les chiffres-clés
+# (onglet REF_Controles) et, si tout est juste, enregistre les tableaux. L'application se met alors à jour.
+# Si un chiffre-clé ne retombe pas juste, l'export échoue, n'enregistre rien, et le journal de l'action dit lequel.
+name: Exporter le socle
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "socle/**"
+      - "outils/**"
+      - "ecrans/**"
+      - "app.py"
+      - "charte.py"
+      - "composants.py"
+      - "figures/**"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  exporter:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Installer la seule dépendance de l'export
+        run: pip install openpyxl==3.1.5
+      - name: Exporter et contrôler
+        run: python outils/exporter.py
+      - name: Refaire la page du site (liste des fichiers et leurs empreintes)
+        run: python outils/construire_index.py
+      - name: Enregistrer les tableaux et la page mis à jour
+        run: |
+          git config user.name "Export du socle"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add donnees index.html 404.html
+          if git diff --cached --quiet; then
+            echo "Aucun tableau n'a changé."
+          else
+            git commit -m "Export automatique du socle"
+            git push
+          fi

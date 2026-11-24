@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>Le ministère des Outre-mer en chiffres — CLSE</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@stlite/browser@1.12.1/build/stlite.css">
+<style>
+  body { margin: 0; background: #FFFFFF; font-family: Lato, "Segoe UI", sans-serif; color: #1D323F; }
+  #attente { position: fixed; inset: 0; display: flex; flex-direction: column; align-items: center;
+             justify-content: center; gap: 10px; text-align: center; padding: 16px; }
+  #attente b { font-size: 1.3rem; }
+  #attente span { color: #5A6B75; font-size: .95rem; max-width: 420px; line-height: 1.45; }
+</style>
+</head>
+<body>
+<div id="attente"><b>Le ministère des Outre-mer en chiffres</b>
+  <span>Chargement de l'application… la première visite prend une vingtaine de secondes ;
+  les suivantes sont plus rapides.</span></div>
+<div id="root"></div>
+<script type="module">
+import { mount } from "https://cdn.jsdelivr.net/npm/@stlite/browser@1.12.1/build/stlite.js";
+const app = mount({
+  requirements: ["plotly==5.24.1"],
+  entrypoint: "app.py",
+  files: {
+  "app.py": {
+    "url": "./app.py?v=8d7eedd124"
+  },
+  "charte.py": {
+    "url": "./charte.py?v=0797340e8e"
+  },
+  "composants.py": {
+    "url": "./composants.py?v=0c32dcf20b"
+  },
+  "ecrans/e1_histoire.py": {
+    "url": "./ecrans/e1_histoire.py?v=5bc38dae09"
+  },
+  "ecrans/e2_fonctionnement.py": {
+    "url": "./ecrans/e2_fonctionnement.py?v=1850a353f6"
+  },
+  "ecrans/e3_ministres.py": {
+    "url": "./ecrans/e3_ministres.py?v=1adbb5178a"
+  },
+  "ecrans/e4_budget.py": {
+    "url": "./ecrans/e4_budget.py?v=356972432b"
+  },
+  "ecrans/e5_statuts.py": {
+    "url": "./ecrans/e5_statuts.py?v=afc5b3bac7"
+  },
+  "ecrans/e6_territoires.py": {
+    "url": "./ecrans/e6_territoires.py?v=145e69fecf"
+  },
+  "ecrans/e7_representation.py": {
+    "url": "./ecrans/e7_representation.py?v=2d9c2f3c76"
+  },
+  "donnees/budget_cascade.csv": {
+    "url": "./donnees/budget_cascade.csv?v=b72952dfe4"
+  },
+  "donnees/budget_cascade_detail.csv": {
+    "url": "./donnees/budget_cascade_detail.csv?v=7c13da8bc1"
+  },
+  "donnees/budget_contributeurs.csv": {
+    "url": "./donnees/budget_contributeurs.csv?v=37e1d30986"
+  },
+  "donnees/budget_serie.csv": {
+    "url": "./donnees/budget_serie.csv?v=8686f4afa1"
+  },
+  "donnees/fiscal_serie.csv": {
+    "url": "./donnees/fiscal_serie.csv?v=ac03456f87"
+  },
+  "donnees/fonctionnement_actions.csv": {
+    "url": "./donnees/fonctionnement_actions.csv?v=264836fd16"
+  },
+  "donnees/fonctionnement_chiffres.csv": {
+    "url": "./donnees/fonctionnement_chiffres.csv?v=b9b812e7de"
+  },
+  "donnees/histoire_jalons.csv": {
+    "url": "./donnees/histoire_jalons.csv?v=6d6b3d1359"
+  },
+  "donnees/indicateurs.csv": {
+    "url": "./donnees/indicateurs.csv?v=6bb39bf7f6"
+  },
+  "donnees/ministres_chiffres.csv": {
+    "url": "./donnees/ministres_chiffres.csv?v=c21277b7ca"
+  },
+  "donnees/ministres_mandats.csv": {
+    "url": "./donnees/ministres_mandats.csv?v=98517676f0"
+  },
+  "donnees/ministres_presidents.csv": {
+    "url": "./donnees/ministres_presidents.csv?v=1666705d81"
+  },
+  "donnees/politique_chiffres.csv": {
+    "url": "./donnees/politique_chiffres.csv?v=efcba23bd9"
+  },
+  "donnees/politique_mandats.csv": {
+    "url": "./donnees/politique_mandats.csv?v=463dcb0e03"
+  },
+  "donnees/politique_positions.csv": {
+    "url": "./donnees/politique_positions.csv?v=2a4823f280"
+  },
+  "donnees/politique_territoires.csv": {
+    "url": "./donnees/politique_territoires.csv?v=1263dcbe22"
+  },
+  "donnees/representation_chiffres.csv": {
+    "url": "./donnees/representation_chiffres.csv?v=0f7d3acc2d"
+  },
+  "donnees/representation_sieges.csv": {
+    "url": "./donnees/representation_sieges.csv?v=8545fb1119"
+  },
+  "donnees/restes_serie.csv": {
+    "url": "./donnees/restes_serie.csv?v=124d549d2d"
+  },
+  "donnees/statuts.csv": {
+    "url": "./donnees/statuts.csv?v=7be7c686f5"
+  },
+  "donnees/territoires_contours.csv": {
+    "url": "./donnees/territoires_contours.csv?v=5f72629a1f"
+  },
+  "donnees/territoires_indicateurs.csv": {
+    "url": "./donnees/territoires_indicateurs.csv?v=bfc77af1c1"
+  },
+  "donnees/territoires_pib_effort.csv": {
+    "url": "./donnees/territoires_pib_effort.csv?v=0998dcf0b9"
+  },
+  "donnees/territoires_precarite.csv": {
+    "url": "./donnees/territoires_precarite.csv?v=10f4099b12"
+  },
+  "donnees/territoires_precarite_detail.csv": {
+    "url": "./donnees/territoires_precarite_detail.csv?v=a26be081c9"
+  },
+  "donnees/territoires_silhouettes.csv": {
+    "url": "./donnees/territoires_silhouettes.csv?v=f402898637"
+  },
+  "figures/cascade_budgetaire_2026.png": {
+    "url": "./figures/cascade_budgetaire_2026.png?v=89a8c1e7ac"
+  },
+  "figures/mission_outre_mer_par_action.png": {
+    "url": "./figures/mission_outre_mer_par_action.png?v=3bbd935aff"
+  },
+  "figures/missions_contributrices_2026.png": {
+    "url": "./figures/missions_contributrices_2026.png?v=ad36269e43"
+  },
+  "figures/restes_a_payer.png": {
+    "url": "./figures/restes_a_payer.png?v=ee0822435b"
+  },
+  ".streamlit/config.toml": {
+    "url": "./.streamlit/config.toml?v=09a05a7bf0"
+  }
+},
+}, document.getElementById("root"));
+const obs = new MutationObserver(() => {
+  if (document.querySelector("#root [data-testid='stApp']")) {
+    document.getElementById("attente").remove(); obs.disconnect();
+  }
+});
+obs.observe(document.getElementById("root"), { childList: true, subtree: true });
+</script>
+</body>
+</html>

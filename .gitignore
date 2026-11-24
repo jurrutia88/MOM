@@ -5,3 +5,6 @@ __pycache__/
 Thumbs.db
 desktop.ini
 .claude/
+
+# fichiers de verrou d'Excel
+~$*.xlsx
