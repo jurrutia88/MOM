@@ -52,6 +52,12 @@ PAGE = """<!doctype html>
   les suivantes sont plus rapides.</span></div>
 <div id="root"></div>
 <script type="module">
+// Adresse d'un écran ouverte directement ou rechargée (…/MOM/ministres) : GitHub Pages sert cette page en
+// guise de 404. On revient d'abord à l'adresse de base du site (sinon l'application la prend pour base et
+// double les adresses), puis, une fois le menu affiché, on ouvre l'écran demandé.
+const BASE = location.hostname.endsWith("github.io") ? "/" + location.pathname.split("/")[1] + "/" : "/";
+const ECRAN = location.pathname.startsWith(BASE) ? location.pathname.slice(BASE.length).replace(/[/]+$/, "") : "";
+if (ECRAN) history.replaceState(null, "", BASE + location.search + location.hash);
 import { mount } from "https://cdn.jsdelivr.net/npm/@stlite/browser@%(v)s/build/stlite.js";
 const app = mount({
   requirements: %(deps)s,
@@ -62,8 +68,14 @@ const app = mount({
 const obs = new MutationObserver(() => {
   if (document.querySelector("#root [data-testid='stApp']")) {
     document.getElementById("attente").remove(); obs.disconnect();
+    if (ECRAN) ouvrir(0);
   }
 });
+function ouvrir(essai) {
+  const lien = [...document.querySelectorAll("#root a[href]")]
+    .find(a => new URL(a.href).pathname.replace(/[/]+$/, "").endsWith("/" + ECRAN));
+  if (lien) lien.click(); else if (essai < 40) setTimeout(() => ouvrir(essai + 1), 250);
+}
 obs.observe(document.getElementById("root"), { childList: true, subtree: true });
 </script>
 </body>
