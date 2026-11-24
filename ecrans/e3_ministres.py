@@ -13,7 +13,7 @@ import plotly.graph_objects as go
 import streamlit as st
 
 import charte as c
-from composants import NBSP, carte, entete, fond, fr, glossaire, lire, pied, sigle, telecharger, tuile
+from composants import NBSP, carte, en_lettres, entete, fond, fr, glossaire, lire, pied, sigle, telecharger, tuile
 
 RENVOI = "partie « Rôle et histoire du ministère »"        # intitulé définitif à caler sur le rapport
 
@@ -35,19 +35,41 @@ LIB = [f"{p.replace(' d' + chr(39) + 'Estaing', '')}<br>{a}-{str(int(b))[2:]}" i
 n, pers = len(M), M.ministre.nunique()
 moy, med = M.duree_jours.mean(), M.duree_jours.median()
 courts = int((M.duree_jours < 183).sum())
+AN0 = int(M.debut.min()[:4])                                         # 1959, première nomination de la base
+PREMIERE_FEMME = int(M[M.sexe == "F"].debut.min()[:4])
+PREMIER_ANCRE = int(M[M.ancrage != "aucun"].debut.min()[:4])
+ordre = M.sort_values("debut").drop_duplicates("ministre")
+NOMS_NES = list(ordre[ordre.ancrage == "né outre-mer"].ministre)
+NOMS_AUTRES = list(ordre[ordre.ancrage == "autre forme"].ministre)
+NOM_PRES = {"de Gaulle": "de Gaulle", "Pompidou": "Georges Pompidou", "Giscard d'Estaing": "Valéry Giscard d'Estaing",
+            "Mitterrand": "François Mitterrand", "Chirac": "Jacques Chirac", "Sarkozy": "Nicolas Sarkozy",
+            "Hollande": "François Hollande", "Macron": "Emmanuel Macron"}
+CHIDO = pd.Timestamp("2024-12-14")                                   # passage du cyclone Chido sur Mayotte
+
+
+def et(noms):
+    n = list(noms)
+    return n[0] if len(n) == 1 else ", ".join(n[:-1]) + " et " + n[-1]
+
+
+SE = M[M.rang == "Secrétaire d'État"]
+DELEGUES = M[(M.rang == "Ministre délégué") & (M.debut >= "2017")]
+ETAT = M[M.rang == "Ministre d'État"]
+ETAT_ANCIENS = ETAT[ETAT.debut < "2017"]
+ETAT_RECENT = ETAT[ETAT.debut >= "2017"].sort_values("debut").iloc[0]
 nes = M[M.ancrage == "né outre-mer"]
 
 entete("Écran 3 · Les ministres", "Qui a dirigé le ministère des Outre-mer ?",
-       f"{pers} personnes et {n} mandats depuis 1959. À quel rang, combien de temps elles restent, et qui elles sont.")
+       f"{pers} personnes et {n} mandats depuis {AN0}. À quel rang, combien de temps elles restent, et qui elles sont.")
 glossaire(["mandat", "rang", "rattaché à l'Intérieur", "ancrage"])
 
 t = st.columns(4)
-tuile(t[0], f"{pers}", f"ministres depuis 1959, pour <b>{n} mandats</b> : une même personne peut être nommée "
+tuile(t[0], f"{pers}", f"ministres depuis {AN0}, pour <b>{n} mandats</b> : une même personne peut être nommée "
       f"dans plusieurs gouvernements")
 tuile(t[1], f"{fr(moy, 0)} jours", f"durée moyenne d'un mandat, soit environ {round(moy / 30.44)} mois — la moitié dure moins de "
       f"{fr(med, 0)} jours", "bleugris")
 tuile(t[2], f"1 sur {round(n / courts)}", f"des mandats dure moins de six mois ({courts} sur {n})", "orange")
-tuile(t[3], f"{nes.ministre.nunique()}", f"ministres nés outre-mer en {ARRET.year - 1959} ans, tous entre "
+tuile(t[3], f"{nes.ministre.nunique()}", f"ministres nés outre-mer en {ARRET.year - AN0} ans, tous entre "
       f"{nes.debut.min()[:4]} et {nes.fin.max()[:4]} — aucun depuis", "orange")
 st.markdown("")
 
@@ -119,9 +141,11 @@ with g:
 with d:
     carte("Ce graphique montre que…",
           [f"le {sigle('rang', 'rang')} du portefeuille monte et descend au gré des gouvernements : ministre d'État "
-           "sous de Gaulle, secrétaire d'État sous Valéry Giscard d'Estaing et François Mitterrand, plus aucun "
-           "secrétaire d'État depuis 2012 mais des ministres délégués de 2022 à 2024, de nouveau ministre d'État avec "
-           "Manuel Valls, neuf jours après le cyclone Chido.",
+           f"sous {et(NOM_PRES[p] for p in dict.fromkeys(ETAT_ANCIENS.president))}, secrétaire d'État par "
+           f"intermittence jusqu'en {SE.fin.max()[:4]}, plus aucun depuis, des ministres délégués de "
+           f"{DELEGUES.debut.min()[:4]} à {DELEGUES.fin.max()[:4]}, de nouveau ministre d'État avec "
+           f"{ETAT_RECENT.ministre}, {en_lettres((pd.Timestamp(ETAT_RECENT.debut) - CHIDO).days)} jours après le "
+           f"cyclone Chido.",
            f"En orange, les mandats rattachés à l'Intérieur : {K['Périodes de rattachement']}."], "orange")
     carte("En chiffres",
           [f"Sur {K['Mandats']} mandats : {K['Mandats de ministre d' + chr(39) + 'État']} de ministre d'État, "
@@ -197,22 +221,24 @@ with g:
     fig.add_hline(y=-1.05, line=dict(color=c.FILET, width=1))
     st.plotly_chart(fig, width="stretch", config=c.CONFIG)
 carte("Ce graphique montre que…",
-      ["aucune femme et aucun ministre lié à l'outre-mer avant 2002. Les quatre ministres nés outre-mer se "
-       "succèdent tous entre 2009 et 2017, sous des majorités de droite puis de gauche ; depuis, plus aucun.",
+      [(f"aucune femme et aucun ministre lié à l'outre-mer avant {PREMIERE_FEMME}. Les " if PREMIERE_FEMME == PREMIER_ANCRE
+        else f"aucune femme avant {PREMIERE_FEMME} et aucun ministre lié à l'outre-mer avant {PREMIER_ANCRE}. Les ")
+       + f"{en_lettres(len(NOMS_NES))} ministres nés outre-mer se succèdent tous entre {nes.debut.min()[:4]} et "
+       f"{nes.fin.max()[:4]}, sous des majorités de droite puis de gauche ; depuis, plus aucun.",
        f"Les femmes restent présentes, mais leur part recule : "
        f"{P.set_index('president').part_femmes_pct['Hollande']} % des mandats sous François Hollande, "
        f"{P.set_index('president').part_femmes_pct['Macron']} % depuis."], "orange", cs[0])
 carte("Ce que ces dates suivent",
-      ["<b>2002</b> — la première femme, Brigitte Girardin, arrive deux ans après la loi sur la parité, un an "
+      [f"<b>{PREMIERE_FEMME}</b> — la première femme, {ordre[ordre.sexe == 'F'].ministre.iloc[0]}, arrive deux ans après la loi sur la parité, un an "
        "après la loi Taubira et la loi du 16 novembre 2001 contre les discriminations.",
-       "<b>2009</b> — la première ministre née outre-mer, Marie-Luce Penchard, est nommée un mois après le "
-       "décret du 27 mai 2009 qui clôt la grève générale de Guadeloupe, cinquante ans après la création du "
-       "portefeuille.",
-       "<b>2017</b> — la parenthèse se ferme trois semaines après l'accord qui clôt le conflit guyanais.",
+       f"<b>{nes.debut.min()[:4]}</b> — la première ministre née outre-mer, {NOMS_NES[0]}, est nommée un mois "
+       f"après le décret du 27 mai 2009 qui clôt la grève générale de Guadeloupe, "
+       f"{en_lettres(int(nes.debut.min()[:4]) - AN0)} ans après la création du portefeuille.",
+       f"<b>{nes.fin.max()[:4]}</b> — la parenthèse se ferme trois semaines après l'accord qui clôt le conflit guyanais.",
        "La coïncidence est de date, non de cause."], "bleugris", cs[1])
 carte("Qui, et de quel ancrage",
-      ["<b>Nés outre-mer</b> : Marie-Luce Penchard, Victorin Lurel, George Pau-Langevin, Ericka Bareigts.",
-       f"<b>Autre forme d'{sigle('ancrage')}</b> : Brigitte Girardin, Annick Girardin, Jean-François Carenco — "
+      [f"<b>Nés outre-mer</b> : {', '.join(NOMS_NES)}.",
+       f"<b>Autre forme d'{sigle('ancrage')}</b> : {', '.join(NOMS_AUTRES)} — "
        "activité, enfance ou fonctions outre-mer antérieures à la nomination."], "bleu", cs[2])
 pied(SOURCE + " ; grille d'ancrage ultramarin du CLSE, v4 (naissance, ascendance, résidence, activité, mandat, "
      "engagement)", renvoi=RENVOI)

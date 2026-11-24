@@ -9,32 +9,40 @@ from html import escape
 import streamlit as st
 
 import charte as c
-from composants import carte, entete, fond, fr_typo, glossaire, lire, pied, sigle, silhouette, tuile
+from composants import carte, en_lettres, entete, fond, fr_typo, glossaire, lire, pied, sigle, silhouette, tuile
 
 RENVOI = "partie « Comment fonctionne le ministère »"       # intitulé définitif à caler sur le rapport
 
 c.css()
 fond(["Nouvelle-Calédonie", "Polynésie française", "Clipperton"])
 S = lire("statuts.csv")
+NB = len(S)
+REGIMES = S[S.groupe != "Statut particulier"].groupe.nunique()      # article 73, article 74, titre XIII
+PARTICULIERS = int((S.groupe == "Statut particulier").sum())
+EUROPE = S[S.regime_europeen != "aucun"].regime_europeen.nunique()  # RUP, PTOM
+DROM = int((S.groupe == "Article 73").sum())
+REVISION, MARTINIQUE = 2003, 2024        # révision constitutionnelle du 28 mars 2003 ; Sénat, 31 mars 2024
 
-entete("Écran 5 · Les statuts", "Pourquoi les 13 outre-mer n'ont-ils pas tous le même statut ?",
-       "Trois régimes constitutionnels, deux statuts particuliers, deux régimes européens : un même ministère pour "
-       "des territoires que le droit ne traite pas de la même façon.")
+entete("Écran 5 · Les statuts", f"Pourquoi les {NB} outre-mer n'ont-ils pas tous le même statut ?",
+       f"{en_lettres(REGIMES).capitalize()} régimes constitutionnels, {en_lettres(PARTICULIERS)} statuts "
+       f"particuliers, {en_lettres(EUROPE)} régimes européens : un même ministère pour des territoires que le droit "
+       f"ne traite pas de la même façon.")
 glossaire(["DROM", "COM", "article 73", "article 74", "habilitation", "sui generis", "RUP", "PTOM"])
 
 t = st.columns(4)
-tuile(t[0], "13", f"territoires, dont {int((S.habite == 'oui').sum())} habités — les TAAF et Clipperton n'ont pas "
+tuile(t[0], f"{NB}", f"territoires, dont {int((S.habite == 'oui').sum())} habités — les TAAF et Clipperton n'ont pas "
       f"de population permanente")
-tuile(t[1], "3 régimes", f"dans la Constitution : {sigle('article 73')}, {sigle('article 74')}, titre XIII — plus "
-      f"deux statuts particuliers", "bleugris")
-tuile(t[2], f"{int((S.regime_europeen == 'RUP').sum())} sur 13", f"font partie de l'Union européenne ({sigle('RUP')}) ; "
+tuile(t[1], f"{REGIMES} régimes", f"dans la Constitution : {sigle('article 73')}, {sigle('article 74')}, titre "
+      f"XIII — plus {en_lettres(PARTICULIERS)} statuts particuliers", "bleugris")
+tuile(t[2], f"{int((S.regime_europeen == 'RUP').sum())} sur {NB}", f"font partie de l'Union européenne ({sigle('RUP')}) ; "
       f"{int((S.regime_europeen == 'PTOM').sum())} y sont seulement associés ({sigle('PTOM')})", "bleu")
-tuile(t[3], "21 ans", f"avant le premier projet de loi d'{sigle('habilitation')} dédié, pour la Martinique, en 2024",
+tuile(t[3], f"{MARTINIQUE - REVISION} ans", f"avant le premier projet de loi d'{sigle('habilitation')} dédié, "
+      f"pour la Martinique, en {MARTINIQUE}",
       "orange")
 st.markdown("")
 
 # ───────────────────────────────────────── 1 · les treize territoires
-st.markdown("### Treize territoires, rangés de trois façons")
+st.markdown(f"### {en_lettres(NB).capitalize()} territoires, rangés de trois façons")
 COUL = {"Article 73": c.VERT, "Article 74": c.BLEU, "Titre XIII": c.MARINE, "Statut particulier": c.BRUN,
         "RUP": c.VERT, "PTOM": c.BLEU, "aucun": c.BRUN,
         "Atlantique": c.BLEU, "Indien": c.VERT, "Indien et austral": c.BRUN, "Pacifique": c.MARINE}
@@ -79,8 +87,8 @@ pied("Constitution, articles 72-3, 73, 74, 76 et 77 ; traité sur le fonctionnem
 st.markdown("### Ce que chaque régime change")
 a, b, d = st.columns(3, gap="medium")
 carte("Article 73 · l'identité législative",
-      [f"Dans les cinq {sigle('DROM')}, les lois nationales s'appliquent de plein droit, sauf adaptation expresse.",
-       f"Depuis 2003, une {sigle('habilitation')} permet à la collectivité de fixer elle-même les règles dans "
+      [f"Dans les {en_lettres(DROM)} {sigle('DROM')}, les lois nationales s'appliquent de plein droit, sauf adaptation expresse.",
+       f"Depuis {REVISION}, une {sigle('habilitation')} permet à la collectivité de fixer elle-même les règles dans "
        "quelques matières. La Réunion en est exclue par la Constitution elle-même."], "vert", a)
 carte("Article 74 · la spécialité législative",
       [f"Chaque {sigle('COM')} a un statut sur mesure, fixé par une loi organique, et s'écarte plus largement de la "
@@ -113,11 +121,12 @@ with g:
         pour la Martinique</div></div>
     </div>""", unsafe_allow_html=True)
     carte("Ce que montre cette frise",
-          ["Il faut vingt et un ans pour qu'un premier projet de loi d'habilitation dédié soit adopté par le Sénat, le "
-           "31 mars 2024 : il autorise l'Assemblée de Martinique à fixer les règles en matière d'énergie, d'eau et "
+          [f"Il faut {en_lettres(MARTINIQUE - REVISION)} ans pour qu'un premier projet de loi d'habilitation dédié "
+           f"soit adopté par le Sénat, le 31 mars {MARTINIQUE} : il autorise l'Assemblée de Martinique à fixer les règles en matière d'énergie, d'eau et "
            "d'assainissement.",
            "Trois raisons à cette sous-utilisation : une procédure lourde, que les collectivités « hésitent à "
-           "utiliser » ; l'exclusion de La Réunion, qui ne laisse que quatre collectivités ; une lecture restrictive "
+           f"utiliser » ; l'exclusion de La Réunion, qui ne laisse que {en_lettres(DROM - 1)} collectivités ; une "
+           f"lecture restrictive "
            "du Conseil constitutionnel."], "orange")
 with d:
     carte("Et le ministère ?",

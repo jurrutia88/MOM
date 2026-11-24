@@ -9,7 +9,7 @@ from html import escape
 import streamlit as st
 
 import charte as c
-from composants import carte, entete, fond, fr_typo, glossaire, lire, pied, sigle, tuile
+from composants import carte, en_lettres, entete, fond, fr_typo, glossaire, lire, pied, sigle, tuile
 
 RENVOI = "partie « Rôle et histoire du ministère »"        # intitulé définitif à caler sur le rapport
 
@@ -22,10 +22,11 @@ entete("Écran 1 · L'histoire", "D'où vient le ministère des Outre-mer ?",
        "tutelle.")
 glossaire(["rang", "rattaché à l'Intérieur", "mandat", "DGOM"])
 
+PERIODES = int(lire("ministres_chiffres.csv").set_index("indicateur").valeur["Nombre de périodes de rattachement"])
 t = st.columns(4)
 tuile(t[0], "1894", "un ministère des Colonies sort de la tutelle de la Marine")
 tuile(t[1], "1946", "la Guadeloupe, la Martinique, la Guyane et La Réunion deviennent des départements", "bleugris")
-tuile(t[2], f"{lire('ministres_chiffres.csv').set_index('indicateur').valeur['Nombre de périodes de rattachement']} périodes",
+tuile(t[2], f"{PERIODES} périodes",
       f"où le portefeuille est {sigle('rattaché à l' + chr(39) + 'Intérieur')}", "orange")
 tuile(t[3], "1 décret", "fixe aujourd'hui son périmètre, et le Premier ministre le réécrit à chaque gouvernement",
       "orange")
@@ -67,8 +68,8 @@ with d:
     carte("Ce que cette frise montre",
           ["le ministère des Outre-mer descend d'une administration coloniale : d'abord un service de la Marine, "
            "puis un ministère des Colonies en 1894.",
-           "Sous la Ve République, le portefeuille change de nom, de rang et de tutelle — il est rattaché à "
-           "l'Intérieur pendant quatre périodes. Depuis 2025, il est de plein exercice, mais par un décret que le "
+           f"Sous la Ve République, le portefeuille change de nom, de rang et de tutelle — il est rattaché à "
+           f"l'Intérieur pendant {en_lettres(PERIODES)} périodes. Depuis 2025, il est de plein exercice, mais par un décret que le "
            "Premier ministre écrit seul."], "orange")
     carte("Ce que cela veut dire",
           ["<b>Ce qui s'obtient par décret se perd par décret</b> : c'est la première fragilité du portefeuille."],

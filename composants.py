@@ -98,14 +98,21 @@ def fr(x, dec=1):
 
 LETTRES = {0: "zéro", 1: "un", 2: "deux", 3: "trois", 4: "quatre", 5: "cinq", 6: "six", 7: "sept", 8: "huit",
            9: "neuf", 10: "dix", 11: "onze", 12: "douze", 13: "treize", 14: "quatorze", 15: "quinze", 16: "seize",
-           20: "vingt", 30: "trente", 40: "quarante", 50: "cinquante"}
+           20: "vingt", 30: "trente", 40: "quarante", 50: "cinquante", 60: "soixante"}
 
 
 def en_lettres(n):
     """Un nombre calculé, écrit en toutes lettres quand l'usage le veut (« cinq euros sur cent ») ; en chiffres
     s'il n'a pas de forme simple. Le chiffre vient toujours des données, jamais du texte."""
     n = int(round(n))
-    return LETTRES.get(n, fr(n, 0))
+    if n in LETTRES:
+        return LETTRES[n]
+    if 17 <= n <= 19:
+        return "dix-" + LETTRES[n - 10]
+    if 21 <= n <= 69:
+        d, u = LETTRES[n // 10 * 10], n % 10
+        return d if u == 0 else d + (" et un" if u == 1 else "-" + LETTRES[u])
+    return fr(n, 0)
 
 
 FEMININS = ("Guadeloupe", "Martinique", "Guyane", "Nouvelle-Calédonie", "Polynésie française")

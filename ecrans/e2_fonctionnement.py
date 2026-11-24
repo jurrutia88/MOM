@@ -9,7 +9,7 @@ Textes repris du deck du diagnostic (23 septembre 2026), diapositives « D'où i
 import streamlit as st
 
 import charte as c
-from composants import carte, entete, fond, fr, glossaire, lire, pied, sigle, tuile
+from composants import carte, en_lettres, entete, fond, fr, glossaire, lire, pied, sigle, tuile
 
 RENVOI = "partie « Comment fonctionne le ministère »"       # intitulé définitif à caler sur le rapport
 
@@ -18,6 +18,9 @@ c.css()
 fond(["Saint-Pierre-et-Miquelon", "Wallis-et-Futuna"])
 A = lire("fonctionnement_actions.csv")
 K = lire("fonctionnement_chiffres.csv").set_index("indicateur").valeur
+IND = lire("indicateurs.csv").set_index("indicateur")
+SOUS_DIR = int(str(IND.valeur["Sous-directions DGOM"]).split(":")[0])         # « 4 : SDPEEDD, … »
+CREATION = str(IND.millesime["DéGéOM → DGOM"]).split("/")[-1].strip()       # « 2008 / 2013 »
 mission = A.cp_eur.sum()
 part_contrainte = 100 * A.contraint_eur.sum() / mission
 
@@ -27,7 +30,7 @@ glossaire(["DGOM", "P138", "P123", "CP"])
 
 t = st.columns(4)
 tuile(t[0], f"≈ {K['Agents de la direction générale des outre-mer']:.0f}",
-      f"agents dans sa {sigle('DGOM', 'direction générale')}, répartis en quatre sous-directions")
+      f"agents dans sa {sigle('DGOM', 'direction générale')}, répartis en {en_lettres(SOUS_DIR)} sous-directions")
 tuile(t[1], f"{fr(mission / 1e9, 2)} Md€", "de crédits en propre en 2026, en deux programmes", "bleugris")
 tuile(t[2], f"{fr(part_contrainte / 10, 0)} € sur 10", "de ces crédits sont engagés d'avance, par la loi ou par "
       "des dotations garanties", "orange")
@@ -54,8 +57,8 @@ with g:
     carte("Le cabinet", [f"<b>{K['Membres du cabinet']:.0f} membres</b> et {K['Personnels support du cabinet']:.0f} "
                          "personnes en fonctions support, au 1er juillet 2025."], "vert", o1)
     carte("La direction générale", [f"<b>Environ {K['Agents de la direction générale des outre-mer']:.0f} "
-                                    "agents</b>, quatre sous-directions, créée en 2013."], "vert", o2)
-    carte("Ce que portent ses quatre sous-directions",
+                                    f"agents</b>, {en_lettres(SOUS_DIR)} sous-directions, créée en {CREATION}."], "vert", o2)
+    carte(f"Ce que portent ses {en_lettres(SOUS_DIR)} sous-directions",
           ["Politiques économiques, de l'emploi et du développement durable.",
            "Politiques internationales, sociales et agricoles.",
            "Affaires juridiques et institutionnelles.",
