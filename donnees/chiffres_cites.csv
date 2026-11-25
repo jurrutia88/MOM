@@ -7,5 +7,7 @@ missions_dpt_2026;30;missions;Missions budgétaires dont relèvent ces programme
 seuil_groupe_an;15;députés;Effectif minimal pour constituer un groupe à l'Assemblée nationale (20 avant la réforme de 2009);"Règlement de l'Assemblée nationale, art. 19 ; Assemblée nationale, fiche de synthèse n° 8 « Les groupes politiques »"
 gdr_membres_l16;22;députés;Membres du groupe Gauche démocrate et républicaine, 16e législature (2022-2024);LCP, mai 2024 (source secondaire, à confirmer sur la liste de l'Assemblée nationale)
 gdr_membres_l17;17;députés;Membres du groupe Gauche démocrate et républicaine à sa constitution, 17e législature (juillet 2024);Outremers360, 2024 (source secondaire, à confirmer sur la liste de l'Assemblée nationale)
+cnal_concours_2020_2025;46;concours;Concours nationaux à affectation locale organisés de 2020 à 2025;Sénat, rapport d'information n° 264 (2025), Philippe Bas et Victorin Lurel, repris par la fiche variable V4, v4 (2026) — à confirmer à la page
+cnal_postes_par_an;1800;postes;Postes ouverts chaque année par les concours nationaux à affectation locale (ordre de grandeur);Sénat, rapport d'information n° 264 (2025), Philippe Bas et Victorin Lurel, repris par la fiche variable V4, v4 (2026) — à confirmer à la page
 gdr_ultramarins_l16;10;députés;Députés ultramarins du groupe GDR en fin de 16e législature;Calcul : onglet POL_GDR_elus (liste des élus)
 gdr_ultramarins_l17;8;députés;Députés ultramarins du groupe GDR en fin de 17e législature;Calcul : onglet POL_GDR_elus (liste des élus)

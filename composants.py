@@ -74,6 +74,8 @@ GLOSSAIRE = {
                    "en juillet 2024.",
     "groupe politique": "Les députés se rassemblent par affinités politiques. Il faut au moins quinze députés pour "
                         "former un groupe, qui donne des moyens et du temps de parole.",
+    "plein exercice": "Un portefeuille de plein exercice relève directement du Premier ministre ; le cas contraire est "
+                      "le rattachement au ministre de l'Intérieur, qui en a alors l'autorité.",
     "ancrage": "Un lien avec un territoire d'outre-mer antérieur à la nomination. « Né outre-mer » : la "
                "naissance. « Autre forme » : ascendance, résidence, activité, mandat ou engagement, d'après la "
                "grille d'ancrage du CLSE.",
@@ -176,13 +178,18 @@ def carte(intitule, paragraphes, accent="vert", conteneur=st, puces=False):
 
 
 def pied(source, statut="Confirmé", renvoi=None):
-    """Les sources, et la mention « Estimation CLSE » quand le chiffre est un calcul de la mission (statuts
-    Estimé ou Reconstitué de la base). Le classement de fiabilité reste dans la base, pas à l'écran (CLSE,
-    24 novembre 2026)."""
-    marque = "" if statut == "Confirmé" else '<span class="statut estime">Estimation CLSE</span>'
+    """Les sources, avec deux mentions (colonne Décision du tableau d'arbitrages, ligne « Sources ») :
+    « Calcul CLSE d'après… » quand le chiffre est calculé exactement à partir de sources officielles
+    (statut "Calcul") ; « Estimation CLSE » pour une vraie estimation (statuts Estimé ou Reconstitué de la base).
+    Le classement de fiabilité reste dans la base, pas à l'écran."""
+    if statut == "Calcul":
+        tete = '<span class="statut">Calcul CLSE</span>d’après : '
+    elif statut == "Confirmé":
+        tete = "Sources : "
+    else:
+        tete = '<span class="statut estime">Estimation CLSE</span>Sources : '
     r = f' · <span class="renvoi">Dans le rapport : {_html(renvoi)}</span>' if renvoi else ""
-    st.markdown(f'<div class="pied">{marque}Sources : {_html(source)}{r}</div>',
-                unsafe_allow_html=True)
+    st.markdown(f'<div class="pied">{tete}{_html(source)}{r}</div>', unsafe_allow_html=True)
 
 
 def glossaire(termes):

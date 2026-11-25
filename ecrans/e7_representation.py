@@ -31,15 +31,18 @@ entete("Écran 7 · La représentation", "Comment les outre-mer sont-ils représ
 glossaire(["législature", "groupe politique"])
 
 chiffres_cles()
-t = st.columns(4)
+HABITES = len(S) + 1                     # Saint-Martin et Saint-Barthélemy partagent un siège : onze territoires
+DELEG = C.get("delegation_om_membres")   # membres de la délégation aux outre-mer, une fois la source vérifiée
+t = st.columns(4 if DELEG else 3)
 tuile(t[0], f"{SIEGES_OM:.0f} sur {SIEGES_AN:.0f}",
       f"sièges de députés, soit {fr(K['Part des sièges (%)'], 2)} % de l'Assemblée nationale")
 tuile(t[1], f"≈ {fr(K['Part de la population (%)'])} %", "de la population de la France vit dans les outre-mer",
       "bleugris")
-tuile(t[2], f"{fr(maxi.habitants_par_depute, 0)}", f"habitants par député à {maxi.territoire}, contre "
-      f"{fr(mini.habitants_par_depute, 0)} à {mini.territoire}", "orange")
-tuile(t[3], "10 députés", "ultramarins ont permis la formation du groupe de la Gauche démocrate et républicaine, "
-      "en 2022", "bleu")
+tuile(t[2], f"{HABITES}", "territoires habités, qui élisent leurs députés ; les TAAF et Clipperton n'ont pas de "
+      "population permanente", "bleu")
+if DELEG:
+    tuile(t[3], f"{fr(DELEG, 0)}", "membres de la délégation aux outre-mer de l'Assemblée nationale, dont les députés "
+          "élus outre-mer", "bleugris")
 st.markdown("")
 
 # ───────────────────────────────────────── 1 · les sièges et la population
@@ -75,11 +78,12 @@ with d:
            f"Mais d'un territoire à l'autre, un député représente de {fr(mini.habitants_par_depute, 0)} habitants "
            f"({mini.territoire}) à {fr(maxi.habitants_par_depute, 0)} ({maxi.territoire}) : près de "
            f"{fr(maxi.habitants_par_depute / mini.habitants_par_depute, 0)} fois plus."], "orange")
-    carte("À lire avec prudence",
-          ["Les populations n'ont pas toutes la même date : 2023 pour la métropole et les départements des "
-           "Antilles, de Guyane et de La Réunion, 2026 pour Mayotte, de 2022 à 2025 pour les collectivités du "
-           "Pacifique. La part de population est donc un ordre de grandeur.",
-           "Saint-Martin et Saint-Barthélemy partagent un seul député."], "bleugris")
+    carte("Les populations utilisées",
+          [f"<b>{r.territoire}</b> : {r.source_population}"
+           + (" (population au 1er janvier 2023)" if "2025-1362" in r.source_population else "")
+           for r in S.itertuples()]
+          + ["Les dates diffèrent d'un territoire à l'autre : la part de population est un ordre de grandeur. "
+             "Saint-Martin et Saint-Barthélemy partagent un seul député."], "bleugris", puces=True)
 pied("Code électoral (17e législature) ; Assemblée nationale ; décret n° 2025-1362 du 26 décembre 2025 (INSEE, "
      "populations au 1er janvier 2023) ; INSEE (Mayotte, 2026) ; ISEE (2025) ; ISPF (2022) ; STSEE (2023)",
      statut="Estimé", renvoi=RENVOI)
@@ -245,7 +249,8 @@ with d:
            "2012."], "bleugris")
 pied("Assemblée nationale, base Sycomore des députés (fiches consultées le 29 octobre 2026) et listes annuelles de "
      "rattachement des députés aux partis ; codage des positions politiques : CLSE (grille du 18 novembre 2026). "
-     "Saint-Barthélemy et Saint-Martin : circonscription propre depuis 2012", statut="Reconstitué", renvoi=RENVOI)
+     "Saint-Barthélemy et Saint-Martin : circonscription propre depuis 2012. Méthode : onglet POL_Methode de la base",
+     statut="Calcul", renvoi=RENVOI)
 # ───────────────────────────────────────── 4 · et dans l'administration
 st.markdown("### Et dans l'administration ?")
 g, d = st.columns([1.65, 1], gap="large")
@@ -258,8 +263,10 @@ with g:
            "qui s'y engagent, qui ne font pas que passer »."], "bleugris")
 with d:
     carte("Les dispositifs de retour",
-          ["Le concours national à affectation locale, lancé en 2020 : 46 concours, environ 1 800 postes par an — "
-           "prometteur, mais marginal à l'échelle de la fonction publique ultramarine.",
+          [f"Le concours national à affectation locale (CNAL) permet de passer un concours de la fonction publique "
+           f"en choisissant d'être affecté dans son territoire. Lancé en 2020 : {fr(C['cnal_concours_2020_2025'], 0)} "
+           f"concours jusqu'en 2025, environ {fr(C['cnal_postes_par_an'], 0)} postes par an — prometteur, mais "
+           f"marginal à l'échelle de la fonction publique ultramarine.",
            "Les ministres eux-mêmes : voir l'écran 3."], "orange")
 pied("Fiche variable V4, v4 (2026) ; Sénat, rapport n° 264 (2025), Philippe Bas et Victorin Lurel, « L'action de "
      "l'État outre-mer : pour un choc régalien »", renvoi=RENVOI)

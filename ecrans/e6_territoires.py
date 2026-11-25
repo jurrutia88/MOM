@@ -32,6 +32,20 @@ def millesime(num, terr):
     return str(I[(I.num == num) & (I.territoire == terr)].millesime.iloc[0])
 
 
+def valeur_fiche(v, u, nd_):
+    """Une valeur de la fiche territoriale : nombre à la française, texte tel quel, « ND » si non disponible."""
+    if nd_ == "ND":
+        return "ND"
+    if pd.isna(v):
+        return ""
+    try:
+        x = float(str(v).replace(",", "."))
+        v = fr(x, 0 if x.is_integer() else 1)
+    except ValueError:
+        v = str(v)
+    return f"{v} {u}".strip() if isinstance(u, str) else v
+
+
 def maj(t):
     return t[:1].upper() + t[1:]
 
@@ -91,44 +105,99 @@ DROM = ["Guadeloupe", "Martinique", "Guyane", "La Réunion", "Mayotte"]
 alim = [val(3, x) for x in DROM]
 pib = E.set_index("territoire").pib_hab_eur
 chiffres_cles()
-t = st.columns(4)
-tuile(t[0], f"{fr(val(1, 'Mayotte'), 0)} %", f"de la population de Mayotte sous le seuil de pauvreté national, "
-      f"contre {fr(val(1, 'France (réf.)'))} % en France", "orange")
-tuile(t[1], f"+{fr(min(alim), 0)} à +{fr(max(alim), 0)} %", "de prix alimentaires dans les départements d'outre-mer "
-      "par rapport à l'Hexagone")
-tuile(t[2], f"{fr(val(5, 'Mayotte'), 0)} %", f"de chômage à Mayotte en {millesime(5, 'Mayotte')} ; de {fr(val(5, 'Martinique'))} à "
-      f"{fr(val(5, 'La Réunion'))} % dans les autres départements ; {fr(val(5, 'France (réf.)'))} % en France",
-      "bleugris")
-tuile(t[3], f"de 1 à {fr(pib['Saint-Barthélemy'] / pib['Mayotte'])}", "l'écart de richesse produite par habitant, "
-      "de Mayotte à Saint-Barthélemy", "orange")
+# pauvreté, vie chère, santé (colonne Décision) ; l'environnement et le climat viendront des chiffres du CLSE
+mi = {x: val(9, x) for x in DROM}
+t = st.columns(3)
+tuile(t[0], f"{fr(val(1, 'Mayotte'), 0)} %", f"de la population de Mayotte sous le seuil de pauvreté national "
+      f"({millesime(1, 'Mayotte')}), contre {fr(val(1, 'France (réf.)'))} % en France", "orange")
+tuile(t[1], f"+{fr(min(alim), 0)} à +{fr(max(alim), 0)} %", f"de prix alimentaires dans les départements d'outre-mer "
+      f"par rapport à l'Hexagone ({millesime(3, 'Mayotte')})")
+tuile(t[2], f"{fr(min(mi.values()))} à {fr(max(mi.values()))} ‰", f"de mortalité infantile dans les départements "
+      f"d'outre-mer ({millesime(9, 'Mayotte')}), contre {fr(val(9, 'France (réf.)'))} ‰ en France", "bleugris")
 st.markdown("")
 
 noms = I.drop_duplicates("num").set_index("num")       # la liste des indicateurs, pour le tableau par territoire
 
+# ───────────────────────────────────────── 1 · comparer, sur les quatre indicateurs de la commande
+# Le tableau « Croisement Rapport x DATA » du CLSE (août 2026, bloc 4A) demandait un tableau comparatif par
+# territoire avec filtres : pauvreté, prix alimentaires, alimentation importée, chômage. Le comparateur est réduit
+# à ces quatre indicateurs (colonne Décision).
+COMMANDE = [1, 3, 4, 5]
+st.markdown("### Comparer les territoires")
+etiq = {n: f"{noms.loc[n, 'indicateur']} ({noms.loc[n, 'unite']})" for n in COMMANDE}
+choix_ind = st.radio("Indicateur", list(etiq.values()), horizontal=True, label_visibility="collapsed")
+num = next(n for n, e in etiq.items() if e == choix_ind)
+SI = I[I.num == num]
+ref = SI[SI.reference == "oui"]
+V = SI[(SI.reference == "non") & SI.valeur.notna()].sort_values("valeur")
+nd = SI[(SI.reference == "non") & SI.valeur.isna()]
+pct = "%" in noms.loc[num, "unite"]
+fmt = lambda v: fr(v, 0) if v >= 100 or v == int(v) else fr(v)          # noqa: E731
+coul = [c.BLEU_GRIS if comp == "O" else c.CLAIR[c.BLEU_GRIS] for comp in V.comparable]
+txt = [f"{m if isinstance(m, str) else ''}{fmt(v)}{' %' if pct else ''}" + ("" if comp == "O" else f" ({mil})")
+       for v, m, comp, mil in zip(V.valeur, V.marque, V.comparable, V.millesime)]
+fig = go.Figure()
+c.barres(fig, V.territoire, V.valeur, coul, text=txt, textcolor=c.MARINE, customdata=V[["millesime"]].values,
+         hover="<b>%{y}</b> : %{x}<br>%{customdata[0]}<extra></extra>")
+haut = max(V.valeur.max(), ref.valeur.max() if len(ref) else 0)
+if len(ref):
+    fig.add_vline(x=ref.iloc[0].valeur, line=dict(color=c.ORANGE, width=2, dash="dash"), layer="below")
+    fig.add_annotation(x=ref.iloc[0].valeur, y=1.0, yref="paper", yanchor="bottom", showarrow=False,
+                       text=f"<b>France : {fmt(ref.iloc[0].valeur)}{' %' if pct else ''}</b>",
+                       font=dict(size=12, color=c.ORANGE))
+fig.update_layout(height=110 + 38 * len(V), margin=dict(r=40, t=34),
+                  xaxis=dict(range=[0, haut * 1.3], showgrid=True, gridcolor=c.GRILLE, title=noms.loc[num, "unite"]),
+                  yaxis=dict(showgrid=False, tickfont=dict(size=12, color=c.MARINE)))
+st.plotly_chart(fig, width="stretch", config=c.CONFIG)
+prec = []
+if (V.comparable == "N").any():
+    prec.append("barres claires : année ou méthode différente, l'année est indiquée")
+if V.marque.eq("≈").any():
+    prec.append("« ≈ » : valeur lue sur un graphique de la source")
+if len(nd):
+    prec.append("non disponible : " + ", ".join(nd.territoire))
+if prec:
+    st.caption(" · ".join(prec).capitalize() + ".")
+pied(" ; ".join(dict.fromkeys(SI.source)) + f" — année de référence : {SI.millesime.mode().iloc[0]}", renvoi=RENVOI)
+
 # ───────────────────────────────────────── 2 · un territoire, tous les indicateurs
 st.markdown("### Un territoire, tous ses indicateurs")
+FT = lire("fiche_territoriale.csv")
 terrs = [t for t in dict.fromkeys(I[(I.reference == "non") & I.valeur.notna()].territoire)
          if "/" not in t and t not in ("COM", "Ensemble outre-mer")]
+terrs += [t for t in dict.fromkeys(FT.territoire) if t not in terrs]
 choix = st.selectbox("Territoire", terrs, label_visibility="collapsed")
-lignes = []
-for n, r in noms.iterrows():
-    x = I[(I.num == n) & (I.territoire == choix)]
-    f_ = I[(I.num == n) & (I.reference == "oui")]
-    if x.empty or pd.isna(x.valeur.iloc[0]):
-        continue
-    xv, fv = x.valeur.iloc[0], (f_.valeur.iloc[0] if len(f_) else None)
-    lignes.append({"Indicateur": f"{r.indicateur} ({r.unite})",
-                   choix: f"{x.marque.iloc[0] if isinstance(x.marque.iloc[0], str) else ''}{fr(xv, 2 if n == 13 else 1)}",
-                   "France": fr(fv, 2 if n == 13 else 1) if fv is not None else "—",
-                   "Écart": (f"× {fr(xv / fv, 1)}" if fv else "—"),
-                   "Année": str(x.millesime.iloc[0]),
-                   "Comparable": "oui" if x.comparable.iloc[0] == "O" else "non"})
-st.dataframe(pd.DataFrame(lignes), hide_index=True, width="stretch")
-st.caption("« Écart » : la valeur du territoire divisée par la moyenne nationale. Au-dessus de 1, le territoire est "
-           "plus haut que la moyenne — ce qui est un retard pour la pauvreté ou le chômage, une avance pour la "
-           "densité de médecins ou l'accueil de la petite enfance.")
-pied("Socle « chiffres clés » de la Partie IV : Sénat, commission d'enquête sur les inégalités systémiques outre-mer "
-     "(2026), d'après INSEE, DEPP, DGS, DREES, CNAF, Assurance maladie, ISEE, ISPF, STSEE", renvoi=RENVOI)
+F = FT[FT.territoire == choix]
+if len(F):
+    # la fiche territoriale tenue par le CLSE (onglet SAISIE_Fiche_territoriale de la base) : onze rubriques,
+    # chapitres 4.1 à 4.11 du rapport
+    st.dataframe(pd.DataFrame({
+        "Rubrique": F.rubrique_num.astype(str) + " · " + F.rubrique, "Indicateur": F.indicateur.fillna(""),
+        "Valeur": [valeur_fiche(v, u, n_) for v, u, n_ in zip(F.valeur, F.unite, F.nd)],
+        "Année": ["" if pd.isna(x) else str(int(x)) if isinstance(x, float) else str(x) for x in F.annee],
+        "Source": F.source.fillna("")}),
+        hide_index=True, width="stretch")
+    pied("Fiche territoriale du CLSE : " + " ; ".join(dict.fromkeys(F.source.dropna())), renvoi=RENVOI)
+else:
+    lignes = []
+    for n, r in noms.iterrows():
+        x = I[(I.num == n) & (I.territoire == choix)]
+        f_ = I[(I.num == n) & (I.reference == "oui")]
+        if x.empty or pd.isna(x.valeur.iloc[0]):
+            continue
+        xv, fv = x.valeur.iloc[0], (f_.valeur.iloc[0] if len(f_) else None)
+        lignes.append({"Indicateur": f"{r.indicateur} ({r.unite})",
+                       choix: f"{x.marque.iloc[0] if isinstance(x.marque.iloc[0], str) else ''}{fr(xv, 2 if n == 13 else 1)}",
+                       "France": fr(fv, 2 if n == 13 else 1) if fv is not None else "—",
+                       "Écart": (f"× {fr(xv / fv, 1)}" if fv else "—"),
+                       "Année": str(x.millesime.iloc[0]),
+                       "Comparable": "oui" if x.comparable.iloc[0] == "O" else "non"})
+    st.dataframe(pd.DataFrame(lignes), hide_index=True, width="stretch")
+    st.caption("« Écart » : la valeur du territoire divisée par la moyenne nationale. Au-dessus de 1, le territoire est "
+               "plus haut que la moyenne — ce qui est un retard pour la pauvreté ou le chômage, une avance pour la "
+               "densité de médecins ou l'accueil de la petite enfance.")
+    pied("Socle « chiffres clés » de la Partie IV : Sénat, commission d'enquête sur les inégalités systémiques outre-mer "
+         "(2026), d'après INSEE, DEPP, DGS, DREES, CNAF, Assurance maladie, ISEE, ISPF, STSEE", renvoi=RENVOI)
 
 # ───────────────────────────────────────── 3 · l'indice intégré de précarité
 st.markdown("### Un indice pour comparer les cinq départements")
@@ -217,9 +286,9 @@ with d:
            f"{en_lettres(XD.num.nunique())} indicateurs, souvent mesurés autrement : un indice les comparerait à "
            f"tort. Les Terres australes et Clipperton n'ont pas de population permanente.",
            "Dans un radar, l'aire dépend de l'ordre des pointes : le classement reste la lecture exacte."], "bleu")
-pied("Calcul du CLSE à partir du socle « chiffres clés » de la Partie IV (Sénat 2026, d'après INSEE, DEPP, DGS, "
-     "DREES). Millésimes 2019 à 2026 ; jeunes sans emploi ni formation lus sur un graphique ; inégalités de la Guyane "
-     "en 2017", statut="Reconstitué", renvoi=RENVOI)
+pied("socle « chiffres clés » de la Partie IV (Sénat 2026, d'après INSEE, DEPP, DGS, DREES). Millésimes 2019 à 2026 ; "
+     "jeunes sans emploi ni formation lus sur un graphique ; inégalités de la Guyane en 2017", statut="Calcul",
+     renvoi=RENVOI)
 
 # ───────────────────────────────────────── 4 · richesse et effort
 st.markdown("### Des réalités très hétérogènes, un effort qui ne suit pas les besoins")

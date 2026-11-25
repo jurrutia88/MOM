@@ -3,8 +3,9 @@
 Site web qui rend le rapport lisible en huit questions. L'application est écrite en Streamlit et
 tourne entièrement dans le navigateur du lecteur (stlite) : la page est publiée sur GitHub Pages,
 sans serveur à réveiller ni compte à créer.
-Pour chaque indicateur : un chiffre, une phrase de lecture, un graphique, la source et son
-statut, un renvoi vers le rapport, un téléchargement.
+Pour chaque indicateur : un chiffre, une phrase de lecture, un graphique, la source (avec la
+mention « Calcul CLSE » ou « Estimation CLSE » quand il y a lieu), un renvoi vers le rapport,
+un téléchargement.
 
 ## La base unique
 
@@ -15,7 +16,7 @@ statut, un renvoi vers le rapport, un téléchargement.
 - L'onglet **Lisez-moi** décrit les conventions et les onglets.
 - L'onglet **Journal_corrections** garde la trace de toute modification d'un chiffre : date,
   ancienne valeur, nouvelle valeur, raison, source.
-- L'onglet **REF_Controles** donne la valeur attendue de chaque chiffre-clé (48 contrôles).
+- L'onglet **REF_Controles** donne la valeur attendue de chaque chiffre-clé (51 contrôles).
 
 Le script `outils/exporter.py` lit le classeur, calcule les tableaux de `donnees/` et compare
 chaque chiffre-clé à `REF_Controles`. **Au moindre écart, il n'écrit rien** et dit lequel.
@@ -36,6 +37,19 @@ personne d'autre ne le tient.
 5. L'export tourne tout seul (onglet **Actions** du dépôt, deux minutes environ). S'il réussit,
    l'application se met à jour d'elle-même. S'il échoue, ouvrir l'action en rouge : la dernière
    étape dit quel chiffre ne retombe pas juste, et rien n'a été modifié.
+
+## Ce que le CLSE renseigne lui-même dans le classeur
+
+- **SAISIE_Fiche_territoriale** — la fiche de l'écran 6 : onze rubriques (chapitres 4.1 à 4.11 du
+  rapport) pour chacun des onze territoires habités. Remplir indicateur, valeur, unité, année et
+  source, ou « ND » si l'information n'existe pas. Une valeur sans année ou sans source est refusée à
+  l'export. Dès qu'un territoire a une ligne renseignée, l'écran 6 affiche sa fiche à la place du
+  tableau des indicateurs.
+- **POL_Positions, POL_Groupes, POL_GDR_elus** — la grille des positions politiques de l'écran 7,
+  et **POL_Methode**, sa méthode. Changer la position d'un groupe ou d'un élu dans la colonne
+  « Position retenue », en écrivant la raison du choix ; l'export refuse un député sans position.
+- **REF_Chiffres_cites** — les chiffres cités tels que la source les donne (Cour des comptes,
+  Sénat, Assemblée nationale…), avec leur source.
 
 ## Modifier un texte
 

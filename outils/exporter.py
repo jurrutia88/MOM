@@ -444,6 +444,33 @@ def territoires():
     return T
 
 
+# ─────────────────────────────────────────────── 6 bis · la fiche territoriale (écran 6), tenue par le CLSE
+def fiche_territoriale(T):
+    """Onglet SAISIE_Fiche_territoriale : onze rubriques par territoire habité. Seules les lignes renseignées
+    (indicateur, ou « ND ») partent vers l'application ; une valeur sans année ou sans source est refusée."""
+    L = tableau("SAISIE_Fiche_territoriale")
+    habites = {t for t, l in T.items() if l["habite"] == "oui"}
+    lignes, fautes = [], []
+    for l in L:
+        if l.get("territoire") not in habites:
+            fautes.append("territoire inconnu : %s" % l.get("territoire"))
+            continue
+        nd = str(l.get("nd") or "").strip().upper() == "ND"
+        if not (l.get("indicateur") or nd):
+            continue
+        if l.get("valeur") not in (None, "") and not (l.get("annee") and l.get("source")):
+            fautes.append("%s, %s : valeur sans année ou sans source" % (l["territoire"], l["rubrique"]))
+        lignes.append([l["territoire"], l["rubrique_num"], l["rubrique"], l.get("indicateur") or "",
+                       l.get("valeur"), l.get("unite") or "", l.get("annee") or "", l.get("source") or "",
+                       "ND" if nd else ""])
+    assert not fautes, "fiche territoriale : %s" % fautes
+    controle("Fiche territoriale : rubriques prévues", len({l["rubrique_num"] for l in L}))
+    ecrire("fiche_territoriale.csv", ["territoire", "rubrique_num", "rubrique", "indicateur", "valeur", "unite",
+                                      "annee", "source", "nd"], lignes)
+    ecrire("fiche_rubriques.csv", ["rubrique_num", "rubrique"],
+           sorted({(l["rubrique_num"], l["rubrique"]) for l in L}, key=lambda x: int(str(x[0]).split(".")[1])))
+
+
 # ─────────────────────────────────────────────── 7 · la représentation (écran 7)
 SIEGES = {"Saint-Martin / Saint-Barthélemy": ("Saint-Martin", "Saint-Barthélemy")}
 
@@ -460,8 +487,10 @@ def representation(T):
         elif terr.startswith("Assemblée"):
             an = n
         else:
-            popu = sum(T[t]["population"] for t in SIEGES.get(terr, (terr,)))
-            lignes.append([terr, n, popu, round(popu / n), src])
+            parts = SIEGES.get(terr, (terr,))
+            popu = sum(T[t]["population"] for t in parts)
+            spop = " ; ".join(dict.fromkeys(T[t]["source_population"] for t in parts))
+            lignes.append([terr, n, popu, round(popu / n), src, spop])
     assert sum(l[1] for l in lignes) == total, "E7 : la somme des sièges ne retombe pas sur le total"
     pop = {l["perimetre"]: l["population"] for l in tableau("REF_Population_France")}
     habites = [t for t in T.values() if t["habite"] == "oui"]
@@ -472,8 +501,8 @@ def representation(T):
     pop_fr = p4 + pop_om - quatre
     controle("Représentation : sièges ; Assemblée ; part des sièges (%)", [total, an, round(100 * total / an, 2)])
     controle("Représentation : part de la population (%)", round(100 * pop_om / pop_fr, 2))
-    ecrire("representation_sieges.csv", ["territoire", "deputes", "population", "habitants_par_depute", "source"],
-           lignes)
+    ecrire("representation_sieges.csv", ["territoire", "deputes", "population", "habitants_par_depute", "source",
+                                         "source_population"], lignes)
     ecrire("representation_chiffres.csv", ["indicateur", "valeur", "source"], [
         ["Sièges de députés des outre-mer", total, "Code électoral ; Assemblée nationale (17e législature)"],
         ["Sièges de l'Assemblée nationale", an, "Assemblée nationale"],
@@ -502,10 +531,11 @@ def politique():
                  for l in tableau("POL_Positions")             # les notes sous le tableau n'ont pas de couleur
                  if l.get("Position") and str(l.get("Couleur") or "").startswith("#")]
     connues = {p for p, *_ in positions}
-    groupes = {l["Groupe à l'Assemblée (Sycomore)"]: (l["Position retenue (José)"] or l["Position proposée"],
+    retenue = lambda l: l.get("Position retenue") or l.get("Position retenue (José)")     # noqa: E731
+    groupes = {l["Groupe à l'Assemblée (Sycomore)"]: (retenue(l) or l["Position proposée"],
                                                        l["Nature"]) for l in tableau("POL_Groupes")
                if l.get("Groupe à l'Assemblée (Sycomore)")}
-    elus = {(int(l["Législature"]), l["Député"]): l["Position retenue (José)"] or l["Position proposée"]
+    elus = {(int(l["Législature"]), l["Député"]): retenue(l) or l["Position proposée"]
             for l in tableau("POL_GDR_elus") if l.get("Député")}
     faux = sorted({p for p, _n in groupes.values() if not p.startswith("Élu par élu")} - connues
                   | (set(elus.values()) - connues))
@@ -589,6 +619,7 @@ def main():
     histoire()
     statuts()
     T = territoires()
+    fiche_territoriale(T)
     representation(T)
     politique()
     attendus = {str(l["controle"]): _txt(l["valeur_attendue"]) if not isinstance(l["valeur_attendue"], str)

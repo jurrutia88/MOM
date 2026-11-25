@@ -85,10 +85,15 @@ def css():
     .pied .statut.estime {{ border-color: {ORANGE}; color: {ORANGE}; }}
     .pied .renvoi {{ font-style: normal; color: {BLEU}; }}
     abbr {{ text-decoration: underline dotted {FILET}; cursor: help; }}
+    [data-testid="stElementToolbar"] {{ display: none; }}
     {''.join(blocs)}
     @media (max-width: 640px) {{
         .entete h1 {{ font-size: 1.55rem; }}
         .tuile .valeur {{ font-size: 2rem; }}
+        .carte {{ padding: 14px 14px 10px 14px; }}
+        .carte p, .carte li {{ font-size: .93rem; }}
+        /* les boutons de choix des graphiques passent à la ligne au lieu de déborder */
+        [role="radiogroup"] {{ flex-wrap: wrap; gap: .2rem .8rem; }}
     }}
     @media (min-width: 641px) and (max-width: 1100px) {{
         .tuile .valeur {{ font-size: 1.55rem; }}
@@ -154,15 +159,24 @@ pio.templates["clse"] = go.layout.Template(layout=go.Layout(
     paper_bgcolor=BLANC, plot_bgcolor=BLANC,
     colorway=[MARINE, VERT, ORANGE, BLEU, BRUN, BLEU_GRIS],
     margin=dict(l=10, r=20, t=20, b=10),
-    xaxis=dict(showgrid=False, showline=True, linecolor=FILET, ticks="", tickfont=dict(color=GRIS), zeroline=False),
+    # pas de zoom ni de glissement : sur un téléphone, un doigt qui défile zoomait sans moyen visible de revenir
+    # (retour du CLSE) ; le graphique reste fixe, le survol et l'export en image restent
+    dragmode=False,
+    xaxis=dict(showgrid=False, showline=True, linecolor=FILET, ticks="", tickfont=dict(color=GRIS), zeroline=False,
+               fixedrange=True),
     yaxis=dict(showgrid=True, gridcolor=GRILLE, showline=True, linecolor=FILET, ticks="",
-               tickfont=dict(color=GRIS), zeroline=False),
+               tickfont=dict(color=GRIS), zeroline=False, fixedrange=True),
     hoverlabel=dict(bgcolor=BLANC, bordercolor=FILET, font=dict(family="Lato, sans-serif", color=MARINE, size=13)),
     legend=dict(orientation="h", yanchor="bottom", y=1.02, x=0, font=dict(color=GRIS)),
     separators=", ",                      # virgule décimale, espace des milliers
 ))
 pio.templates.default = "clse"
 
-CONFIG = {"displaylogo": False, "locale": "fr",
-          "modeBarButtonsToRemove": ["select2d", "lasso2d", "autoScale2d", "zoomIn2d", "zoomOut2d"],
-          "toImageButtonOptions": {"format": "png", "scale": 2}}
+# aucune commande sur les graphiques : celles de Plotly et de Streamlit ne s'affichent qu'en anglais, et le zoom
+# piégeait les téléphones (retours du CLSE). Les figures et les données se téléchargent par les boutons
+# « Télécharger » en français, en bas de chaque écran.
+CONFIG = {"displaylogo": False, "locale": "fr", "displayModeBar": False, "scrollZoom": False,
+          "modeBarButtonsToRemove": ["select2d", "lasso2d", "autoScale2d", "zoomIn2d", "zoomOut2d", "zoom2d",
+                                     "pan2d", "resetScale2d", "zoomInGeo", "zoomOutGeo", "hoverClosestCartesian",
+                                     "hoverCompareCartesian", "toggleSpikelines"],
+          "toImageButtonOptions": {"format": "png", "scale": 2, "filename": "compagnon_MOM"}}

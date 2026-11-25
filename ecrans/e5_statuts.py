@@ -9,7 +9,7 @@ from html import escape
 import streamlit as st
 
 import charte as c
-from composants import chiffres_cles, carte, en_lettres, entete, fond, fr_typo, glossaire, lire, pied, sigle, silhouette, tuile
+from composants import chiffres_cles, carte, en_lettres, entete, fond, fr, fr_typo, glossaire, lire, pied, sigle, silhouette, tuile
 
 RENVOI = "partie « Comment fonctionne le ministère »"       # intitulé définitif à caler sur le rapport
 
@@ -17,25 +17,27 @@ c.css()
 fond(["Nouvelle-Calédonie", "Polynésie française", "Clipperton"])
 S = lire("statuts.csv")
 NB = len(S)
-REGIMES = S[S.groupe != "Statut particulier"].groupe.nunique()      # article 73, article 74, titre XIII
+# quatre cadres constitutionnels : article 73, article 74, titre XIII, régimes particuliers (article 72-3)
+CADRES = S.groupe.nunique()
 PARTICULIERS = int((S.groupe == "Statut particulier").sum())
+POP = lire("representation_chiffres.csv").set_index("indicateur").valeur["Population des onze territoires habités"]
 EUROPE = S[S.regime_europeen != "aucun"].regime_europeen.nunique()  # RUP, PTOM
 DROM = int((S.groupe == "Article 73").sum())
-REVISION, MARTINIQUE = 2003, 2024        # révision constitutionnelle du 28 mars 2003 ; Sénat, 31 mars 2024
+REVISION = 2003                          # révision constitutionnelle du 28 mars 2003
 
 entete("Écran 5 · Les statuts", f"Pourquoi les {NB} outre-mer n'ont-ils pas tous le même statut ?",
-       f"{en_lettres(REGIMES).capitalize()} régimes constitutionnels, {en_lettres(PARTICULIERS)} statuts "
-       f"particuliers, {en_lettres(EUROPE)} régimes européens : un même ministère pour des territoires que le droit "
-       f"ne traite pas de la même façon.")
+       f"{en_lettres(CADRES).capitalize()} cadres dans la Constitution, {en_lettres(EUROPE)} régimes européens : un "
+       f"même ministère pour des territoires que le droit ne traite pas de la même façon.")
 glossaire(["DROM", "COM", "article 73", "article 74", "habilitation", "sui generis", "RUP", "PTOM"])
 
 chiffres_cles()
-t = st.columns(3)
-tuile(t[0], f"{NB}", f"territoires, dont {int((S.habite == 'oui').sum())} habités — les TAAF et Clipperton n'ont pas "
-      f"de population permanente")
-tuile(t[1], f"{REGIMES} régimes", f"dans la Constitution : {sigle('article 73')}, {sigle('article 74')}, titre "
-      f"XIII — plus {en_lettres(PARTICULIERS)} statuts particuliers", "bleugris")
-tuile(t[2], f"{int((S.regime_europeen == 'RUP').sum())} sur {NB}", f"font partie de l'Union européenne ({sigle('RUP')}) ; "
+t = st.columns(4)
+HAB = int((S.habite == 'oui').sum())
+tuile(t[0], f"{NB}", f"territoires, dont {HAB} habités — les TAAF et Clipperton n'ont pas de population permanente")
+tuile(t[1], f"≈ {fr(POP / 1e6, 2)} millions", f"d'habitants dans les {HAB} territoires habités", "bleugris")
+tuile(t[2], f"{CADRES} cadres", f"dans la Constitution : {sigle('article 73')}, {sigle('article 74')}, titre XIII "
+      f"(Nouvelle-Calédonie) et régimes particuliers (TAAF, Clipperton)", "bleugris")
+tuile(t[3], f"{int((S.regime_europeen == 'RUP').sum())} sur {NB}", f"font partie de l'Union européenne ({sigle('RUP')}) ; "
       f"{int((S.regime_europeen == 'PTOM').sum())} y sont seulement associés ({sigle('PTOM')})", "bleu")
 st.markdown("")
 
@@ -47,10 +49,10 @@ COUL = {"Article 73": c.VERT, "Article 74": c.BLEU, "Titre XIII": c.MARINE, "Sta
 LIB = {"Article 73": "Article 73 — départements et régions d'outre-mer",
        "Article 74": "Article 74 — collectivités d'outre-mer",
        "Titre XIII": "Titre XIII — la Nouvelle-Calédonie, sui generis",
-       "Statut particulier": "Statuts particuliers",
+       "Statut particulier": "Régimes particuliers — fixés par la loi (article 72-3)",
        "RUP": "Régions ultrapériphériques — dans l'Union européenne",
        "PTOM": "Pays et territoires d'outre-mer — associés à l'Union",
-       "aucun": "Ni l'un ni l'autre",
+       "aucun": "Ni région ultrapériphérique, ni pays et territoire d'outre-mer",
        "Atlantique": "Atlantique et Caraïbes", "Indien": "Océan Indien", "Indien et austral": "Indien et austral",
        "Pacifique": "Pacifique"}
 vue = st.radio("Ranger par", ["Statut dans la Constitution", "Régime européen", "Océan"], horizontal=True,
@@ -99,6 +101,23 @@ carte("Titre XIII · la Nouvelle-Calédonie",
        "spécifique.",
        "L'accord de Bougival (2025) devait s'y ajouter. Sa traduction constitutionnelle a été rejetée par "
        "l'Assemblée nationale le 2 avril 2026 : le cadre reste celui de Nouméa."], "marine", d)
-pied("Fiche variable V5, « Diversité institutionnelle », v4 (2026) : Constitution, code général des collectivités "
-     "territoriales, rapports parlementaires", renvoi=RENVOI)
+a, b = st.columns(2, gap="medium")
+carte("Régimes particuliers · les TAAF et Clipperton",
+      ["Ces deux territoires n'ont pas de population permanente. La Constitution renvoie à la loi le soin de fixer "
+       "leur régime (article 72-3).",
+       "Les Terres australes et antarctiques françaises sont administrées par un préfet. Clipperton, île du "
+       "Pacifique, est placée sous l'autorité directe du Gouvernement ; elle n'est ni région ultrapériphérique ni "
+       "pays et territoire d'outre-mer de l'Union européenne."], "brun", a)
+carte("Dépasser le couple des articles 73 et 74 ?",
+      ["Plusieurs tentatives ont voulu ouvrir une autre voie. Le projet de révision constitutionnelle de 2018, qui "
+       "élargissait la différenciation, n'a pas abouti. En mai 2022, l'appel de Fort-de-France des présidents "
+       "d'exécutifs d'outre-mer a demandé une refondation de la relation avec l'État et un droit plus différencié.",
+       "Pour la Nouvelle-Calédonie, l'accord de Bougival (2025) prévoyait un « État de la Nouvelle-Calédonie » ; "
+       "adoptée par le Sénat, sa traduction constitutionnelle a été rejetée par l'Assemblée nationale le 2 avril "
+       "2026, par la gauche et le Rassemblement national pour des raisons opposées.",
+       "Pourquoi elles butent : toute sortie du cadre passe par une révision de la Constitution, donc par une "
+       "majorité des trois cinquièmes du Parlement réuni en Congrès, ou par un référendum."], "orange", b)
+pied("Fiche variable V5, « Diversité institutionnelle », v4.1 (2026) : Constitution, code général des collectivités "
+     "territoriales, rapports parlementaires ; Assemblée nationale, séance du 2 avril 2026 ; loi n° 2007-224 du "
+     "21 février 2007 (Clipperton)", renvoi=RENVOI)
 

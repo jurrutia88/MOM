@@ -61,15 +61,16 @@ nes = M[M.ancrage == "né outre-mer"]
 
 entete("Écran 3 · Les ministres", "Qui a dirigé le ministère des Outre-mer ?",
        f"{pers} personnes et {n} mandats depuis {AN0}. À quel rang, combien de temps elles restent, et qui elles sont.")
-glossaire(["mandat", "rang", "rattaché à l'Intérieur", "ancrage"])
+glossaire(["mandat", "rang", "plein exercice", "rattaché à l'Intérieur", "ancrage"])
 
 chiffres_cles()
 t = st.columns(4)
 tuile(t[0], f"{pers}", f"ministres depuis {AN0}, pour <b>{n} mandats</b> : une même personne peut être nommée "
       f"dans plusieurs gouvernements")
-tuile(t[1], f"{fr(moy, 0)} jours", f"durée moyenne d'un mandat, soit environ {round(moy / 30.44)} mois — la moitié dure moins de "
-      f"{fr(med, 0)} jours", "bleugris")
-tuile(t[2], f"1 sur {round(n / courts)}", f"des mandats dure moins de six mois ({courts} sur {n})", "orange")
+tuile(t[1], f"≈ {round(moy / 30.44)} mois", f"durée moyenne d'un mandat ({fr(moy, 0)} jours) ; la moitié dure moins "
+      f"de {round(med / 30.44)} mois, et {courts} sur {n} moins de six mois", "bleugris")
+femmes = M[M.sexe == "F"].ministre.nunique()
+tuile(t[2], f"{femmes} sur {pers}", f"femmes parmi les ministres, la première en {PREMIERE_FEMME}", "orange")
 tuile(t[3], f"{nes.ministre.nunique()}", f"ministres nés outre-mer en {ARRET.year - AN0} ans, tous entre "
       f"{nes.debut.min()[:4]} et {nes.fin.max()[:4]} — aucun depuis", "orange")
 st.markdown("")
@@ -115,7 +116,11 @@ with d:
            f"{mac.duree_moyenne_j} jours, contre {long_.duree_moyenne_j} sous "
            + {"Giscard d'Estaing": "Valéry Giscard d'Estaing"}.get(long_.president, long_.president) + "."],
           "orange")
-pied(SOURCE + ". " + REGLE, renvoi=RENVOI)
+st.caption("Le rythme des nominations = le nombre de mandats divisé par la durée de la présidence en années. "
+           f"{fr(mac.mandats_par_an, 2)} signifie qu'un nouveau titulaire est nommé en moyenne plus d'une fois par an."
+           if mac.mandats_par_an > 1 else "Le rythme des nominations = le nombre de mandats divisé par la durée de la "
+           "présidence en années.")
+pied(SOURCE + ". " + REGLE, statut="Calcul", renvoi=RENVOI)
 
 # ───────────────────────────────────────── 2 · le rang et le rattachement, mandat après mandat
 st.markdown("### Un statut qui oscille, mandat après mandat")
@@ -129,14 +134,19 @@ with g:
         S = M[M.rattachement == ratt]
         debut, fin = pd.to_datetime(S.debut), pd.to_datetime(S.fin)
         ms = lambda d: (d - pd.Timestamp("1970-01-01")).dt.total_seconds() * 1000
-        c.barres(fig, S.rang, ms(fin) - ms(debut), coul, base=ms(debut), width=0.62, name=ratt, n=10,
+        c.barres(fig, S.rang, ms(fin) - ms(debut), coul, base=ms(debut), width=0.5, name=ratt, n=10,
                  customdata=S[["ministre", "gouvernement", "duree_jours"]].values,
                  hover="<b>%{customdata[0]}</b><br>%{customdata[1]} · %{customdata[2]} jours<extra></extra>")
-    fig.update_layout(height=330, barmode="overlay",
+    # les rangs s'écrivent au-dessus de leur ligne, pas dans une colonne à gauche : sur un téléphone, la colonne
+    # mangeait la moitié du graphique (retour du CLSE)
+    for rg in RANGS:
+        fig.add_annotation(x="1958-09-01", y=rg, yshift=27, xanchor="left", showarrow=False, text=f"<b>{rg}</b>",
+                           font=dict(size=11, color=c.MARINE), bgcolor="rgba(255,255,255,0.85)")
+    fig.update_layout(height=360, barmode="overlay", margin=dict(l=4, r=8),
                       xaxis=dict(type="date", range=["1958-06-01", "2027-01-01"], dtick="M120", tickformat="%Y",
                                  showgrid=True, gridcolor=c.GRILLE),
                       yaxis=dict(categoryorder="array", categoryarray=RANGS[::-1], showgrid=False,
-                                 tickfont=dict(size=12, color=c.MARINE)),
+                                 showticklabels=False),
                       legend=dict(orientation="h", y=1.04, yanchor="bottom"))
     st.plotly_chart(fig, width="stretch", config=c.CONFIG)
 with d:
@@ -155,7 +165,7 @@ with d:
            f"{K['Mandats de plein exercice']} sont de plein exercice, {K['Mandats rattachés à l' + chr(39) + 'Intérieur']} "
            "rattachés à l'Intérieur. Les deux premiers rangs siègent au Conseil des ministres ; les deux autres "
            "passent par le ministre dont ils relèvent."], "bleu")
-pied(SOURCE + ". Une barre = un mandat, de la nomination à la fin des fonctions", renvoi=RENVOI)
+pied(SOURCE + ". Une barre = un mandat, de la nomination à la fin des fonctions", statut="Calcul", renvoi=RENVOI)
 
 # ───────────────────────────────────────── 3 · qui occupe le poste
 st.markdown("### Qui occupe le poste ?")
@@ -235,13 +245,14 @@ carte("Ce que ces dates suivent",
        f"<b>{nes.debut.min()[:4]}</b> — la première ministre née outre-mer, {NOMS_NES[0]}, est nommée un mois "
        f"après le décret du 27 mai 2009 qui clôt la grève générale de Guadeloupe, "
        f"{en_lettres(int(nes.debut.min()[:4]) - AN0)} ans après la création du portefeuille.",
-       f"<b>{nes.fin.max()[:4]}</b> — la parenthèse se ferme trois semaines après l'accord qui clôt le conflit guyanais."], "bleugris", cs[1])
+       f"<b>{nes.fin.max()[:4]}</b> — la parenthèse se ferme trois semaines après l'accord qui clôt le conflit guyanais.",
+       "Ces dates se suivent ; le rapport n'établit pas de lien de cause."], "bleugris", cs[1])
 carte("Qui, et de quel ancrage",
       [f"<b>Nés outre-mer</b> : {', '.join(NOMS_NES)}.",
        f"<b>Autre forme d'{sigle('ancrage')}</b> : {', '.join(NOMS_AUTRES)} — "
        "activité, enfance ou fonctions outre-mer antérieures à la nomination."], "bleu", cs[2])
-pied(SOURCE + " ; grille d'ancrage ultramarin du CLSE, v4 (naissance, ascendance, résidence, activité, mandat, "
-     "engagement)", renvoi=RENVOI)
+pied(SOURCE + " ; grille d'ancrage ultramarin du CLSE (naissance, ascendance, résidence, activité, mandat, "
+     "engagement), lien antérieur à la nomination", statut="Calcul", renvoi=RENVOI)
 
 # ───────────────────────────────────────── 4 · retrouver un ministre
 st.markdown("### Retrouver un ministre")
@@ -256,8 +267,7 @@ st.dataframe(pd.DataFrame({
 pied(SOURCE + ". Fin du dernier mandat : date d'arrêt de la base, la ministre étant toujours en fonction")
 
 st.markdown("##### Télécharger")
-# les figures du deck portent encore l'ancien décompte : on ne propose que les données (le bouton appareil photo
-# de chaque graphique en donne l'image)
+# les figures du deck portent encore l'ancien décompte : on ne propose que les données
 b = st.columns(2)
 telecharger(b[0], f"Données · les {K['Mandats']} mandats", "ministres_mandats.csv")
 telecharger(b[1], "Données · par présidence", "ministres_presidents.csv")

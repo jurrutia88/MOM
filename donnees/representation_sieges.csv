@@ -1,11 +1,11 @@
-﻿territoire;deputes;population;habitants_par_depute;source
-Guadeloupe;4;384160;96040;Code électoral
-Martinique;4;360630;90158;Code électoral
-Guyane;2;293996;146998;Code électoral
-La Réunion;7;889679;127097;Code électoral
-Mayotte;2;323153;161576;Code électoral
-Saint-Martin / Saint-Barthélemy;1;41820;41820;Code électoral
-Saint-Pierre-et-Miquelon;1;5790;5790;Code électoral
-Polynésie française;3;278786;92929;Code électoral
-Wallis-et-Futuna;1;11151;11151;Code électoral
-Nouvelle-Calédonie;2;264596;132298;Code électoral
+﻿territoire;deputes;population;habitants_par_depute;source;source_population
+Guadeloupe;4;384160;96040;Code électoral;INSEE, décret n° 2025-1362
+Martinique;4;360630;90158;Code électoral;INSEE, décret n° 2025-1362
+Guyane;2;293996;146998;Code électoral;INSEE, décret n° 2025-1362
+La Réunion;7;889679;127097;Code électoral;INSEE, décret n° 2025-1362
+Mayotte;2;323153;161576;Code électoral;INSEE, recensement exhaustif, 01/01/2026
+Saint-Martin / Saint-Barthélemy;1;41820;41820;Code électoral;INSEE, décret n° 2025-1362
+Saint-Pierre-et-Miquelon;1;5790;5790;Code électoral;INSEE, décret n° 2025-1362
+Polynésie française;3;278786;92929;Code électoral;ISPF, recensement 2022
+Wallis-et-Futuna;1;11151;11151;Code électoral;INSEE, recensement 2023
+Nouvelle-Calédonie;2;264596;132298;Code électoral;ISEE, recensement 2025
